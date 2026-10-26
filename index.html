@@ -3,2413 +3,296 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoSync Enterprise — Resiliencia Digital, Continuidad Operativa y Green IT</title>
+  <title>EcoSync — Resiliencia de formularios en tiempo real</title>
+  <meta name="description" content="EcoSync protege el progreso de tus formularios ante interrupciones de red. Sin pérdida de datos, sin fricción.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-  <!-- BANNER GLOBAL DE CONTINGENCIA (Simulación de caída de red) -->
-  <div id="contingency-banner" class="contingency-banner hidden" role="alert">
-    <div class="banner-content">
-      <span class="banner-icon">⚠️</span>
-      <div class="banner-text">
-        <strong>¡Ups! Detectamos una caída momentánea de red (MODO OFFLINE-FIRST TOLERANTE A FALLOS).</strong>
-        <span>EcoSync ha resguardado automáticamente todos los campos y líneas en buffer de sesión local. Puedes seguir operando sin riesgo de pérdida. La sincronización se restablecerá automáticamente al reconectar.</span>
-      </div>
-      <div class="banner-actions">
-        <button id="btn-banner-restore" class="btn btn-sm btn-white">Restaurar Conexión Ahora</button>
+<!-- ═══ NAVBAR ═══════════════════════════════════════════════════════════ -->
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">⚡</div>
+      EcoSync
+    </a>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="pages/solucion.html" class="nav-link">Solución</a>
+      <a href="pages/green-it.html" class="nav-link">Green IT</a>
+      <a href="pages/precios.html" class="nav-link">Precios</a>
+      <a href="pages/dashboard.html" class="nav-link">Dashboard</a>
+      <a href="pages/integracion.html" class="nav-link">Integración</a>
+      <a href="pages/historial.html" class="nav-link">Historial</a>
+      <a href="pages/terminal.html" class="nav-link">Terminal</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="nav-console-btn" id="btn-toggle-console" title="Ctrl+Shift+D">
+        &gt;_ Consola
+      </button>
+      <div id="nav-user-area">
+        <button class="btn btn-primary btn-sm" onclick="window.EcoSync.auth.showModal()">Iniciar sesión</button>
       </div>
     </div>
+    <button id="nav-toggle" aria-label="Menú">☰</button>
   </div>
-
-  <!-- NAVEGACIÓN SUPERIOR EMPRESARIAL -->
-  <header class="app-header">
-    <div class="header-container">
-      <div class="brand-logo" id="nav-brand" role="button" tabindex="0">
-        <div class="logo-mark">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="#10B981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="logo-text">
-          <span class="brand-name">EcoSync</span>
-          <span class="brand-tag">ENTERPRISE GATEWAY</span>
-        </div>
-      </div>
-
-      <nav class="main-nav" aria-label="Navegación principal">
-        <button class="nav-link active" data-target="view-inicio">Inicio</button>
-        <button class="nav-link" data-target="view-solucion">Solución Tecnológica</button>
-        <button class="nav-link" data-target="view-green-it">Impacto Green IT</button>
-        <button class="nav-link" data-target="view-precios">Planes y Precios</button>
-        
-        <!-- Pestañas Enterprise (de las nuevas referencias) -->
-        <span class="nav-separator">|</span>
-        <button class="nav-link nav-link-portal" data-target="view-dashboard-ejecutivo">Dashboard KPIs</button>
-        <button class="nav-link nav-link-portal" data-target="view-diagnosticos">Diagnósticos Forenses</button>
-        <button class="nav-link nav-link-portal" data-target="view-integracion">Centro SDK</button>
-        <button class="nav-link nav-link-portal" data-target="view-arquitectura">Arquitectura</button>
-        <button class="nav-link nav-link-highlight" data-target="view-terminal">Terminal Operativa</button>
-      </nav>
-
-      <div class="header-right">
-        <!-- Indicador de conexión -->
-        <div class="connection-pill" id="global-connection-pill">
-          <span class="status-indicator online" id="global-status-dot"></span>
-          <span id="global-status-text">En Línea</span>
-        </div>
-
-        <!-- Módulo de Autenticación de Usuario (Login / Registro / Sesión Activa) -->
-        <div class="auth-wrapper" id="auth-wrapper">
-          <!-- Si está logueado -->
-          <div class="user-chip" id="user-chip-btn" role="button" tabindex="0" title="Perfil y Sesión">
-            <div class="avatar" id="header-avatar">RS</div>
-            <div class="user-meta">
-              <span class="user-name" id="header-user-name">Ing. Roberto Silva</span>
-              <span class="user-role" id="header-user-role">Gerente de Infraestructura TI</span>
-            </div>
-            <span class="user-chip-caret">▼</span>
-          </div>
-
-          <!-- Dropdown de Sesión -->
-          <div class="user-dropdown hidden" id="user-dropdown">
-            <div class="dropdown-header">
-              <strong id="dropdown-user-name">Ing. Roberto Silva</strong>
-              <small id="dropdown-user-email">roberto.silva@grupo-alfa.corp</small>
-              <span class="dropdown-badge">ORGANIZACIÓN: GRUPO ALFA</span>
-            </div>
-            <div class="dropdown-divider"></div>
-            <div class="dropdown-section-title">CAMBIAR PERFIL DEMO RÁPIDO:</div>
-            <button class="dropdown-item" id="btn-switch-roberto">
-              <span>👔</span> Ing. Roberto Silva (Gerente TI)
-            </button>
-            <button class="dropdown-item" id="btn-switch-camila">
-              <span>💼</span> Camila Soto (Operadora Finanzas)
-            </button>
-            <div class="dropdown-divider"></div>
-            <button class="dropdown-item text-orange" id="btn-logout">
-              <span>🚪</span> Cerrar Sesión
-            </button>
-          </div>
-
-          <!-- Botones si NO está logueado -->
-          <div class="guest-actions hidden" id="guest-actions">
-            <button class="btn btn-sm btn-secondary" id="btn-open-login">Iniciar Sesión</button>
-            <button class="btn btn-sm btn-primary" id="btn-open-register">Registrarse</button>
-          </div>
-        </div>
-
-        <!-- Botón CTA Rápido -->
-        <button class="btn btn-primary btn-sm" id="btn-header-cta">Abrir Terminal</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- CONTENEDOR DE VISTAS (SPA) -->
-  <main id="app-viewport">
-
-    <!-- ========================================== -->
-    <!-- 1. VISTA: INICIO / LANDING PAGE            -->
-    <!-- ========================================== -->
-    <section id="view-inicio" class="view-section active">
-      <div class="hero-section">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          <span>NUEVA VERSIÓN 2.0 • ARQUITECTURA ZERO-DATA LOSS & GREEN IT</span>
-        </div>
-        
-        <h1 class="hero-title">
-          La continuidad de tu operación, <br>
-          <span class="gradient-text">incluso cuando la red falla</span>
-        </h1>
-        
-        <p class="hero-subtitle">
-          El SaaS de integración universal que elimina la pérdida de sesiones, reduce hasta un 74% los tickets de soporte por incidentes de formulario y disminuye el consumo energético en data centers corporativos.
-        </p>
-
-        <div class="hero-actions">
-          <button class="btn btn-primary btn-lg" id="btn-hero-try">
-            <span>Probar Demostración</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
-          <button class="btn btn-secondary btn-lg" id="btn-hero-tech">
-            <span>▷ Ver Arquitectura Técnica</span>
-          </button>
-          <button class="btn btn-outline-primary btn-lg" id="btn-hero-dashboard">
-            <span>📊 Dashboard Ejecutivo</span>
-          </button>
-        </div>
-
-        <div class="hero-trust-bar">
-          <div class="trust-item"><span class="check-icon">✓</span> Despliegue en 15 minutos</div>
-          <div class="trust-item"><span class="check-icon">✓</span> Sin código invasivo</div>
-          <div class="trust-item"><span class="check-icon">✓</span> Compatible con ERP, Salesforce y Microsoft 365</div>
-        </div>
-
-        <!-- TELEMETRÍA EN DIRECTO CARD (Referencia Imagen 1 previa) -->
-        <div class="telemetry-card">
-          <div class="window-header">
-            <div class="window-controls">
-              <span class="dot dot-red"></span>
-              <span class="dot dot-yellow"></span>
-              <span class="dot dot-green"></span>
-            </div>
-            <div class="window-title">
-              ECOSYNC TELEMETRÍA EN DIRECTO [CLÚSTER MULTI-REGION SA-01] • <span class="badge-live">🟢 SIMULACIÓN EN VIVO</span>
-            </div>
-          </div>
-
-          <div class="telemetry-metrics-grid">
-            <div class="telemetry-box">
-              <div class="box-header">
-                <span class="box-label">TICKETS REDUCIDOS</span>
-                <span class="box-icon">📉</span>
-              </div>
-              <div class="box-value text-blue">-68% <span class="box-sub">vs mes anterior</span></div>
-              <div class="box-desc">Incidentes por pérdida y reinicio de formulario resueltos en cliente.</div>
-            </div>
-
-            <div class="telemetry-box">
-              <div class="box-header">
-                <span class="box-label">DATOS ASEGURADOS</span>
-                <span class="box-icon">🛡️</span>
-              </div>
-              <div class="box-value text-slate">99.99% <span class="box-badge-sla">SLA Real</span></div>
-              <div class="box-desc">Recuperación contextual con snapshot criptográfico local.</div>
-            </div>
-
-            <div class="telemetry-box">
-              <div class="box-header">
-                <span class="box-label">AHORRO ENERGÉTICO</span>
-                <span class="box-icon">🍃</span>
-              </div>
-              <div class="box-value text-green">14,280 <span class="box-sub">kWh</span></div>
-              <div class="box-desc">Equivalente a 3.8 tCO2e evitadas en transacciones redundantes.</div>
-            </div>
-          </div>
-
-          <div class="telemetry-status-bar">
-            <div class="status-alert">
-              <span class="alert-icon">⚡</span>
-              <div>
-                <strong>Filtro de Descarte Adaptativo:</strong>
-                <span>2,452 peticiones innecesarias mitigadas en tiempo real durante las últimas 12 hrs.</span>
-              </div>
-            </div>
-            <div class="status-stat">
-              <span class="sparkline-sim">∿∿∿</span>
-              <span class="stat-text">ESTATUS <strong>99.98% Óptimo</strong></span>
-            </div>
-          </div>
-          <div class="demo-disclaimer-note">* Mediciones simuladas en entorno de evaluación académica.</div>
-        </div>
-      </div>
-
-      <!-- SECCIÓN: INTEGRACIÓN EN 3 CLICS -->
-      <section class="content-block text-center">
-        <div class="section-badge">DISTRIBUCIÓN DE DESPLIEGUE</div>
-        <h2 class="section-title">Integración Universal en 3 Clics</h2>
-        <p class="section-subtitle">
-          EcoSync opera como un plugin unificado de capa adaptativa sobre cualquier CRM, ERP o portal corporativo sin alterar sus bases existentes, sin APIs intrusivas y en preservación zero-trust.
-        </p>
-
-        <div class="steps-grid">
-          <div class="step-card">
-            <div class="step-number">1</div>
-            <h3 class="step-title">Inyectar Script o Extensión</h3>
-            <p class="step-desc">Copia el snippet adaptativo o distribuye vía directivas corporativas a través de tu CDN o MDM.</p>
-          </div>
-          <div class="step-card">
-            <div class="step-number">2</div>
-            <h3 class="step-title">Detección Auto-Contextual</h3>
-            <p class="step-desc">El motor detecta estructuras de formulario y asigna caché compresivo en memoria volátil de sesión.</p>
-          </div>
-          <div class="step-card">
-            <div class="step-number">3</div>
-            <h3 class="step-title">Activación Inmediata</h3>
-            <p class="step-desc">Beneficia telemetría, mitigación de fallas y reporte ESG en segundos sin reiniciar servidores.</p>
-          </div>
-        </div>
-
-        <div class="compatibility-container">
-          <div class="compat-label">COMPATIBILIDAD NATIVA CERTIFICADA</div>
-          <div class="logo-badges">
-            <span class="logo-chip">SAP Fiori</span>
-            <span class="logo-chip">Salesforce</span>
-            <span class="logo-chip">Oracle Cloud</span>
-            <span class="logo-chip">Workday</span>
-            <span class="logo-chip">ServiceNow</span>
-            <span class="logo-chip">Jira Software</span>
-            <span class="logo-chip">HubSpot Enterprise</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECCIÓN: LOS 3 PILARES ESTRATÉGICOS -->
-      <section class="content-block bg-white-rounded">
-        <div class="section-badge text-center">ARQUITECTURA HOLÍSTICA</div>
-        <h2 class="section-title text-center">Los 3 Pilares Estratégicos de EcoSync</h2>
-        <p class="section-subtitle text-center">
-          Una solución de triple impacto diseñada con rigor para cumplir las expectativas simultáneas de Finanzas, Operaciones de TI y Comités de Sustentabilidad.
-        </p>
-
-        <div class="pillars-grid">
-          <div class="pillar-card">
-            <div class="pillar-tag">PILAR 01 // CONTINUIDAD OPERATIVA</div>
-            <h3 class="pillar-title">Experiencia de Usuario Ininterrumpida (UX)</h3>
-            <p class="pillar-desc">
-              Cero frustración en el llenado de procesos críticos. Auto-scroll inteligente y preservación instantánea en formularios complejos.
-            </p>
-            <div class="pillar-quote">
-              "Incluso si la pestaña se cierra o colapsa el token de sesión SSO, el colaborador reanuda su tarea sin perder ni una sola línea de captura."
-            </div>
-            <div class="pillar-metric">
-              <span class="metric-num">0%</span>
-              <span class="metric-label">pérdidas de información por caídas de sesión o red</span>
-            </div>
-          </div>
-
-          <div class="pillar-card">
-            <div class="pillar-tag text-orange">PILAR 02 // EFICIENCIA FINANCIERA</div>
-            <h3 class="pillar-title">Ahorro Financiero Directo (ROI Garantizado)</h3>
-            <p class="pillar-desc">
-              Reducción masiva de solicitudes al Help Desk TI. Menor tiempo de horas-hombre invertidas en depuración y re-ingreso forzado de datos.
-            </p>
-            <div class="pillar-quote">
-              "Recorta las horas redundantes de soporte L1/L2 dedicadas a desbloquear o reconstruir transacciones incompletas en Finanzas y Ventas."
-            </div>
-            <div class="pillar-metric">
-              <span class="metric-num text-orange">$42,000 USD</span>
-              <span class="metric-label">ahorro anual promedio proyectado por cada 500 puestos</span>
-            </div>
-          </div>
-
-          <div class="pillar-card">
-            <div class="pillar-tag text-green">PILAR 03 // SUSTENTABILIDAD DIGITAL</div>
-            <h3 class="pillar-title">Eficiencia Energética (Green IT Certificado)</h3>
-            <p class="pillar-desc">
-              Optimización de transacciones cliente-servidor para recortar ciclos de cómputo innecesarios y minimizar la huella de carbono digital corporativa.
-            </p>
-            <div class="pillar-quote">
-              "Reduce la carga en clústeres elásticos en AWS, Azure o data centers on-premise con trazabilidad auditable para directivas ESG."
-            </div>
-            <div class="pillar-metric">
-              <span class="metric-num text-green">-45%</span>
-              <span class="metric-label">solicitudes redundantes hacia servidores corporativos</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TESTIMONIOS -->
-      <section class="content-block">
-        <div class="section-badge text-center">VALIDACIÓN EN LA INDUSTRIA</div>
-        <h2 class="section-title text-center">Liderazgo Tecnológico y Sustentable</h2>
-        <p class="section-subtitle text-center">
-          Historias de éxito reales de corporaciones de misión crítica optimizando sus plataformas diarias.
-        </p>
-
-        <div class="testimonials-grid">
-          <div class="testimonial-card">
-            <div class="quote-mark">“</div>
-            <p class="quote-body">
-              Redujimos en 2 semanas los incidentes críticos de soporte en nuestro ERP SAP. La implementación fue inmediata y los colaboradores jamás volvieron a quejarse de formularios colapsados.
-            </p>
-            <div class="author-info">
-              <div class="author-avatar">EM</div>
-              <div>
-                <strong>Elena Morales</strong>
-                <span class="author-role">Directora de TI en Vesta Logística</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="testimonial-card">
-            <div class="quote-mark">“</div>
-            <p class="quote-body">
-              EcoSync nos permitió reportar ahorros cuantificables de huella de carbono digital en nuestro informe ESG anual, uniendo finalmente la eficiencia tecnológica con la sustentabilidad corporativa.
-            </p>
-            <div class="author-info">
-              <div class="author-avatar">CV</div>
-              <div>
-                <strong>Carlos Valenzuela</strong>
-                <span class="author-role">VP de Sustentabilidad Corporativa</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CTA FINAL INICIO -->
-      <section class="cta-banner">
-        <div class="cta-content">
-          <span class="cta-icon">🚀</span>
-          <h2 class="cta-title">¿Listo para optimizar la infraestructura digital de tu empresa?</h2>
-          <p class="cta-desc">
-            Evalúa el impacto inmediato de EcoSync en tu entorno con un piloto de bajo impacto y métricas de resiliencia verificables en minutos.
-          </p>
-          <div class="cta-buttons">
-            <button class="btn btn-white btn-lg" id="btn-cta-terminal">Abrir Terminal de Demostración</button>
-          </div>
-          <div class="cta-footnote">SIN COMPROMISO COMERCIAL • SIMULACIÓN LOCAL DISPONIBLE</div>
-        </div>
-      </section>
-    </section>
-
-
-    <!-- ========================================== -->
-    <!-- 2. VISTA: SOLUCIÓN TECNOLÓGICA             -->
-    <!-- ========================================== -->
-    <section id="view-solucion" class="view-section">
-      <div class="section-header-hero">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          <span>ARQUITECTURA Y FUNCIONAMIENTO TÉCNICO • RESILIENCIA Y CERO-DATA-LOSS</span>
-        </div>
-        <h1 class="hero-title">Tecnología Invisible, <br><span class="gradient-text">Rendimiento Imparable</span></h1>
-        <p class="hero-subtitle">
-          Descubre la ingeniería detrás de nuestra sincronización de estado sin sobrecarga de red y el motor de preservación contextual para la empresa moderna.
-        </p>
-        
-        <div class="tech-quick-stats">
-          <div class="quick-stat-box">
-            <span class="stat-label">TIEMPO DE RESPUESTA</span>
-            <span class="stat-val text-blue">&lt; 1.8 ms</span>
-          </div>
-          <div class="quick-stat-box">
-            <span class="stat-label">PETICIONES REDUCIDAS</span>
-            <span class="stat-val text-green">-96.2%</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- AUTO-SCROLL CONTEXTUAL INTELIGENTE -->
-      <div class="tech-deep-dive">
-        <div class="deep-dive-left">
-          <div class="tech-tag">MÓDULO DINÁMICO 01</div>
-          <h2 class="deep-dive-title">Auto-Scroll Contextual Inteligente</h2>
-          
-          <div class="feature-bullet-list">
-            <div class="feature-bullet">
-              <div class="bullet-idx">01</div>
-              <div>
-                <strong>Detección Vectorial de Foco</strong>
-                <p>El micro-kernel de EcoSync mapea el DOM en tiempo real, catalogando campos interactivos en formularios de alta densidad sin ralentizar el layout.</p>
-              </div>
-            </div>
-            
-            <div class="feature-bullet">
-              <div class="bullet-idx">02</div>
-              <div>
-                <strong>Suavizado Cinemático Adaptativo</strong>
-                <p>Desplaza la lente autónoma basándose en las matrices activas que conducen la vista hacia el siguiente bloque de validación óptimo.</p>
-              </div>
-            </div>
-
-            <div class="feature-bullet">
-              <div class="bullet-idx">03</div>
-              <div>
-                <strong>Recuperación Sub-Pixel de Posición</strong>
-                <p>Ante caídas de pestaña o desconexión transitoria, el viewport restaura el cursor y la posición topográfica de pantalla con precisión milimétrica.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="deep-dive-right">
-          <div class="terminal-mock">
-            <div class="terminal-mock-head">
-              <span class="dot dot-red"></span>
-              <span class="dot dot-yellow"></span>
-              <span class="dot dot-green"></span>
-              <span class="mock-head-text">TELEMETRÍA EN DIRECTO • Consola ERP Cloud</span>
-            </div>
-            <div class="terminal-mock-body">
-              <div class="mock-row">
-                <span class="mock-label">ID DE RECURSO:</span>
-                <span class="mock-code">CLS-492-RD-PLT#39111-HCP188 [ERP Compute Node]</span>
-              </div>
-              <div class="mock-row">
-                <span class="mock-label">ESTADO:</span>
-                <span class="mock-badge-success">SINCRONIZADO</span>
-              </div>
-              <div class="mock-divider"></div>
-              <div class="mock-row">
-                <span class="mock-label">SN-2 VARIABILIDAD AMBIENTAL:</span>
-                <span class="mock-val">SUPERVISIÓN 7500K</span>
-              </div>
-              <div class="mock-row">
-                <span class="mock-label">MAX_CARBON_INTENSITY:</span>
-                <span class="mock-val">248 gCO2/kWh [Auto-Throttle On]</span>
-              </div>
-              <div class="mock-row">
-                <span class="mock-label">SN-3 HISTORIAL CRÍTICO:</span>
-                <span class="mock-val">COMPLETADO [0 DROPS]</span>
-              </div>
-              <div class="mock-row">
-                <span class="mock-label">TX_ACCOUNT:</span>
-                <span class="mock-code">040551-002-IT OFFSHORE CENTER</span>
-              </div>
-            </div>
-            <div class="terminal-mock-foot">
-              <span>Viewport Top-Y: <strong>144.20 px</strong></span>
-              <span>Latencia: <strong>15.8 ms (59.8 FPS)</strong></span>
-              <span>Carga CPU: <strong>0.02% avg</strong></span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MATRIZ COMPARATIVA DE INGENIERÍA -->
-      <section class="content-block">
-        <div class="section-badge text-center">MATRIZ COMPARATIVA DE INGENIERÍA</div>
-        <h2 class="section-title text-center">Arquitecturas Web Clásicas vs EcoSync</h2>
-
-        <div class="comparison-grid">
-          <div class="compare-col bad">
-            <div class="compare-head">
-              <span class="badge-status-red">INEFICIENTE</span>
-              <h3>Arquitecturas Web Clásicas</h3>
-            </div>
-            <ul class="compare-list">
-              <li>❌ Pérdida absoluta de avances cuando la sesión expira o el token SSO caduca.</li>
-              <li>❌ Sobrecarga severa de servidores Web/API con peticiones redundantes tipo auto-save continuo.</li>
-              <li>❌ Falsos negativos y riesgo de duplicidad de transacciones al reintentar a ciegas en mala red.</li>
-              <li>❌ Sin tolerancia a latencias altas en sucursales remotas ni operabilidad offline.</li>
-            </ul>
-          </div>
-
-          <div class="compare-col good">
-            <div class="compare-head">
-              <span class="badge-status-blue">OPTIMIZADO</span>
-              <h3>EcoSync Edge Resilience</h3>
-            </div>
-            <ul class="compare-list">
-              <li>✅ Snapshot local resiliente encriptado en el almacenamiento del cliente.</li>
-              <li>✅ Consumo de ancho de banda minimizado: consolidación inteligente antes de emitir tráfico.</li>
-              <li>✅ Recuperación instantánea ante caídas de VPN, microcortes o recarga accidental de pestaña.</li>
-              <li>✅ Integridad criptográfica garantizada: cero riesgo de pérdida de capturas en campo.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-    </section>
-
-
-    <!-- ========================================== -->
-    <!-- 3. VISTA: IMPACTO GREEN IT                 -->
-    <!-- ========================================== -->
-    <section id="view-green-it" class="view-section">
-      <div class="section-header-hero">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          <span>SOSTENIBILIDAD DIGITAL Y GREEN COMPUTING</span>
-        </div>
-        <h1 class="hero-title">Reduce la Huella de Carbono <br><span class="gradient-text">de tu Infraestructura TI</span></h1>
-        <p class="hero-subtitle">
-          La eficiencia de software es el vector de descarbonización corporativa más rápido y rentable. Calcula tu impacto ambiental en segundos y acelera tus compromisos Net-Zero.
-        </p>
-        <div class="standards-pills">
-          <span class="std-pill">🌱 Alcance 2 & 3 GHG Protocol</span>
-          <span class="std-pill">📑 Cumplimiento CSRD & GRI 302</span>
-          <span class="std-pill">⚙️ SCI (Software Carbon Intensity) Auditable</span>
-        </div>
-      </div>
-
-      <!-- CALCULADORA DINÁMICA DE IMPACTO ESG -->
-      <div class="esg-calculator-container">
-        <div class="calculator-card">
-          <div class="calc-header">
-            <div>
-              <span class="calc-badge">MOTOR GEOMÉTRICO DE SIMULACIÓN</span>
-              <h2 class="calc-title">Calculadora Dinámica de Impacto ESG</h2>
-            </div>
-            <div class="calc-tag-right">Algoritmo calibrado v2.4b (Factor IEA 2023: 0.385 kg CO2e/kWh)</div>
-          </div>
-
-          <div class="calc-grid">
-            <div class="calc-inputs-col">
-              <div class="calc-input-group">
-                <div class="input-head">
-                  <label for="range-users">Usuarios y Puestos Activos:</label>
-                  <span class="input-val-badge" id="val-users">2,500</span>
-                </div>
-                <input type="range" id="range-users" min="100" max="10000" step="100" value="2500" class="custom-slider">
-                <div class="range-limits"><span>100</span><span>10,000+</span></div>
-              </div>
-
-              <div class="calc-input-group">
-                <label for="select-erp">Plataforma Primaria ERP/CRM:</label>
-                <select id="select-erp" class="custom-select">
-                  <option value="1.2">SAP S/4HANA & SAP Fiori (Alta densidad)</option>
-                  <option value="1.0">Salesforce Enterprise & LWC</option>
-                  <option value="1.1">Microsoft Dynamics 365 Finance</option>
-                  <option value="1.15">Oracle Cloud ERP / Financials</option>
-                </select>
-              </div>
-
-              <div class="calc-input-group">
-                <div class="input-head">
-                  <label for="range-tx">Consultas / Transacciones Diarias por Usuario:</label>
-                  <span class="input-val-badge" id="val-tx">120</span>
-                </div>
-                <input type="range" id="range-tx" min="20" max="500" step="10" value="120" class="custom-slider">
-                <div class="range-limits"><span>20 transacciones</span><span>500 transacciones</span></div>
-              </div>
-
-              <div class="calc-notice">
-                ℹ️ El motor proyecta el ahorro eliminando peticiones redundantes mediante Cache LocalStorage Heurístico y compresión delta en el cliente.
-              </div>
-            </div>
-
-            <div class="calc-results-col">
-              <div class="results-grid">
-                <div class="result-tile">
-                  <div class="result-head">
-                    <span>AHORRO ENERGÉTICO ANUAL</span>
-                    <span class="result-icon">⚡</span>
-                  </div>
-                  <div class="result-val text-blue" id="res-energy">5,606 <span class="val-unit">kWh / año</span></div>
-                  <div class="result-sub" id="res-homes">Equivalente a alimentar 5 hogares promedio durante 1 año.</div>
-                </div>
-
-                <div class="result-tile">
-                  <div class="result-head">
-                    <span>HUELLA CO2E EVITADA</span>
-                    <span class="result-icon">☁️</span>
-                  </div>
-                  <div class="result-val text-green" id="res-carbon">2.2 <span class="val-unit">Ton CO2e</span></div>
-                  <div class="result-sub">Reducción neta directa en Alcance 3 corporativo.</div>
-                </div>
-
-                <div class="result-tile">
-                  <div class="result-head">
-                    <span>EQUIVALENTE ARBÓREO</span>
-                    <span class="result-icon">🌳</span>
-                  </div>
-                  <div class="result-val text-slate" id="res-trees">100 <span class="val-unit">árboles</span></div>
-                  <div class="result-sub">Árboles urbanos absorbiendo emisiones durante 10 años.</div>
-                </div>
-
-                <div class="result-tile">
-                  <div class="result-head">
-                    <span>AHORRO ECONÓMICO TI</span>
-                    <span class="result-icon">💵</span>
-                  </div>
-                  <div class="result-val text-orange" id="res-money">$2,113 <span class="val-unit">USD / año</span></div>
-                  <div class="result-sub">Reducción directa en facturación Cloud, egress & vCPU.</div>
-                </div>
-              </div>
-
-              <button class="btn btn-outline-primary btn-block" id="btn-download-esg">
-                📄 Descargar Resumen de Impacto ESG (.txt)
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CALCULADORA GREEN IT SIMPLIFICADA -->
-      <section class="content-block">
-        <div class="section-badge text-center">FÓRMULA OPERATIVA</div>
-        <h2 class="section-title text-center">Calculadora Green IT Simplificada</h2>
-        <p class="section-subtitle text-center">
-          Demuestra la estimación directa de solicitudes evitadas al año para comprobar la descongestión de servidores corporativos.
-        </p>
-
-        <div class="simple-calc-box">
-          <div class="simple-calc-grid">
-            <div class="form-group">
-              <label for="sc-req">Solicitudes redundantes por día:</label>
-              <input type="number" id="sc-req" value="2400" min="0" class="form-control">
-              <small class="text-muted">Peticiones repetitivas generadas por validación continua.</small>
-            </div>
-
-            <div class="form-group">
-              <label for="sc-reduction">Porcentaje de reducción estimado (%):</label>
-              <input type="number" id="sc-reduction" value="65" min="0" max="100" class="form-control">
-              <small class="text-muted">Porcentaje filtrado y consolidado por EcoSync.</small>
-            </div>
-
-            <div class="form-group">
-              <label for="sc-days">Días de operación al año:</label>
-              <input type="number" id="sc-days" value="250" min="1" max="365" class="form-control">
-              <small class="text-muted">Jornadas laborales anuales estándar.</small>
-            </div>
-          </div>
-
-          <div class="simple-calc-result">
-            <div class="calc-formula-display">
-              <strong>Fórmula:</strong> Solicitudes evitadas al año = Solicitudes redundantes × % Reducción × Días de operación
-            </div>
-            <div class="formula-output">
-              <span>Total de solicitudes evitadas al año:</span>
-              <strong id="sc-total-result" class="text-green">390,000 peticiones</strong>
-            </div>
-            <p class="formula-disclaimer">
-              * Nota: Este cálculo es una estimación ilustrativa basada en promedios operativos de arquitectura web.
-            </p>
-          </div>
-        </div>
-      </section>
-    </section>
-
-
-    <!-- ========================================== -->
-    <!-- 4. VISTA: PLANES Y PRECIOS                 -->
-    <!-- ========================================== -->
-    <section id="view-precios" class="view-section">
-      <div class="section-header-hero">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          <span>INVERSIÓN CLARA Y TRANSPARENTE</span>
-        </div>
-        <h1 class="hero-title">Planes Diseñados para Escalar <br><span class="gradient-text">con tu Operación</span></h1>
-        <p class="hero-subtitle">
-          Licenciamiento SaaS flexible con retorno de inversión garantizado en menos de 90 días. Todos los planes incluyen actualizaciones continuas de seguridad y módulos Green IT.
-        </p>
-
-        <!-- FACTURACIÓN SWITCH -->
-        <div class="billing-switch-wrapper">
-          <span class="switch-label active" id="lbl-billing-monthly">Facturación Mensual</span>
-          <button class="switch-toggle" id="btn-billing-toggle" role="switch" aria-checked="false">
-            <span class="switch-thumb"></span>
-          </button>
-          <span class="switch-label" id="lbl-billing-annual">
-            Facturación Anual <span class="badge-discount">-20% + ESG Report</span>
-          </span>
-        </div>
-
-        <div class="guarantee-pills">
-          <span>🛡️ Sin permanencia forzada</span>
-          <span>🌿 Métrica Scope 2 incluida</span>
-          <span>⚡ Despliegue en 48 horas</span>
-        </div>
-      </div>
-
-      <div class="pricing-cards-grid">
-        <!-- PLAN PYME -->
-        <div class="pricing-card">
-          <div class="pricing-card-header">
-            <div class="card-icon">💻</div>
-            <h3 class="plan-name">Plan Pyme</h3>
-            <p class="plan-desc">Para empresas en crecimiento que buscan robustecer sus primeros procesos críticos sin fricción técnica.</p>
-            <div class="plan-capacity">👥 Hasta 50 usuarios activos</div>
-          </div>
-
-          <div class="plan-price-block">
-            <div class="plan-price">
-              <span class="price-currency">$</span>
-              <span class="price-val" id="price-pyme">249</span>
-              <span class="price-cycle">USD / mes</span>
-            </div>
-            <div class="plan-billing-note" id="note-pyme">Facturado mes a mes</div>
-            <div class="plan-onboarding">ONBOARDING: $450 USD (PAGO ÚNICO)</div>
-          </div>
-
-          <ul class="plan-features-list">
-            <li><span class="f-check">✓</span> Auto-Scroll Contextual estándar</li>
-            <li><span class="f-check">✓</span> Autoguardado LocalStorage con encriptación local</li>
-            <li><span class="f-check">✓</span> 1 Conector integrado (Salesforce o CRM compatible)</li>
-            <li><span class="f-check">✓</span> Soporte estándar vía tickets (L-V 9h-18h)</li>
-            <li><span class="f-check">✓</span> Métricas básicas de ahorro y Green IT</li>
-          </ul>
-
-          <button class="btn btn-outline-primary btn-block" data-select-plan="Pyme">Comenzar Prueba Gratuita 14 Días</button>
-        </div>
-
-        <!-- PLAN CORPORATIVO -->
-        <div class="pricing-card featured">
-          <div class="popular-ribbon">MÁS POPULAR</div>
-          <div class="pricing-card-header">
-            <div class="card-icon">🏢</div>
-            <h3 class="plan-name">Plan Corporativo</h3>
-            <p class="plan-desc">Para medianas y grandes corporaciones con operación intensiva de datos, alta concurrencia y auditoría ESG.</p>
-            <div class="plan-capacity">👥 Hasta 500 usuarios activos</div>
-          </div>
-
-          <div class="plan-price-block">
-            <div class="plan-price">
-              <span class="price-currency">$</span>
-              <span class="price-val" id="price-corp">890</span>
-              <span class="price-cycle">USD / mes</span>
-            </div>
-            <div class="plan-billing-note" id="note-corp">Facturado mes a mes</div>
-            <div class="plan-onboarding text-green">ONBOARDING: BONIFICADO ($1,200 USD CONFIGURACIÓN TÉCNICA)</div>
-          </div>
-
-          <div class="green-efficiency-banner">
-            🌱 EFICIENCIA GREEN IT PROYECTADA: <strong>44% AHORRO DE CO2</strong>
-          </div>
-
-          <ul class="plan-features-list">
-            <li><span class="f-check">✓</span> <strong>Todo lo del Plan Pyme, más:</strong></li>
-            <li><span class="f-check">✓</span> Hasta 3 Conectores simultáneos (SAP Fiori, Salesforce, Dynamics)</li>
-            <li><span class="f-check">✓</span> Calculadora y Dashboard Green IT en tiempo real</li>
-            <li><span class="f-check">✓</span> Consola de auditoría de sesiones para administradores TI</li>
-            <li><span class="f-check">✓</span> SLA de disponibilidad garantizada 99.9%</li>
-            <li><span class="f-check">✓</span> Soporte prioritario 24/5 (Canal dedicado en Slack / Teams)</li>
-            <li><span class="f-check">✓</span> Certificado digital de reducción huella para reporte ESG anual</li>
-          </ul>
-
-          <button class="btn btn-primary btn-block" data-select-plan="Corporativo">Solicitar Demo y Cotización →</button>
-        </div>
-
-        <!-- PLAN ENTERPRISE -->
-        <div class="pricing-card">
-          <div class="pricing-card-header">
-            <div class="card-icon">🌐</div>
-            <h3 class="plan-name">Plan Enterprise</h3>
-            <p class="plan-desc">Para grandes corporativos globales con requisitos de gobernanza a medida, despliegues custom y máxima resiliencia.</p>
-            <div class="plan-capacity">👥 Usuarios y puestos ilimitados</div>
-          </div>
-
-          <div class="plan-price-block">
-            <div class="plan-price">
-              <span class="price-currency">$</span>
-              <span class="price-val" id="price-enterprise">2,190</span>
-              <span class="price-cycle">USD / mes</span>
-            </div>
-            <div class="plan-billing-note" id="note-enterprise">Tarifa base a la medida</div>
-            <div class="plan-onboarding">INTEGRACIÓN A LA MEDIDA / HARDENING Y SLA CUSTOM</div>
-          </div>
-
-          <ul class="plan-features-list">
-            <li><span class="f-check">✓</span> <strong>Todo lo del Plan Corporativo, más:</strong></li>
-            <li><span class="f-check">✓</span> Conectores ERP y sistemas legados sin límite</li>
-            <li><span class="f-check">✓</span> Soporte 24/7/365 con Technical Account Manager asignado</li>
-            <li><span class="f-check">✓</span> Despliegue Híbrido, VPC o On-Premises Dedicado</li>
-            <li><span class="f-check">✓</span> Auditorías SOC 2 Type II y pentesting personalizado</li>
-            <li><span class="f-check">✓</span> SLA contractual de 99.99% con penalizaciones</li>
-            <li><span class="f-check">✓</span> Academia de certificación interna y workshops de TI</li>
-          </ul>
-
-          <button class="btn btn-outline-primary btn-block" data-select-plan="Enterprise">Contactar a Ventas Enterprise</button>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ======================================================= -->
-    <!-- 5. NUEVA VISTA: DASHBOARD EJECUTIVO DE EFICIENCIA (Img 1) -->
-    <!-- ======================================================= -->
-    <section id="view-dashboard-ejecutivo" class="view-section">
-      <!-- Barra superior de contexto Enterprise -->
-      <div class="enterprise-top-bar">
-        <div class="ent-org-pill">
-          <span class="ent-org-label">Org:</span>
-          <strong>Grupo Industrial Alfa</strong>
-          <span class="badge-plan-corp">PLAN CORP</span>
-        </div>
-        <div class="ent-engine-status">
-          <span class="status-indicator online"></span>
-          <span>Edge Engine v2.4.9 Online</span>
-        </div>
-        <div class="ent-env-badge">PRODUCCIÓN</div>
-        
-        <div class="ent-search-wrapper">
-          <input type="text" class="ent-search-input" placeholder="Buscar incidentes, nodos, tokens..." id="input-kpi-search">
-          <span class="search-icon">🔍</span>
-        </div>
-
-        <div class="ent-notification-badge" title="3 Notificaciones de resiliencia activas">
-          🔔 <span class="badge-count">3</span>
-        </div>
-      </div>
-
-      <!-- Título de Sección -->
-      <div class="section-title-row">
-        <div>
-          <div class="section-badge">RETORNO CUANTITATIVO Y TELEMETRÍA FINANCIERA • SUSCRIPCIÓN ENTERPRISE SLA</div>
-          <h1 class="view-main-title">Dashboard Ejecutivo de Eficiencia Operativa</h1>
-          <p class="view-sub-title">Supervisión en tiempo real de nodos activos, resiliencia de sesiones de usuario y mitigación automatizada de sobrecarga en servidores corporativos.</p>
-        </div>
-        <div class="action-filters-group">
-          <div class="time-filter-pills">
-            <button class="time-pill">Últimas 24h</button>
-            <button class="time-pill">Últimos 7 días</button>
-            <button class="time-pill active">Este mes</button>
-            <button class="time-pill">Q3 2025</button>
-          </div>
-          <button class="btn btn-primary btn-sm" id="btn-export-kpis">📥 Descargar Reporte Ejecutivo (PDF/CSV)</button>
-        </div>
-      </div>
-
-      <!-- 3 TARJETAS KPI TOP (Imagen 1) -->
-      <div class="kpis-three-grid">
-        <!-- KPI 1 -->
-        <div class="kpi-card">
-          <div class="kpi-card-header">
-            <span class="kpi-tag">LATENCIA DE RESILIENCIA</span>
-            <span class="badge-gain-green">-89% Latencia</span>
-          </div>
-          <div class="kpi-label-title">Tiempo Promedio de Recuperación</div>
-          <div class="kpi-big-value">
-            <span class="val-num">4.2</span>
-            <span class="val-unit">segundos</span>
-          </div>
-          <div class="kpi-comparison">Frente a la latencia manual de reinicio de sesión de 38.5 s.</div>
-          
-          <div class="kpi-spark-container">
-            <div class="spark-label-row">
-              <span>PULSO DE REANUDACIÓN DE CONTEXTO</span>
-              <span class="text-blue font-bold">[SINCRONIZADO]</span>
-            </div>
-            <!-- SVG Spline Visualizer -->
-            <svg class="kpi-chart-svg" viewBox="0 0 300 45" preserveAspectRatio="none">
-              <path d="M0,35 Q30,5 60,35 T120,35 T180,10 T240,35 T300,20" fill="none" stroke="#2563EB" stroke-width="2.5"/>
-            </svg>
-            <div class="spark-footnote">🛡️ Recuperación invisible de datos en background sin acción del usuario.</div>
-          </div>
-        </div>
-
-        <!-- KPI 2 -->
-        <div class="kpi-card">
-          <div class="kpi-card-header">
-            <span class="kpi-tag text-orange">AHORRO EN OPERACIONES TI</span>
-            <span class="badge-gain-green">+$14,280 USD</span>
-          </div>
-          <div class="kpi-label-title">Llamadas a Soporte Evitadas</div>
-          <div class="kpi-big-value">
-            <span class="val-num">340</span>
-            <span class="val-unit">tickets este mes</span>
-          </div>
-          <div class="kpi-comparison">Ahorro neto calculado en horas-hombre de Help Desk nivel L1 y L2 ($42 USD/incidente).</div>
-
-          <div class="kpi-progress-dual">
-            <div class="dual-row">
-              <span>PROYECCIÓN SIN ECOSYNC:</span>
-              <strong>485 tickets</strong>
-            </div>
-            <div class="dual-row text-blue font-bold">
-              <span>VOLUMEN REAL REGISTRADO:</span>
-              <span>145 tickets (-70%)</span>
-            </div>
-            <div class="dual-bar-bg">
-              <div class="dual-bar-fill" style="width: 30%;"></div>
-            </div>
-            <div class="spark-footnote">70.1% de carga desviada del equipo de infraestructura central.</div>
-          </div>
-        </div>
-
-        <!-- KPI 3 -->
-        <div class="kpi-card">
-          <div class="kpi-card-header">
-            <span class="kpi-tag text-green">SOSTENIBILIDAD & CÓMPUTO</span>
-            <span class="badge-gain-green">GREEN IT ACTIVO</span>
-          </div>
-          <div class="kpi-label-title">Energía de Servidores Ahorrada</div>
-          <div class="kpi-big-value">
-            <span class="val-num text-green">1,840</span>
-            <span class="val-unit">kWh</span>
-          </div>
-          <div class="kpi-comparison">Supresión inteligente de tormentas de reintentos y caché local de transacciones transitorias.</div>
-
-          <div class="kpi-green-breakdown">
-            <div class="green-stat-chip">
-              <span>0.74 tCO2e Mitigadas</span>
-              <span class="chip-days">30 DÍAS</span>
-            </div>
-            <div class="green-progress-bar">
-              <div class="green-fill" style="width: 82%;"></div>
-            </div>
-            <div class="green-foot-stats">
-              <span>Cumplimiento Alcance 2 GHG</span>
-              <strong>82% Meta Mensual</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECCIÓN MEDIA: GRÁFICO SPLINE + CONECTORES + ROI -->
-      <div class="dashboard-middle-grid">
-        <!-- Gráfico de Resiliencia -->
-        <div class="chart-card-large">
-          <div class="chart-header-row">
-            <div>
-              <h3 class="chart-title">📡 Eventos de Red vs. Sesiones Rescatadas</h3>
-              <p class="chart-subtitle">Absorción pasiva de microcortes de VPN y reconexiones de fibra óptica en los últimos 30 días.</p>
-            </div>
-            <div class="chart-legend">
-              <span class="legend-item"><span class="legend-dot blue"></span> Sesiones Rescatadas (99.98%)</span>
-              <span class="legend-item"><span class="legend-dot gray"></span> Microcortes Detectados</span>
-            </div>
-          </div>
-
-          <!-- SVG Spline Visualizer -->
-          <div class="svg-chart-wrapper">
-            <svg viewBox="0 0 600 180" class="responsive-svg-chart">
-              <defs>
-                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#2563EB" stop-opacity="0.3"/>
-                  <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0"/>
-                </linearGradient>
-              </defs>
-              <!-- Grid lines -->
-              <line x1="0" y1="40" x2="600" y2="40" stroke="#E2E8F0" stroke-dasharray="3,3"/>
-              <line x1="0" y1="90" x2="600" y2="90" stroke="#E2E8F0" stroke-dasharray="3,3"/>
-              <line x1="0" y1="140" x2="600" y2="140" stroke="#E2E8F0" stroke-dasharray="3,3"/>
-              
-              <!-- Curva de área -->
-              <path d="M0,130 Q50,70 100,100 T200,60 T300,110 T400,30 T500,120 T600,20 L600,180 L0,180 Z" fill="url(#chartGradient)"/>
-              <!-- Curva de trazo -->
-              <path d="M0,130 Q50,70 100,100 T200,60 T300,110 T400,30 T500,120 T600,20" fill="none" stroke="#2563EB" stroke-width="3"/>
-              
-              <!-- Puntos clave -->
-              <circle cx="100" cy="100" r="4" fill="#2563EB" stroke="#FFFFFF" stroke-width="2"/>
-              <circle cx="400" cy="30" r="5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2"/>
-              <circle cx="600" cy="20" r="4" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
-            </svg>
-            <div class="chart-timeline-labels">
-              <span>Día 01</span>
-              <span>Día 08</span>
-              <span>Día 15 [Pico de Conmutación ISP]</span>
-              <span>Día 22</span>
-              <span class="text-blue font-bold">Hoy (En Tiempo Real)</span>
-            </div>
-          </div>
-
-          <div class="chart-bottom-summary">
-            <div>
-              <span class="status-indicator online"></span>
-              <strong>1,208 desconexiones</strong> absorbidas sin recargar la página o perder datos de formulario.
-            </div>
-            <div class="summary-rates">
-              <span>Tasa de Recuperación: <strong>99.98%</strong></span>
-              <span>• Pérdidas de Estado: <strong>0</strong></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Columna Derecha: Conectores y ROI -->
-        <div class="dashboard-side-col">
-          <!-- Conectores de Misión Crítica -->
-          <div class="connectors-card">
-            <div class="connectors-head">
-              <span class="conn-title">Conectores de Misión Crítica</span>
-              <span class="badge-conn-active">3 Activos</span>
-            </div>
-            <p class="conn-desc">Desglose de intercepciones y mitigaciones transaccionales por entorno integrado:</p>
-
-            <div class="conn-list">
-              <div class="conn-item">
-                <div class="conn-item-head">
-                  <div class="conn-name">
-                    <span class="conn-dot green"></span>
-                    <strong>SAP Fiori / ERP Core</strong>
-                  </div>
-                  <span class="badge-green-sm">0 Datos Perdidos</span>
-                </div>
-                <div class="conn-stats-row">
-                  <span>184 incidentes interceptados</span>
-                  <span>1.2s guardado en búfer</span>
-                </div>
-              </div>
-
-              <div class="conn-item">
-                <div class="conn-item-head">
-                  <div class="conn-name">
-                    <span class="conn-dot blue"></span>
-                    <strong>Salesforce Enterprise CRM</strong>
-                  </div>
-                  <span class="badge-blue-sm">0 Tickets Generados</span>
-                </div>
-                <div class="conn-stats-row">
-                  <span>112 incidentes interceptados</span>
-                  <span>Token SSO auto-renovado</span>
-                </div>
-              </div>
-
-              <div class="conn-item">
-                <div class="conn-item-head">
-                  <div class="conn-name">
-                    <span class="conn-dot green"></span>
-                    <strong>Portal Interno Operativo</strong>
-                  </div>
-                  <span class="badge-green-sm">100% Recuperado</span>
-                </div>
-                <div class="conn-stats-row">
-                  <span>44 incidentes interceptados</span>
-                  <span>Red de Planta Industrial</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ROI Acumulado -->
-          <div class="roi-card">
-            <div class="roi-header">
-              <span class="roi-tag">CÁLCULO DE RETORNO FINANCIERO</span>
-              <span class="roi-percentage">+340%</span>
-            </div>
-            <h4 class="roi-title">ROI Acumulado del Trimestre</h4>
-            <div class="roi-figures-row">
-              <div class="roi-fig">
-                <span class="fig-label">COSTO SUSCRIPCIÓN</span>
-                <span class="fig-val">$2,670</span>
-                <span class="fig-sub">USD / Trimestre</span>
-              </div>
-              <div class="roi-fig">
-                <span class="fig-label">VALOR EN PRODUCTIVIDAD</span>
-                <span class="fig-val text-green">$11,750</span>
-                <span class="fig-sub">USD Generados</span>
-              </div>
-            </div>
-            <p class="roi-note">Retorno neto directo de <strong>$9,080 USD</strong> justificado ante el CFO en reducción de horas de inactividad de empleados y contratos Help Desk.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- FEED DE MITIGACIONES EN TIEMPO REAL (Imagen 1 inferior) -->
-      <div class="feed-section-card">
-        <div class="feed-header-row">
-          <div class="feed-title-group">
-            <span class="status-indicator online"></span>
-            <h3 class="feed-title">Feed de Mitigaciones en Tiempo Real</h3>
-          </div>
-          <div class="feed-cluster-badge">
-            Cluster Edge Alfa-West: <strong>Óptimo (1.4 ms)</strong>
-          </div>
-        </div>
-        <p class="feed-sub">Registro criptográfico de incidentes resueltos localmente en el navegador y en los nodos perimetrales sin elevar incidencias a soporte.</p>
-
-        <div class="table-responsive">
-          <table class="enterprise-table" id="table-mitigations">
-            <thead>
-              <tr>
-                <th>TIMESTAMP</th>
-                <th>USUARIO / ORIGEN</th>
-                <th>MÓDULO CONECTADO</th>
-                <th>EVENTO INTERCEPTADO</th>
-                <th>RESOLUCIÓN</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>14:22:05.182</code></td>
-                <td><strong>camila.vargas@empresa.com</strong></td>
-                <td><span class="badge-sys sap">SAP Fiori</span></td>
-                <td><span class="text-orange font-mono">Caída VPN (18s sin socket)</span></td>
-                <td><span class="text-green font-semibold">Sincronizado en búfer local</span></td>
-              </tr>
-              <tr>
-                <td><code>14:15:39.904</code></td>
-                <td><strong>Sucursal Guadalajara (42 IPs)</strong></td>
-                <td><span class="badge-sys sf">Salesforce Enterprise</span></td>
-                <td><span class="text-orange font-mono">Timeout en Gateway SSO (504)</span></td>
-                <td><span class="text-blue font-semibold">Token renovado en cliente</span></td>
-              </tr>
-              <tr>
-                <td><code>14:08:12.441</code></td>
-                <td><strong>rodrigo.mendoza@empresa.com</strong></td>
-                <td><span class="badge-sys internal">Portal Operaciones</span></td>
-                <td><span class="text-orange font-mono">Cierre accidental de pestaña</span></td>
-                <td><span class="text-green font-semibold">Estado restaurado al 100%</span></td>
-              </tr>
-              <tr>
-                <td><code>13:54:49.615</code></td>
-                <td><strong>planta.monterrey.edge@empresa.com</strong></td>
-                <td><span class="badge-sys sap">SAP Fiori</span></td>
-                <td><span class="text-orange font-mono">Interferencia Wi-Fi Industrial (-88dBm)</span></td>
-                <td><span class="text-blue font-semibold">Empaquetado delta diferido</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="feed-footer-row">
-          <span>🔒 Cifrado de tránsito de sesión: TLS 1.3 con rotación de llaves por sesión.</span>
-          <a href="#" class="feed-link" id="link-go-diagnosticos">Ver historial completo de mitigaciones (1,248) →</a>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ======================================================= -->
-    <!-- 6. NUEVA VISTA: HISTORIAL DE DIAGNÓSTICOS FORENSES (Img 2) -->
-    <!-- ======================================================= -->
-    <section id="view-diagnosticos" class="view-section">
-      <div class="section-title-row">
-        <div>
-          <div class="section-badge">FORENSE Y TRAZABILIDAD SILENCIOSA / LOGS-AUDIT-V2</div>
-          <h1 class="view-main-title">Historial de Diagnósticos y Errores Interceptados</h1>
-          <p class="view-sub-title">Visibilidad forense completa para ingenieros de TI. Inspecciona trazas de error, caídas de red y fallos de sesión resueltos de forma transparente sin impacto para el usuario final.</p>
-        </div>
-        <div class="action-filters-group">
-          <span class="badge-audit-active">🛡️ Audit Kernel: <strong>Active Interceptor</strong></span>
-          <button class="btn btn-secondary btn-sm" id="btn-export-syslog">📥 Syslog / JSON (Splunk & Datadog)</button>
-        </div>
-      </div>
-
-      <!-- 4 KPIS FORENSES (Imagen 2) -->
-      <div class="forensic-kpis-grid">
-        <div class="forensic-kpi-card">
-          <span class="f-kpi-title">INCIDENTES MITIGADOS (24H)</span>
-          <div class="f-kpi-val text-blue">48 <span class="f-gain">+12.4% vs ayer</span></div>
-          <div class="f-kpi-sub">100% interceptados a nivel de runtime local.</div>
-        </div>
-
-        <div class="forensic-kpi-card">
-          <span class="f-kpi-title">TASA AUTO-RECUPERACIÓN</span>
-          <div class="f-kpi-val text-green">100% <span class="badge-zero-fault">ZERO FAULT</span></div>
-          <div class="f-kpi-sub">Zero caídas escaladas a Service Desk N1.</div>
-        </div>
-
-        <div class="forensic-kpi-card">
-          <span class="f-kpi-title">PÉRDIDA DE DATOS EVITADA</span>
-          <div class="f-kpi-val text-slate">100% <span class="badge-zero-bytes">0 B perdidos</span></div>
-          <div class="f-kpi-sub">Buffers de estado form intactos en terminales.</div>
-        </div>
-
-        <div class="forensic-kpi-card">
-          <span class="f-kpi-title">TIEMPO DIAGNÓSTICO AHORRADO</span>
-          <div class="f-kpi-val text-orange">22 <span class="f-unit">min / ticket</span></div>
-          <div class="f-kpi-sub">17.6 horas-hombre ahorradas en turno actual.</div>
-        </div>
-      </div>
-
-      <!-- BARRA DE BÚSQUEDA Y FILTROS INTERACTIVOS -->
-      <div class="forensic-filter-bar">
-        <div class="search-input-group">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="forensic-search" class="form-control" placeholder="Buscar por ID de Incidente, Usuario, Código de Error (ej. NET, 504)">
-        </div>
-
-        <div class="select-filters">
-          <select id="filter-system" class="form-control select-compact">
-            <option value="ALL">Todos los Sistemas (SAP, Salesforce, Oracle...)</option>
-            <option value="SAP">SAP Fiori</option>
-            <option value="SF">Salesforce Enterprise</option>
-            <option value="ORACLE">Oracle NetSuite</option>
-            <option value="PORTAL">Portal Operaciones</option>
-          </select>
-
-          <select id="filter-severity" class="form-control select-compact">
-            <option value="ALL">Todas las Severidades</option>
-            <option value="ALTA">Alta</option>
-            <option value="MEDIA">Media</option>
-            <option value="BAJA">Baja</option>
-          </select>
-
-          <button class="btn btn-secondary btn-sm" id="btn-reset-filters">↺ Restablecer</button>
-        </div>
-      </div>
-
-      <!-- LISTA DE INCIDENTES EXPANDIBLES (Imagen 2) -->
-      <div class="incident-accordion-list" id="incident-list">
-        <!-- Incidente 1 (Expandido por defecto con Stack Trace) -->
-        <div class="incident-card expanded" data-severity="ALTA" data-system="SAP" data-code="504">
-          <div class="incident-summary-bar">
-            <span class="badge-sev high">ALTA</span>
-            <span class="badge-state recovered">RECUPERADO</span>
-            <div class="incident-meta-col">
-              <strong>Hoy 14:22:18 COT</strong>
-              <small>Terminal 04921 • Bogotá HQ</small>
-            </div>
-            <div class="incident-user-col">
-              <span class="avatar-small">CV</span>
-              <span>camila.vargas@alfa.corp (Cuentas por Pagar)</span>
-            </div>
-            <div class="incident-system-col">
-              <span class="badge-sys sap">SAP Fiori</span>
-              <small>Modulo FI_AP_INVOICES</small>
-            </div>
-            <div class="incident-error-col">
-              <code class="text-orange">ERR_CONNECTION_RESET 504 Gateway Timeout</code>
-            </div>
-            <div class="incident-action-col">
-              <span class="text-green font-bold">REHIDRATADO EN 3.9S</span>
-              <small>Zero impacto al usuario</small>
-            </div>
-            <button class="btn-toggle-incident" title="Ver detalles forenses">▲</button>
-          </div>
-
-          <!-- DETALLE EXPANDIBLE (Imagen 2 centro) -->
-          <div class="incident-expanded-detail">
-            <div class="expanded-header">
-              <div class="exp-title-row">
-                <span class="exp-icon">🛡️</span>
-                <strong>Trazabilidad Silenciosa EcoSync • Interceptor #INT-9904</strong>
-                <span class="hash-tag">HASH: SHA256-e91a274b8c9</span>
-              </div>
-              <button class="btn btn-sm btn-secondary" id="btn-copy-trace">📋 Copiar Traza</button>
-            </div>
-
-            <div class="forensic-trace-grid">
-              <!-- Traza Cruda -->
-              <div class="trace-raw-col">
-                <div class="trace-box-head">
-                  <span class="trace-label">EXCEPCIÓN CRUDA INTERCEPTADA</span>
-                  <span class="badge-status-red">STATUS: 504 GATEWAY TIMEOUT</span>
-                </div>
-                <div class="trace-http-line">
-                  <code>HTTP 504 Gateway Timeout on POST /sap/opu/odata/sap/FI_AP_INVOICES_SRV/InvoiceItemSet</code>
-                </div>
-                <div class="trace-code-block">
-                  <pre><code>// Fallo originado en capa de transporte SAP NetWeaver:
-at XMLHttpRequest.handleTimeout (fiori-bundle-v12.js:4102:18)
-at FioriAdapter.retryWithBackoff (ecosync-runtime.js:145:9)
-at Dispatcher.dispatchSync (ecosync-agent.core.js:89:12)
-
-[ECOSYNC INTERCEPTOR]: Fallback to AES-256 local cache (Key: _ecosync_ctx_89421)
-[ECOSYNC VIEWPORT]: Restored focal coordinates X: 640px, Y: 1280px (Field: #txt_monto_iva_retencion)
-[ECOSYNC SESSION]: State rehydrated seamlessly. Payload dispatch re-queued for next ping slot (ID: #PKT-841).</code></pre>
-                </div>
-              </div>
-
-              <!-- Telemetría de Recuperación -->
-              <div class="trace-telemetry-col">
-                <div class="trace-box-head">
-                  <span class="trace-label">TELEMETRÍA DE LA RECUPERACIÓN</span>
-                  <span class="badge-live">MOTOR RESILIENTE OK</span>
-                </div>
-
-                <div class="recovery-metrics-grid">
-                  <div class="rec-metric-box">
-                    <span class="rm-label">LATENCIA CAÍDA:</span>
-                    <strong class="text-orange">4,200 ms</strong>
-                    <small>Sin respuesta del proxy</small>
-                  </div>
-                  <div class="rec-metric-box">
-                    <span class="rm-label">PAYLOAD RESGUARDADO:</span>
-                    <strong class="text-blue">142 KB</strong>
-                    <small>18 campos + 2 adjuntos</small>
-                  </div>
-                  <div class="rec-metric-box">
-                    <span class="rm-label">TIEMPO REHIDRATACIÓN:</span>
-                    <strong class="text-green">3.9 seg</strong>
-                    <small>Sub-pixel precision 420px</small>
-                  </div>
-                  <div class="rec-metric-box">
-                    <span class="rm-label">IMPACTO USUARIO:</span>
-                    <strong class="text-green">0 seg</strong>
-                    <small>Cero pérdida de digitación</small>
-                  </div>
-                </div>
-
-                <div class="timeline-stepper">
-                  <span class="time-step-label">SECUENCIA DE INTERCEPCIÓN EN MILISEGUNDOS:</span>
-                  <div class="stepper-bar">
-                    <div class="step-segment error" title="T+0ms (Error 504)"></div>
-                    <div class="step-segment freeze" title="T+18ms (Freeze)"></div>
-                    <div class="step-segment crypt" title="T+140ms (AES Buffer)"></div>
-                    <div class="step-segment ack" title="T+3900ms (ACK 200)"></div>
-                  </div>
-                  <div class="stepper-labels">
-                    <span>T+0ms (Error 504)</span>
-                    <span>T+18ms (Freeze)</span>
-                    <span>T+140ms (AES)</span>
-                    <span class="text-green font-bold">T+3900ms (ACK 200)</span>
-                  </div>
-                </div>
-
-                <div class="rec-footer-actions">
-                  <span class="badge-sentinel">✓ Validado por EcoSync Sentinel</span>
-                  <button class="btn btn-sm btn-outline-primary" id="btn-download-har">📥 Descargar Dump HAR</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Incidente 2 -->
-        <div class="incident-card" data-severity="MEDIA" data-system="SF" data-code="401">
-          <div class="incident-summary-bar">
-            <span class="badge-sev med">MEDIA</span>
-            <span class="badge-state resolved">RESUELTO</span>
-            <div class="incident-meta-col">
-              <strong>Hoy 12:15:02 COT</strong>
-              <small>Terminal 208 • Medellín</small>
-            </div>
-            <div class="incident-user-col">
-              <span class="avatar-small">RM</span>
-              <span>roberto.mendez@alfa.corp (Ejecutivo Comercial)</span>
-            </div>
-            <div class="incident-system-col">
-              <span class="badge-sys sf">Salesforce Lightning</span>
-              <small>Opportunity Pipeline v58</small>
-            </div>
-            <div class="incident-error-col">
-              <code class="text-orange">TOKEN_EXPIRED OAuth 2.0 (401 Unauthorized)</code>
-            </div>
-            <div class="incident-action-col">
-              <span class="text-green font-bold">REAUTENTICADO 1.2S</span>
-              <small>Formulario intacto sin logout</small>
-            </div>
-            <button class="btn-toggle-incident">▼</button>
-          </div>
-        </div>
-
-        <!-- Incidente 3 -->
-        <div class="incident-card" data-severity="ALTA" data-system="SAP" data-code="CRASH">
-          <div class="incident-summary-bar">
-            <span class="badge-sev high">ALTA</span>
-            <span class="badge-state resolved">RESUELTO</span>
-            <div class="incident-meta-col">
-              <strong>Hoy 10:30:44 COT</strong>
-              <small>Terminal 012 • Cali Planta</small>
-            </div>
-            <div class="incident-user-col">
-              <span class="avatar-small">MG</span>
-              <span>maria.gomez@alfa.corp (Logística de Inventario)</span>
-            </div>
-            <div class="incident-system-col">
-              <span class="badge-sys sap">SAP Fiori</span>
-              <small>Gestión de Despachos</small>
-            </div>
-            <div class="incident-error-col">
-              <code class="text-orange">BROWSER_TAB_CRASH Out of Memory (JS Heap)</code>
-            </div>
-            <div class="incident-action-col">
-              <span class="text-green font-bold">RESTAURADO 2.1S</span>
-              <small>Recuperación post-recarga</small>
-            </div>
-            <button class="btn-toggle-incident">▼</button>
-          </div>
-        </div>
-
-        <!-- Incidente 4 -->
-        <div class="incident-card" data-severity="BAJA" data-system="ORACLE" data-code="WIFI">
-          <div class="incident-summary-bar">
-            <span class="badge-sev low">BAJA</span>
-            <span class="badge-state resolved">REGISTRO</span>
-            <div class="incident-meta-col">
-              <strong>Hoy 08:12:11 COT</strong>
-              <small>Terminal 077 • Barranquilla</small>
-            </div>
-            <div class="incident-user-col">
-              <span class="avatar-small">JP</span>
-              <span>juan.perez@alfa.corp (Supervisor Aduanero)</span>
-            </div>
-            <div class="incident-system-col">
-              <span class="badge-sys oracle">Oracle NetSuite</span>
-              <small>Gestión Arancelaria v24</small>
-            </div>
-            <div class="incident-error-col">
-              <code class="text-muted">TCP_PACKET_LOSS Microcorte Wi-Fi (74% drop)</code>
-            </div>
-            <div class="incident-action-col">
-              <span class="text-blue font-bold">AUTO-SCROLL FIJADO</span>
-              <small>Backoff exponencial completado</small>
-            </div>
-            <button class="btn-toggle-incident">▼</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ======================================================= -->
-    <!-- 7. NUEVA VISTA: CENTRO DE INTEGRACIÓN Y DESPLIEGUE SDK (Img 3) -->
-    <!-- ======================================================= -->
-    <section id="view-integracion" class="view-section">
-      <div class="section-title-row">
-        <div>
-          <div class="section-badge">ZERO-TRUST GATEWAY ARCHITECTURE • SDK BUILD V2.4.9-STABLE</div>
-          <h1 class="view-main-title">Centro de Integración y Despliegue de SDK</h1>
-          <p class="view-sub-title">Gestiona tus credenciales de API, snippets de inyección cliente y conectores nativos pre-configurados para ERP y CRM corporativos con validación criptográfica en tiempo real.</p>
-        </div>
-        <div class="api-gateway-status-chip">
-          <span class="status-indicator online"></span>
-          <div>
-            <strong>API Gateway v2: Operacional</strong>
-            <small>SLA 99.99% • Multi-Región • 14ms rtt</small>
-          </div>
-        </div>
-      </div>
-
-      <!-- BÓVEDA DE CREDENCIALES (Imagen 3 superior) -->
-      <div class="credentials-vault-card">
-        <div class="vault-head">
-          <div class="vault-title-group">
-            <span class="vault-icon">🔑</span>
-            <div>
-              <span class="vault-tag">BÓVEDA DE CREDENCIALES</span>
-              <h3 class="vault-title">Tokens de Autenticación Cero-Trust</h3>
-            </div>
-          </div>
-          <div class="vault-env-switch">
-            <button class="env-btn active" id="btn-env-prod">● Producción (Live)</button>
-            <button class="env-btn" id="btn-env-sandbox">○ Sandbox / Staging</button>
-          </div>
-        </div>
-        <p class="vault-desc">Las claves backend poseen privilegios de auditoría en telemetría de carbono y métricas de procesamiento local. Nunca expongas la Secret Key en clientes públicos o repositorios Git.</p>
-
-        <div class="tokens-inputs-grid">
-          <!-- Tenant ID -->
-          <div class="token-box">
-            <div class="token-head">
-              <label>TENANT IDENTIFIER UUID</label>
-              <span class="badge-valid">VERIFICADO</span>
-            </div>
-            <div class="token-input-row">
-              <input type="text" class="form-control font-mono" id="txt-tenant-uuid" value="tenant_ecosync_prod_994821a8" readonly>
-              <button class="btn btn-sm btn-secondary btn-copy" data-target="txt-tenant-uuid">Copiar</button>
-            </div>
-            <small class="token-sub">Org: Alfa Industrial Corp</small>
-          </div>
-
-          <!-- Public Key -->
-          <div class="token-box">
-            <div class="token-head">
-              <label>PUBLIC CLIENT TOKEN (FRONTEND)</label>
-              <span class="badge-client-web">CLIENTE WEB</span>
-            </div>
-            <div class="token-input-row">
-              <input type="text" class="form-control font-mono" id="txt-public-token" value="ecosync_pub_e83916c2834f892a014bb67" readonly>
-              <button class="btn btn-sm btn-secondary btn-copy" data-target="txt-public-token">Copiar</button>
-            </div>
-            <small class="token-sub">⏱ Expire: 24 Nov 2028</small>
-          </div>
-
-          <!-- Secret Key -->
-          <div class="token-box">
-            <div class="token-head">
-              <label class="text-orange">SECRET API KEY (BACKEND / AUDITORÍA)</label>
-              <span class="badge-strict">STRICT TLS 1.3</span>
-            </div>
-            <div class="token-input-row">
-              <input type="password" class="form-control font-mono" id="txt-secret-key" value="ecosync_sec_9948a8c1f00921bb88392100" readonly>
-              <button class="btn btn-sm btn-outline-danger" id="btn-regen-key">Regenerar</button>
-              <button class="btn btn-sm btn-secondary btn-copy" data-target="txt-secret-key">Copiar</button>
-            </div>
-            <small class="token-sub">Cifrada bajo HSM en enclave seguro</small>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECCIÓN MEDIA: SCRIPT DE INYECCIÓN + TESTER DE PING (Imagen 3) -->
-      <div class="sdk-grid-middle">
-        <!-- Snippet de Instalación Rápida -->
-        <div class="sdk-snippet-card">
-          <div class="sdk-card-head">
-            <div class="sdk-title-group">
-              <span class="sdk-icon">&lt;/&gt;</span>
-              <div>
-                <span class="vault-tag">INSTALACIÓN RÁPIDA</span>
-                <h3 class="vault-title">Script de Inyección Universal Cliente</h3>
-              </div>
-            </div>
-            <button class="btn btn-sm btn-primary" id="btn-copy-snippet">📋 Copiar Código</button>
-          </div>
-
-          <!-- Tabs de Frameworks -->
-          <div class="framework-tabs">
-            <button class="fw-tab active" data-fw="html">JavaScript / HTML Tag (Universal)</button>
-            <button class="fw-tab" data-fw="react">React / Next.js</button>
-            <button class="fw-tab" data-fw="angular">Angular / Vue</button>
-            <button class="fw-tab" data-fw="extension">Extensión Chrome/Edge (MDM)</button>
-          </div>
-
-          <!-- Código -->
-          <div class="code-terminal-box">
-            <div class="code-header">
-              <span class="code-filename">ecosync-bootstrap.html</span>
-              <span class="code-size">ASYNC CDN • 4.2 KB GZIP</span>
-            </div>
-            <pre class="code-body"><code id="code-snippet-display">&lt;!-- EcoSync Enterprise Universal Edge Script --&gt;
-&lt;script
-  src="https://cdn.ecosync.cloud/v2/loader.min.js"
-  data-tenant="tenant_ecosync_prod_994821a8"
-  data-mode="smart-focal-aes256"
-  data-auto-scroll="true"
-  data-localstorage-sync="active"
-  async&gt;
-&lt;/script&gt;</code></pre>
-          </div>
-
-          <div class="sdk-steps-two">
-            <div class="sdk-step-item">
-              <span class="step-num">1</span>
-              <div>
-                <strong>Inyección de Encabezado</strong>
-                <p>Inyecta el script antes del cierre de la etiqueta <code>&lt;/head&gt;</code> o despliégalo como etiqueta Custom HTML en Google Tag Manager.</p>
-              </div>
-            </div>
-            <div class="sdk-step-item">
-              <span class="step-num">2</span>
-              <div>
-                <strong>Validación de Handshake</strong>
-                <p>Verifica la conectividad activa y los certificados SSL en tiempo de ejecución utilizando el emulador de ping de la consola lateral.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tester de Ping y Handshake (Imagen 3 derecha) -->
-        <div class="handshake-tester-card">
-          <div class="sdk-card-head">
-            <div class="sdk-title-group">
-              <span class="sdk-icon">📡</span>
-              <div>
-                <span class="vault-tag">DIAGNÓSTICO ACTIVO</span>
-                <h3 class="vault-title">Tester de Ping y Handshake</h3>
-              </div>
-            </div>
-          </div>
-          <p class="sdk-desc">Prueba la conexión directa entre los clústeres internos de tu empresa y el gateway edge de EcoSync.</p>
-
-          <div class="form-group">
-            <label for="txt-endpoint-url">URL DE ENDPOINT O INTRANET CORPORATIVA:</label>
-            <input type="text" class="form-control font-mono" id="txt-endpoint-url" value="https://erp.grupo-alfa.corp">
-          </div>
-
-          <button class="btn btn-primary btn-block" id="btn-run-handshake">
-            ⚡ Simular Conexión y Validar Handshake TLS 1.3
-          </button>
-
-          <!-- Salida de Consola del Daemon -->
-          <div class="daemon-terminal-window">
-            <div class="daemon-head">
-              <span class="dot dot-green"></span>
-              <span>GATEWAY DAEMON OUTPUT</span>
-            </div>
-            <pre class="daemon-output" id="daemon-output"><code>$ ecosync-cli probe --endpoint https://erp.grupo-alfa.corp
-[OK] Verificando cipher suites TLS 1.3 ECDHE-RSA, AES256-GCM...
-[RESPUESTA] HTTP 200 OK - Token verificado - Handshake completado en 14 ms
-[DEBUG] Mutex de persistencia local: SINCRONIZADO</code></pre>
-          </div>
-        </div>
-      </div>
-
-      <!-- CONECTORES NATIVOS PRECONFIGURADOS (Imagen 3 inferior) -->
-      <div class="connectors-catalog-section">
-        <div class="section-title-row">
-          <div>
-            <div class="section-badge">ENTERPRISE CONNECTORS • SYNC BIDIRECCIONAL</div>
-            <h2 class="section-title">Conectores Nativos Preconfigurados</h2>
-            <p class="section-subtitle">Módulos certificados listos para producción. Conexión transparente sin alterar tu arquitectura central de datos.</p>
-          </div>
-          <div class="badge-cert-soc2">🛡️ Cumplimiento SOC2 Type II & ISO 27001</div>
-        </div>
-
-        <div class="connectors-four-grid">
-          <!-- Conector 1: SAP -->
-          <div class="native-conn-card">
-            <div class="nc-head">
-              <span class="nc-icon">🏛️</span>
-              <span class="badge-conn-status connected">CONECTADO (v2.4.1)</span>
-            </div>
-            <h4 class="nc-title">SAP Fiori & GUI Web</h4>
-            <p class="nc-desc">Preservación nativa de tablas personalizadas Z, transacciones ABAP y enrutamiento inteligente de payloads de energía.</p>
-            <div class="nc-meta">
-              <span>Latencia sync: <strong>8.2 ms</strong></span>
-              <span>Módulo RPC: <strong>/SHK/CORE_V2</strong></span>
-            </div>
-            <button class="btn btn-sm btn-outline-primary btn-block" onclick="alert('Configuración de Webhooks SAP abierta en modo lectura.')">Configurar Webhooks</button>
-            <small class="nc-update">Último sync: hace 42 seg</small>
-          </div>
-
-          <!-- Conector 2: Salesforce -->
-          <div class="native-conn-card">
-            <div class="nc-head">
-              <span class="nc-icon">☁️</span>
-              <span class="badge-conn-status connected">CONECTADO (v3.0.0)</span>
-            </div>
-            <h4 class="nc-title">Salesforce Lightning</h4>
-            <p class="nc-desc">Cumplimiento estricto con Lightning LockerService. Sincronización continua de objetos estándar de leads y custom telemetry.</p>
-            <div class="nc-meta">
-              <span>API Sandbox: <strong>v59.0 REST</strong></span>
-              <span>LockerService: <strong>COMPLIANT</strong></span>
-            </div>
-            <button class="btn btn-sm btn-outline-primary btn-block" onclick="alert('Mapeo de Objetos Salesforce verificado con éxito.')">Ajustar Mapeo de Objetos</button>
-            <small class="nc-update">Último sync: hace 2 min</small>
-          </div>
-
-          <!-- Conector 3: Dynamics 365 -->
-          <div class="native-conn-card">
-            <div class="nc-head">
-              <span class="nc-icon">⚙️</span>
-              <span class="badge-conn-status pending">PENDIENTE ACTIVACIÓN</span>
-            </div>
-            <h4 class="nc-title">Dynamics 365 Enterprise</h4>
-            <p class="nc-desc">Integración con Microsoft Dataverse y Azure Entra ID para gobernanza centralizada de identidades federadas.</p>
-            <div class="nc-meta">
-              <span>Dataverse: <strong>OAuth 2.0 Ready</strong></span>
-              <span>Módulos: <strong>Supply Chain / Finance</strong></span>
-            </div>
-            <button class="btn btn-sm btn-primary btn-block" onclick="alert('Iniciando vinculación con Azure Entra ID...')">Conectar con Azure Entra ID</button>
-            <small class="nc-update">Requiere rol Global Admin</small>
-          </div>
-
-          <!-- Conector 4: Oracle Cloud -->
-          <div class="native-conn-card">
-            <div class="nc-head">
-              <span class="nc-icon">📊</span>
-              <span class="badge-conn-status available">DISPONIBLE</span>
-            </div>
-            <h4 class="nc-title">Oracle ERP Cloud</h4>
-            <p class="nc-desc">Integración automatizada con servicios web SOAP/REST de Oracle Fusion y generación de informes ESG auditables.</p>
-            <div class="nc-meta">
-              <span>Protocolo: <strong>REST / SCIM 2.0</strong></span>
-              <span>Despliegue: <strong>Plantilla B2B</strong></span>
-            </div>
-            <button class="btn btn-sm btn-outline-primary btn-block" onclick="alert('Abriendo guía de despliegue para Oracle ERP Cloud...')">Guía de Despliegue REST</button>
-            <small class="nc-update">Documentación técnica v2.4</small>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ======================================================= -->
-    <!-- 8. VISTA: TERMINAL OPERATIVA AVANZADA DE SERVICIOS (Img 4) -->
-    <!-- ======================================================= -->
-    <section id="view-terminal" class="view-section">
-      <!-- Sub-Barra Operativa de Empleado (Imagen 4) -->
-      <div class="terminal-employee-bar">
-        <div class="te-left">
-          <span class="badge-te-mode">🛡️ MODO PROTECCIÓN • LOCALSTORAGE ACTIVO / EN LÍNEA</span>
-          <div class="te-nav-pills">
-            <button class="te-pill active">Consola Operativa</button>
-            <button class="te-pill" onclick="alert('Acceso a Clientes CRM simulado.')">Clientes CRM</button>
-            <button class="te-pill" onclick="alert('Acceso a Órdenes y Servicios.')">Órdenes y Servicios</button>
-            <button class="te-pill" onclick="alert('Módulo de Caja y Finanzas.')">Caja y Finanzas</button>
-          </div>
-        </div>
-        <div class="te-right">
-          <div class="te-branch-info">
-            <span class="te-branch-name">Sucursal Matriz Región Norte • OP-01</span>
-            <small class="te-terminal-id">Terminal #TR-8042 • Sesión Segura</small>
-          </div>
-          <div class="te-operator-chip">
-            <span class="avatar-small">CS</span>
-            <div>
-              <strong id="te-operator-name">Camila Soto</strong>
-              <small>Operadora Servicios / Finanzas</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Título de la Terminal -->
-      <div class="section-title-row">
-        <div>
-          <div class="section-badge">REGISTRO OPERATIVO DE SERVICIO Y FACTURACIÓN DE CLIENTES</div>
-          <h1 class="view-main-title">Terminal Transaccional de Resiliencia</h1>
-          <p class="view-sub-title">Sesión Segura EcoSync // Caché Local Encriptado AES-256 Activo. Los avances se respaldan automáticamente ante microcortes o caídas de VPN.</p>
-        </div>
-        <div class="te-protection-card">
-          <div class="prot-head">
-            <span class="status-indicator online"></span>
-            <strong>100% PROTEGIDO EN LOCALSTORAGE</strong>
-          </div>
-          <small>0 pérdidas de estado de sesión • SYNC-STATE: OK</small>
-        </div>
-      </div>
-
-      <!-- DASHBOARD TELEMETRÍA REACTIVO -->
-      <div class="demo-dashboard">
-        <div class="dashboard-header">
-          <span class="dash-title">DASHBOARD DE TELEMETRÍA EN VIVO</span>
-          <span class="dash-subtitle">* Métricas actualizadas dinámicamente mediante JavaScript</span>
-        </div>
-        <div class="dashboard-cards-grid">
-          <div class="dash-card">
-            <span class="dash-card-label">ESTADO DE CONEXIÓN</span>
-            <div class="dash-card-val" id="dash-connection-status">
-              <span class="status-indicator online"></span>
-              <span id="dash-connection-text">En Línea</span>
-            </div>
-            <span class="dash-card-sub" id="dash-connection-desc">Simulación operativa disponible</span>
-          </div>
-
-          <div class="dash-card">
-            <span class="dash-card-label">ESTADO DEL FORMULARIO</span>
-            <div class="dash-card-val text-blue" id="dash-form-status">Sin cambios</div>
-            <span class="dash-card-sub" id="dash-form-sub">Formulario listo para captura</span>
-          </div>
-
-          <div class="dash-card">
-            <span class="dash-card-label">ÚLTIMO AUTOGUARDADO</span>
-            <div class="dash-card-val text-slate" id="dash-last-saved">Ninguno aún</div>
-            <span class="dash-card-sub" id="dash-saved-bytes">Buffer LocalStorage</span>
-          </div>
-
-          <div class="dash-card">
-            <span class="dash-card-label">INTENTOS DE SYNC</span>
-            <div class="dash-card-val text-slate" id="dash-sync-attempts">0</div>
-            <span class="dash-card-sub">Peticiones de prueba</span>
-          </div>
-
-          <div class="dash-card">
-            <span class="dash-card-label">EVENTOS DE CONTINGENCIA</span>
-            <div class="dash-card-val text-orange" id="dash-contingency-count">0</div>
-            <span class="dash-card-sub">Caídas simuladas detectadas</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- FORMULARIO OPERATIVO AVANZADO (Imagen 4) -->
-      <div class="enterprise-form-card">
-        <!-- Barra de Estado de Autoguardado -->
-        <div class="autosave-status-bar" id="autosave-bar">
-          <span class="autosave-icon" id="autosave-icon">💾</span>
-          <span class="autosave-text" id="autosave-text">Listo. Las modificaciones se autoguardarán localmente.</span>
-          <span class="autosave-time" id="autosave-time"></span>
-        </div>
-
-        <form id="quote-form" novalidate>
-          <!-- BLOQUE A: DATOS DEL CLIENTE Y EXPEDIENTE (Imagen 4) -->
-          <div class="form-block-head">
-            <div class="block-badge-num">A</div>
-            <h3 class="block-title">Datos del Cliente y Expediente Corporativo</h3>
-            <span class="block-pill-status">5 CAMPOS VALIDADOS LOCALMENTE</span>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group col-3">
-              <label for="f-rut">RUT / ID CORPORATIVO: <span class="req">*</span></label>
-              <input type="text" id="f-rut" class="form-control" value="76.842.189-K" required>
-              <small class="input-hint text-green">✓ Validación SNE: Válido</small>
-            </div>
-            <div class="form-group col-3">
-              <label for="f-razon">RAZÓN SOCIAL DEL CLIENTE: <span class="req">*</span></label>
-              <input type="text" id="f-razon" class="form-control" value="AgroIndustrias del Norte S.A. Transaccional" required>
-              <small class="input-hint">Cliente Nivel Enterprise SLA 24/7</small>
-            </div>
-            <div class="form-group col-3">
-              <label for="f-contacto">CONTACTO AUTORIZADO / EMAIL: <span class="req">*</span></label>
-              <input type="email" id="f-contacto" class="form-control" value="m.valenzuela@agronorte.cl" required>
-              <small class="input-hint">Gerente de Mantenimiento</small>
-            </div>
-            <div class="form-group col-3">
-              <label for="f-sucursal">SUCURSAL EMISORA:</label>
-              <input type="text" id="f-sucursal" class="form-control" value="Matriz Región Norte • OP-01" readonly>
-              <small class="input-hint">ID CENTRO: CC-2884</small>
-            </div>
-          </div>
-
-          <!-- BLOQUE B: DETALLE DE ÓRDENES Y LÍNEAS TÉCNICAS (Imagen 4) -->
-          <div class="form-block-head mt-4">
-            <div class="block-badge-num">B</div>
-            <h3 class="block-title">Detalle de Órdenes, Líneas Técnicas y Servicios</h3>
-            <div class="block-actions-right">
-              <button type="button" class="btn btn-sm btn-outline-primary" id="btn-add-line-item">+ Añadir Fila de Servicio</button>
-              <span class="block-pill-status" id="pill-active-lines">3 LÍNEAS ACTIVAS</span>
-            </div>
-          </div>
-
-          <div class="table-responsive">
-            <table class="services-table" id="services-table">
-              <thead>
-                <tr>
-                  <th>ESTADO</th>
-                  <th>CÓDIGO SKU</th>
-                  <th>DESCRIPCIÓN TÉCNICA DEL SERVICIO</th>
-                  <th>HORAS/CANT.</th>
-                  <th>TARIFA ($)</th>
-                  <th>CENTRO COSTOS</th>
-                  <th>SUBTOTAL ($)</th>
-                  <th>ACCIONES</th>
-                </tr>
-              </thead>
-              <tbody id="services-tbody">
-                <!-- Filas renderizadas dinámicamente con JS -->
-              </tbody>
-            </table>
-          </div>
-
-          <!-- OBSERVACIONES Y RESUMEN ECONÓMICO (Imagen 4) -->
-          <div class="form-bottom-split-grid">
-            <!-- Observaciones -->
-            <div class="obs-card">
-              <div class="obs-head">
-                <span class="obs-icon">📝</span>
-                <label for="f-observaciones"><strong>OBSERVACIONES OPERATIVAS Y GUÍA DE DESPACHO:</strong></label>
-                <span class="obs-counter" id="obs-counter">284 caracteres guardados en vivo</span>
-              </div>
-              <textarea id="f-observaciones" class="form-control obs-textarea" rows="4">Cliente solicita entrega de certificado de calibración original en papel térmico sellado en recepción planta Norte. Los técnicos deben presentarse con examen de altura física y acreditación mutual vigente para ingreso a nave 04.</textarea>
-
-              <div class="obs-checkboxes-row">
-                <label class="checkbox-label">
-                  <input type="checkbox" id="chk-facturacion" checked>
-                  <span>Facturación Inmediata Post-Servicio</span>
-                </label>
-                <label class="checkbox-label">
-                  <input type="checkbox" id="chk-notificar" checked>
-                  <span>Notificar a Gerencia Técnica</span>
-                </label>
-                <span class="hash-tag-sm">🔒 Hash de Integridad: <strong>SHA256-OK</strong></span>
-              </div>
-            </div>
-
-            <!-- Resumen de Liquidación con IVA 19% -->
-            <div class="liquidation-card">
-              <div class="liq-head">
-                <strong>RESUMEN DE LIQUIDACIÓN</strong>
-                <span class="currency-tag">MONEDA: USD ($) / CLP</span>
-              </div>
-
-              <div class="liq-rows">
-                <div class="liq-row">
-                  <span>Subtotal Neto Servicios:</span>
-                  <strong id="calc-subtotal">$ 1,532.00 USD</strong>
-                </div>
-                <div class="liq-row text-orange">
-                  <span>Descuento Comercial (Convenio 5%):</span>
-                  <strong id="calc-descuento">- $ 76.60 USD</strong>
-                </div>
-                <div class="liq-row">
-                  <span>Base Imponible Afecta:</span>
-                  <strong id="calc-neto">$ 1,455.40 USD</strong>
-                </div>
-                <div class="liq-row">
-                  <span>IVA Corporativo (19%):</span>
-                  <strong id="calc-iva">$ 276.53 USD</strong>
-                </div>
-                <div class="liq-row total-row">
-                  <span>TOTAL FACTURA:</span>
-                  <span class="total-big-amount text-blue" id="calc-total">$ 1,731.93 USD</span>
-                </div>
-              </div>
-              <div class="liq-footnote">Método de Pago: Crédito Corporativo 30 Días (Validado)</div>
-            </div>
-          </div>
-
-          <!-- BARRA DE ACCIONES Y CONTROLES OPERATIVOS -->
-          <div class="form-actions-toolbar">
-            <div class="action-buttons-group">
-              <button type="button" class="btn btn-primary" id="btn-save-draft">💾 Guardar Borrador</button>
-              <button type="button" class="btn btn-outline-primary" id="btn-restore-draft">📥 Recuperar Borrador</button>
-              <button type="button" class="btn btn-outline-danger" id="btn-clear-form">🧹 Limpiar Formulario</button>
-            </div>
-
-            <div class="simulation-buttons-group">
-              <button type="button" class="btn btn-warning" id="btn-simulate-drop">⚡ Simular Caída de Red</button>
-              <button type="button" class="btn btn-success" id="btn-restore-connection">🔄 Restaurar Conexión</button>
-              <button type="button" class="btn btn-dark" id="btn-sync">☁️ Emitir y Sincronizar Orden ERP</button>
-            </div>
-          </div>
-        </form>
-
-        <div id="sync-feedback-box" class="sync-feedback-box hidden"></div>
-      </div>
-
-      <!-- CONSOLA DE DIAGNÓSTICO TÉCNICO TI INTEGRADA (Imagen 4 inferior) -->
-      <div class="embedded-console-box">
-        <div class="ec-head">
-          <div class="ec-title-group">
-            <span class="status-indicator online"></span>
-            <strong>Consola de Diagnóstico Técnico TI (Solo personal autorizado / Presione Ctrl+Shift+D)</strong>
-          </div>
-          <span class="badge-fallback">EVENTO RESGUARDADO #ERR-503-FALLBACK</span>
-        </div>
-
-        <div class="ec-body">
-          <div class="ec-alert-red">
-            ● HTTP 503 Service Unavailable on endpoint /api/v2/erp/transactions/commit • traceid: req_8841a_ecosync_worker02
-          </div>
-
-          <div class="ec-grid-two">
-            <div class="ec-col">
-              <div class="ec-col-title">STACK TRACE INTERCEPTADO Y NEUTRALIZADO POR EL MOTOR:</div>
-              <pre><code>Connection timeout after 5000ms at Gateway-Worker-02 (AWS eu-central-1)
-[ECOSYNC_ENGINE_HALT_BYPASS] Error isolated from UI thread.
-Failsafe fallback triggered successfully: State saved to browser edge storage.
-Transaction lock acquired: Mutex LocalStorage #LKG-0319
-Carbon Impact Offset: 0.0034g avoided via suppressed error burst loops.</code></pre>
-            </div>
-
-            <div class="ec-col">
-              <div class="ec-col-title">LOCALSTORAGE PAYLOAD PREVIEW (CIFRADO AES-256):</div>
-              <pre><code>UUID: trx_99482_csoto
-Snapshot Hash: sha256:7f0a920be319fa4429910c7
-Dirty Keys: 14 | Payload Size: 18.42 KB
-Synced Keys: ["client_rut", "items_table", "notas_despacho", "total_amt"]
-Storage Quota Consumed: 0.36% (Edge resilient sandbox)</code></pre>
-            </div>
-          </div>
-
-          <div class="ec-footer-actions">
-            <div class="ec-buttons-row">
-              <button class="btn btn-sm btn-outline-primary" id="btn-ec-download-json">📥 Descargar JSON de Recuperación</button>
-              <button class="btn btn-sm btn-secondary" id="btn-ec-purge">Forzar Purga de Buffer</button>
-              <button class="btn btn-sm btn-secondary" onclick="alert('Telemetría SCI: 0.0012 gCO2e emitidos en sesión.')">Ver Log de Telemetría SCI</button>
-            </div>
-            <div class="ec-footnote">EcoSync Client Protocol v2.4.9 • Resilience Hook Active</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  
-    <!-- ======================================================= -->
-    <!-- 9. NUEVA VISTA: ARQUITECTURA SIMPLE DEL SISTEMA         -->
-    <!-- ======================================================= -->
-    <section id="view-arquitectura" class="view-section">
-      <div class="section-title-row">
-        <div>
-          <div class="section-badge">ARQUITECTURA DE SOFTWARE MODULAR • OPTIMIZACIÓN PERIMETRAL DE ALTO RENDIMIENTO</div>
-          <h1 class="view-main-title">Arquitectura Simple y Eficiente de EcoSync</h1>
-          <p class="view-sub-title">Diseño modular en 4 capas desacopladas que optimiza el rendimiento del cliente, reduce un 92% el tráfico de red redundante y garantiza la continuidad operativa con cero sobrecarga de cómputo.</p>
-        </div>
-        <div class="action-filters-group">
-          <button class="btn btn-primary btn-sm" id="btn-run-stress-test">🚀 Ejecutar Test de Optimización (100 tx)</button>
-          <button class="btn btn-secondary btn-sm" id="btn-open-console-arch">💻 Ver Logs en Consola (Ctrl+Shift+D)</button>
-        </div>
-      </div>
-
-      <!-- DIAGRAMA ARQUITECTÓNICO EN 4 CAPAS SIMPLES -->
-      <div class="arch-pipeline-container">
-        <div class="arch-pipeline-header">
-          <span class="pipeline-badge">PIPELINE DE FLUJO DE DATOS Y OPTIMIZACIÓN</span>
-          <span class="pipeline-latency">Tiempo total de ciclo en cliente: <strong>&lt; 1.4 ms</strong></span>
-        </div>
-
-        <div class="arch-layers-grid">
-          <!-- CAPA 1 -->
-          <div class="arch-layer-card" id="layer-edge">
-            <div class="layer-num-badge">CAPA 01</div>
-            <div class="layer-icon-head">
-              <span class="l-icon">🖥️</span>
-              <span class="l-status-pill online">Activo (0.2 ms)</span>
-            </div>
-            <h3 class="layer-title">Interfaz y Captura Ligera</h3>
-            <p class="layer-desc">Intercepta eventos de digitación, foco y cambios en el DOM sin bloquear el renderizado del navegador.</p>
-            
-            <ul class="layer-modules-list">
-              <li><span class="mod-dot"></span> <strong>DOM Input Observer:</strong> Escucha cambios en tiempo real con costo O(1).</li>
-              <li><span class="mod-dot"></span> <strong>Debounce Adaptativo:</strong> Ventana de espera inteligente de 600 ms.</li>
-              <li><span class="mod-dot"></span> <strong>Focal Tracker:</strong> Mapeo sub-pixel para Auto-Scroll Contextual.</li>
-            </ul>
-
-            <div class="layer-footer-stat">
-              <span>Optimización:</span>
-              <strong class="text-blue">94% menos eventos de render</strong>
-            </div>
-          </div>
-
-          <div class="arch-layer-connector">
-            <span class="connector-arrow">➔</span>
-            <small class="connector-label">&lt; 0.3 ms</small>
-          </div>
-
-          <!-- CAPA 2 -->
-          <div class="arch-layer-card" id="layer-storage">
-            <div class="layer-num-badge">CAPA 02</div>
-            <div class="layer-icon-head">
-              <span class="l-icon">🔒</span>
-              <span class="l-status-pill online">Enclave Seguro</span>
-            </div>
-            <h3 class="layer-title">Caché & Persistencia Local</h3>
-            <p class="layer-desc">Asegura la retención inmediata en memoria y almacenamiento local antes de emitir cualquier petición externa.</p>
-            
-            <ul class="layer-modules-list">
-              <li><span class="mod-dot"></span> <strong>LocalStorage Compressive Engine:</strong> Serialización compacta en buffer.</li>
-              <li><span class="mod-dot"></span> <strong>Cifrado de Sesión AES-256:</strong> Llaves efímeras en memoria volátil.</li>
-              <li><span class="mod-dot"></span> <strong>Atomic Snapshot Hash:</strong> Integridad criptográfica SHA-256.</li>
-            </ul>
-
-            <div class="layer-footer-stat">
-              <span>Retención:</span>
-              <strong class="text-green">0% pérdida de datos ante cortes</strong>
-            </div>
-          </div>
-
-          <div class="arch-layer-connector">
-            <span class="connector-arrow">➔</span>
-            <small class="connector-label">Delta Filter</small>
-          </div>
-
-          <!-- CAPA 3 -->
-          <div class="arch-layer-card" id="layer-router">
-            <div class="layer-num-badge">CAPA 03</div>
-            <div class="layer-icon-head">
-              <span class="l-icon">📡</span>
-              <span class="l-status-pill online">Enrutador Dinámico</span>
-            </div>
-            <h3 class="layer-title">Enrutador Resiliente de Tráfico</h3>
-            <p class="layer-desc">Supervisa la conectividad real, activa la contingencia offline y agrupa peticiones en lotes consolidados.</p>
-            
-            <ul class="layer-modules-list">
-              <li><span class="mod-dot"></span> <strong>Offline-First Broker:</strong> Mantiene la UI 100% interactiva sin red.</li>
-              <li><span class="mod-dot"></span> <strong>Queue Manager & Backoff:</strong> Reintentos exponenciales ordenados.</li>
-              <li><span class="mod-dot"></span> <strong>Filtro Anti-Tormenta:</strong> Suprime ráfagas redundantes al reconectar.</li>
-            </ul>
-
-            <div class="layer-footer-stat">
-              <span>Descarte:</span>
-              <strong class="text-orange">-92% peticiones HTTP al servidor</strong>
-            </div>
-          </div>
-
-          <div class="arch-layer-connector">
-            <span class="connector-arrow">➔</span>
-            <small class="connector-label">TLS 1.3 Batch</small>
-          </div>
-
-          <!-- CAPA 4 -->
-          <div class="arch-layer-card" id="layer-backend">
-            <div class="layer-num-badge">CAPA 04</div>
-            <div class="layer-icon-head">
-              <span class="l-icon">🏢</span>
-              <span class="l-status-pill online">Backend Central</span>
-            </div>
-            <h3 class="layer-title">Servidor Corporativo ERP/CRM</h3>
-            <p class="layer-desc">Recibe únicamente datos completos, consistentes y validados, liberando CPU de bases de datos centrales.</p>
-            
-            <ul class="layer-modules-list">
-              <li><span class="mod-dot"></span> <strong>Conectores Nativos:</strong> SAP Fiori, Salesforce, Dynamics, Oracle.</li>
-              <li><span class="mod-dot"></span> <strong>Cero Retención de PII:</strong> Cumplimiento estricto GDPR y SOC 2.</li>
-              <li><span class="mod-dot"></span> <strong>SCI Energy Saver:</strong> Ahorro medible en cómputo y refrigeración.</li>
-            </ul>
-
-            <div class="layer-footer-stat">
-              <span>Impacto:</span>
-              <strong class="text-green">-45% vCPU en horas pico</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PANEL DE CONTROL DE OPTIMIZACIONES & BENCHMARK EN VIVO -->
-      <div class="arch-controls-benchmark-grid">
-        <!-- Panel de Control de Optimizaciones -->
-        <div class="arch-panel-card">
-          <div class="arch-panel-head">
-            <span class="arch-panel-tag">PANEL DE CONTROL REACTIVO</span>
-            <h3 class="arch-panel-title">Optimizaciones del Sistema en Tiempo Real</h3>
-            <p class="arch-panel-sub">Activa o desactiva los módulos algorítmicos para observar el impacto inmediato en el rendimiento:</p>
-          </div>
-
-          <div class="optimization-switches-list">
-            <div class="opt-switch-item">
-              <div class="opt-switch-info">
-                <strong>1. Compresión Delta de Payloads</strong>
-                <p>Consolida únicamente las claves modificadas ("dirty keys"), reduciendo el paquete de 245 KB a solo 18.4 KB.</p>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="opt-delta" checked>
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-
-            <div class="opt-switch-item">
-              <div class="opt-switch-info">
-                <strong>2. Debounce Adaptativo de Red (600 ms)</strong>
-                <p>Agrupa múltiples pulsaciones continuas en un solo guardado atómico, evitando peticiones por cada carácter.</p>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="opt-debounce" checked>
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-
-            <div class="opt-switch-item">
-              <div class="opt-switch-info">
-                <strong>3. Caché Criptográfico en Memoria Local</strong>
-                <p>Permite recuperación instantánea de sesiones en &lt; 1.5 ms sin consultar endpoints remotos ni bases de datos.</p>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="opt-cache" checked>
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-
-            <div class="opt-switch-item">
-              <div class="opt-switch-info">
-                <strong>4. Eco-Throttle Green IT (Ahorro Energético)</strong>
-                <p>Suspende bucles de sondeo cuando la pestaña está inactiva, recortando ciclos de vCPU y huella de carbono.</p>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="opt-throttle" checked>
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Monitor de Rendimiento y Comparador -->
-        <div class="arch-benchmark-card">
-          <div class="arch-panel-head">
-            <span class="arch-panel-tag text-green">MONITOR EN TIEMPO REAL</span>
-            <h3 class="arch-panel-title">Métricas de Rendimiento y Benchmark</h3>
-            <p class="arch-panel-sub">Comparación cuantitativa: Sistema Tradicional vs. Arquitectura EcoSync:</p>
-          </div>
-
-          <div class="benchmark-metrics-grid">
-            <div class="bm-box">
-              <span class="bm-label">LATENCIA DE RESPUESTA</span>
-              <div class="bm-val-row">
-                <strong class="text-blue" id="bm-latency">1.4 ms</strong>
-                <span class="bm-trad">vs 380 ms</span>
-              </div>
-              <div class="bm-progress-bg">
-                <div class="bm-progress-bar bg-blue" id="bar-latency" style="width: 99%;"></div>
-              </div>
-              <small class="bm-gain" id="gain-latency">⚡ 99.6% más rápido</small>
-            </div>
-
-            <div class="bm-box">
-              <span class="bm-label">TAMAÑO DE TRANSFERENCIA</span>
-              <div class="bm-val-row">
-                <strong class="text-green" id="bm-payload">18.4 KB</strong>
-                <span class="bm-trad">vs 245 KB</span>
-              </div>
-              <div class="bm-progress-bg">
-                <div class="bm-progress-bar bg-green" id="bar-payload" style="width: 92%;"></div>
-              </div>
-              <small class="bm-gain" id="gain-payload">📉 92.5% menos ancho de banda</small>
-            </div>
-
-            <div class="bm-box">
-              <span class="bm-label">PETICIONES AL SERVIDOR</span>
-              <div class="bm-val-row">
-                <strong class="text-orange" id="bm-requests">3 req/min</strong>
-                <span class="bm-trad">vs 45 req/min</span>
-              </div>
-              <div class="bm-progress-bg">
-                <div class="bm-progress-bar bg-orange" id="bar-requests" style="width: 93%;"></div>
-              </div>
-              <small class="bm-gain" id="gain-requests">🛡️ 93.3% tráfico mitigado</small>
-            </div>
-
-            <div class="bm-box">
-              <span class="bm-label">CARGA DE CPU EN SERVIDOR</span>
-              <div class="bm-val-row">
-                <strong class="text-slate" id="bm-cpu">0.02%</strong>
-                <span class="bm-trad">vs 2.4%</span>
-              </div>
-              <div class="bm-progress-bg">
-                <div class="bm-progress-bar bg-slate" id="bar-cpu" style="width: 99%;"></div>
-              </div>
-              <small class="bm-gain" id="gain-cpu">🍃 Cero saturación de hilos</small>
-            </div>
-          </div>
-
-          <!-- Área de Simulación de Estrés -->
-          <div class="stress-test-banner">
-            <div class="st-info">
-              <strong>Simulador de Carga y Resiliencia:</strong>
-              <span>Genera 100 eventos concurrentes de digitación para verificar la absorción y consolidación en cliente.</span>
-            </div>
-            <button class="btn btn-primary" id="btn-run-simulation">Ejecutar Simulación en Vivo</button>
-          </div>
-          <div id="simulation-status" class="simulation-status-box hidden"></div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ========================================== -->
-  <!-- MODAL DE AUTENTICACIÓN (LOGIN & REGISTRO)  -->
-  <!-- ========================================== -->
-  <div id="auth-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
-    <div class="auth-modal-card">
-      <div class="auth-modal-head">
-        <div class="brand-logo">
-          <div class="logo-mark">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#2563EB" stroke-width="2.2"/>
-              <path d="M2 17L12 22L22 17" stroke="#10B981" stroke-width="2.2"/>
-            </svg>
-          </div>
-          <span class="brand-name">EcoSync Portal</span>
-        </div>
-        <button class="btn-close-modal" id="btn-close-auth">✕</button>
-      </div>
-
-      <!-- Tabs de Login vs Registro -->
-      <div class="auth-tabs-row">
-        <button class="auth-tab active" id="tab-login" data-auth="login">Iniciar Sesión</button>
-        <button class="auth-tab" id="tab-register" data-auth="register">Crear Cuenta</button>
-      </div>
-
-      <!-- FORMULARIO 1: INICIAR SESIÓN -->
-      <form id="form-login" class="auth-form-body">
-        <div class="form-group">
-          <label for="login-email">Correo Corporativo:</label>
-          <input type="email" id="login-email" class="form-control" placeholder="ej: roberto.silva@empresa.com" required>
-        </div>
-
-        <div class="form-group">
-          <label for="login-password">Contraseña:</label>
-          <input type="password" id="login-password" class="form-control" placeholder="••••••••••••" required>
-        </div>
-
-        <div class="form-row-checkbox">
-          <label class="checkbox-label">
-            <input type="checkbox" id="login-remember" checked>
-            <span>Recordar mi sesión en este dispositivo</span>
-          </label>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block">Ingresar a EcoSync Gateway</button>
-
-        <div class="quick-demo-login-box">
-          <span class="quick-title">O INGRESA CON UN PERFIL DEMO EN 1 CLIC:</span>
-          <div class="quick-btns-row">
-            <button type="button" class="btn btn-sm btn-secondary" id="btn-quick-roberto">
-              👔 Ing. Roberto Silva (Gerente TI)
-            </button>
-            <button type="button" class="btn btn-sm btn-secondary" id="btn-quick-camila">
-              💼 Camila Soto (Operadora Finanzas)
-            </button>
-          </div>
-        </div>
-      </form>
-
-      <!-- FORMULARIO 2: REGISTRO -->
-      <form id="form-register" class="auth-form-body hidden">
-        <div class="form-group">
-          <label for="reg-name">Nombre y Apellido:</label>
-          <input type="text" id="reg-name" class="form-control" placeholder="ej: Andrea Valenzuela" required>
-        </div>
-
-        <div class="form-group">
-          <label for="reg-email">Correo Corporativo:</label>
-          <input type="email" id="reg-email" class="form-control" placeholder="ej: avalenzuela@corporativo.com" required>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group col-6">
-            <label for="reg-company">Empresa / Organización:</label>
-            <input type="text" id="reg-company" class="form-control" placeholder="ej: Grupo Industrial Alfa" required>
-          </div>
-          <div class="form-group col-6">
-            <label for="reg-role">Rol / Cargo:</label>
-            <select id="reg-role" class="form-control">
-              <option value="Gerente TI">Gerente de Infraestructura TI</option>
-              <option value="Operador Finanzas">Operador de Finanzas / ERP</option>
-              <option value="Auditor ESG">Auditor de Sustentabilidad</option>
-              <option value="Desarrollador">Ingeniero de Software / DevOps</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="reg-pass">Contraseña:</label>
-          <input type="password" id="reg-pass" class="form-control" placeholder="Mínimo 8 caracteres" required minlength="8">
-        </div>
-
-        <div class="form-row-checkbox">
-          <label class="checkbox-label">
-            <input type="checkbox" id="reg-terms" required>
-            <span>Acepto los términos de servicio y la política Zero-Retention de PII</span>
-          </label>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block">Crear Cuenta y Activar Gateway</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- CONSOLA TÉCNICA OCULTA GLOBAL (Ctrl + Shift + D) -->
-  <aside id="tech-console-drawer" class="tech-console-drawer hidden" aria-label="Consola de Diagnóstico Técnico">
-    <div class="console-header">
-      <div class="console-title-group">
-        <span class="console-dot-green"></span>
-        <span class="console-title">EcoSync Technical Diagnostic Terminal [v2.4.9]</span>
-        <span class="console-shortcut-badge">Atajo: Ctrl + Shift + D</span>
-      </div>
-      <div class="console-header-actions">
-        <button id="btn-console-clear" class="btn btn-console-action" title="Limpiar eventos">🗑️ Limpiar Historial</button>
-        <button id="btn-console-export" class="btn btn-console-action" title="Exportar a JSON">📥 Exportar JSON</button>
-        <button id="btn-console-close" class="btn btn-console-action" title="Cerrar consola">✕ Cerrar</button>
-      </div>
-    </div>
-
-    <div class="console-output" id="console-output" role="log" aria-live="polite"></div>
-
-    <div class="console-footer">
-      <span class="console-status-text">Consola activa para pruebas de resiliencia • Cero datos personales (PII) son registrados en los logs.</span>
-      <span id="console-event-counter">Total eventos: 0</span>
-    </div>
-  </aside>
-
-  <!-- BOTÓN FLOTANTE PARA ABRIR LA CONSOLA TÉCNICA -->
-  <button id="btn-floating-console" class="btn-floating-console" title="Abrir consola técnica (Ctrl + Shift + D)">
-    <span class="icon">⌨️</span>
-    <span class="label">Consola TI (Ctrl+Shift+D)</span>
-  </button>
-
-  <!-- MODAL DE CONFIRMACIÓN -->
-  <div id="confirm-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+</header>
+
+<!-- ═══ CONTINGENCY BANNER ═══════════════════════════════════════════════ -->
+<div id="contingency-banner">
+  ⚠️ MODO CONTINGENCIA ACTIVO — Los datos se guardan localmente. Sin conexión al servidor.
+</div>
+
+<!-- ═══ AUTH MODAL ════════════════════════════════════════════════════════ -->
+<div id="auth-modal">
+  <div class="modal-overlay">
     <div class="modal-box">
-      <h3 class="modal-title">Confirmar acción</h3>
-      <p class="modal-body" id="confirm-modal-msg">¿Estás seguro de que deseas continuar?</p>
-      <div class="modal-actions">
-        <button id="btn-modal-cancel" class="btn btn-secondary">Cancelar</button>
-        <button id="btn-modal-confirm" class="btn btn-primary">Confirmar</button>
+      <button class="modal-close" aria-label="Cerrar">&times;</button>
+      <div class="modal-title">Acceso a EcoSync</div>
+      <div class="modal-subtitle">Plataforma de resiliencia transaccional B2B</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
+        <button class="auth-tab" data-tab="register">Registrarse</button>
+      </div>
+      <!-- Login Panel -->
+      <div class="auth-panel active" id="panel-login">
+        <p class="text-sm text-muted mb-4">Selecciona un usuario de demostración:</p>
+        <div class="demo-users">
+          <button class="demo-user-btn" data-login="1">
+            <div class="user-avatar-lg">RS</div>
+            <div class="user-info">
+              <strong>Ing. Roberto Silva</strong>
+              <small>Administrador del sistema</small>
+            </div>
+          </button>
+          <button class="demo-user-btn" data-login="2">
+            <div class="user-avatar-lg" style="background:#10B981;">CS</div>
+            <div class="user-info">
+              <strong>Camila Soto</strong>
+              <small>Operadora transaccional</small>
+            </div>
+          </button>
+        </div>
+        <div class="info-box mt-6">
+          🔒 Demo de autenticación — no se envían credenciales reales a ningún servidor.
+        </div>
+      </div>
+      <!-- Register Panel -->
+      <div class="auth-panel" id="panel-register">
+        <form id="register-form">
+          <div class="form-group mb-4">
+            <label for="reg-name">Nombre completo</label>
+            <input type="text" id="reg-name" placeholder="Tu nombre" required>
+          </div>
+          <div class="form-group mb-4">
+            <label for="reg-email">Correo empresarial</label>
+            <input type="email" id="reg-email" placeholder="tu@empresa.cl" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-full">Crear cuenta demo</button>
+        </form>
+        <div class="warning-box mt-4">
+          ⚠️ Esto es un registro de demostración. No se almacenan datos en servidores externos.
+        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- FOOTER EMPRESARIAL -->
-  <footer class="app-footer">
-    <div class="footer-container">
-      <div class="footer-brand-col">
-        <div class="brand-logo">
-          <div class="logo-mark">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#2563EB" stroke-width="2.2"/>
-              <path d="M2 17L12 22L22 17" stroke="#10B981" stroke-width="2.2"/>
-            </svg>
+<!-- ═══ MAIN CONTENT ══════════════════════════════════════════════════════ -->
+<main>
+
+  <!-- HERO ──────────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        ✦ Resiliencia de formularios · Continuidad operacional
+      </div>
+      <h1>La continuidad de tu operación,<br>incluso cuando la red falla</h1>
+      <p>EcoSync protege el progreso de tus formularios empresariales ante caídas de conexión. Auto-persistencia, recuperación instantánea y trazabilidad forense en una sola plataforma.</p>
+      <div class="hero-cta">
+        <a href="pages/terminal.html" class="btn btn-primary btn-lg">🚀 Probar Terminal</a>
+        <a href="pages/solucion.html" class="btn btn-secondary btn-lg">Ver cómo funciona</a>
+      </div>
+
+      <!-- Terminal mock -->
+      <div class="hero-visual">
+        <div class="hero-terminal-mock">
+          <div class="terminal-topbar">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
           </div>
-          <span class="brand-name">EcoSync</span>
+          <div class="terminal-body">
+            <div><span class="t-dim">[09:47:32]</span> <span class="t-green">[INFO]</span> EcoSync Terminal inicializado</div>
+            <div><span class="t-dim">[09:47:33]</span> <span class="t-blue">[INFO]</span> Borrador cargado desde LocalStorage</div>
+            <div><span class="t-dim">[09:52:01]</span> <span class="t-yellow">[WARN]</span> Caída de conexión detectada — modo contingencia</div>
+            <div><span class="t-dim">[09:52:01]</span> <span class="t-green">[INFO]</span> Autoguardado activado cada 600ms</div>
+            <div><span class="t-dim">[09:52:04]</span> <span class="t-green">[INFO]</span> Borrador autoguardado (3 campos completados)</div>
+            <div><span class="t-dim">[09:54:18]</span> <span class="t-green">[SUCCESS]</span> Conexión restaurada · Sincronización simulada OK</div>
+            <div><span class="t-dim">[09:54:19]</span> <span class="t-blue">[INFO]</span> Formulario intacto · 0 datos perdidos ✓</div>
+            <div><span class="t-orange">_▋</span></div>
+          </div>
         </div>
-        <p class="footer-desc">
-          Infraestructura de software para supervisión energética, resiliencia transaccional y optimización de cómputo empresarial de alta densidad.
-        </p>
-        <div class="footer-compliance-badges">
-          <span class="badge-tag">SOC 2 TIPO II</span>
-          <span class="badge-tag">ISO 27001</span>
-          <span class="badge-tag">ISO 14064</span>
-        </div>
-      </div>
-
-      <div class="footer-links-col">
-        <h4>PRODUCTO</h4>
-        <ul>
-          <li><a href="#" class="footer-link" data-target="view-solucion">Auto-Scroll Contextual</a></li>
-          <li><a href="#" class="footer-link" data-target="view-dashboard-ejecutivo">Dashboard de KPIs</a></li>
-          <li><a href="#" class="footer-link" data-target="view-diagnosticos">Diagnósticos Forenses</a></li>
-          <li><a href="#" class="footer-link" data-target="view-integracion">Centro de Integración SDK</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-links-col">
-        <h4>SOSTENIBILIDAD</h4>
-        <ul>
-          <li><a href="#" class="footer-link" data-target="view-green-it">Calculadora Huella de Carbono</a></li>
-          <li><a href="#" class="footer-link" data-target="view-green-it">Certificaciones ESG</a></li>
-          <li><a href="#" class="footer-link" data-target="view-green-it">Reporte Scope 2 & 3</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-links-col">
-        <h4>EMPRESA</h4>
-        <ul>
-          <li><a href="#" class="footer-link" data-target="view-inicio">Acerca de EcoSync</a></li>
-          <li><a href="#" class="footer-link" data-target="view-precios">Planes y Precios</a></li>
-          <li><a href="#" class="footer-link" data-target="view-terminal">Terminal Operativa</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-links-col">
-        <h4>LEGAL & CUMPLIMIENTO</h4>
-        <ul>
-          <li><a href="#" class="legal-notice-trigger">Privacidad de Datos (PII)</a></li>
-          <li><a href="#" class="legal-notice-trigger">Términos de Servicio Demo</a></li>
-        </ul>
       </div>
     </div>
+  </section>
 
-    <div class="footer-bottom-bar">
-      <div>© 2026 EcoSync. Todos los derechos reservados. Eficiencia IT y Sostenibilidad Global.</div>
-      <div class="footer-bottom-stats">
-        <span>🟢 99.99% Saliente SLA</span>
-        <span>• Simulación Académica</span>
+  <!-- METRICS ───────────────────────────────────────────────────────────── -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="metrics-row">
+        <div class="metric-item">
+          <span class="metric-value">99.8%</span>
+          <div class="metric-label">Uptime de persistencia</div>
+        </div>
+        <div class="metric-item">
+          <span class="metric-value">-47%</span>
+          <div class="metric-label">Solicitudes redundantes</div>
+        </div>
+        <div class="metric-item">
+          <span class="metric-value">340%</span>
+          <div class="metric-label">ROI estimado</div>
+        </div>
+        <div class="metric-item">
+          <span class="metric-value">&lt;200ms</span>
+          <div class="metric-label">Tiempo de recuperación</div>
+        </div>
+      </div>
+      <p class="text-xs text-center text-muted mt-4">* Datos de demostración — no representan resultados garantizados</p>
+    </div>
+  </section>
+
+  <!-- FEATURES ──────────────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Todo lo que necesitas para operar sin interrupciones</h2>
+        <p>Una plataforma completa que combina resiliencia técnica, trazabilidad forense y sostenibilidad digital.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon blue">💾</div>
+          <h3>Auto-persistencia local</h3>
+          <p>Cada cambio se guarda automáticamente en LocalStorage cada 600ms. Sin pérdida de datos ante caídas de red.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon orange">🔄</div>
+          <h3>Resiliencia de red</h3>
+          <p>Simula y gestiona cortes de conexión en tiempo real. El modo contingencia protege el flujo operacional completo.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon purple">🔍</div>
+          <h3>Trazabilidad forense</h3>
+          <p>Log técnico con sanitización de PII. Exportación JSON, filtrado por tipo y timestamp para auditorías completas.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon green">🌱</div>
+          <h3>Green IT</h3>
+          <p>Calculadora de huella de carbono digital. Mide el impacto ambiental de reducir solicitudes redundantes al servidor.</p>
+        </div>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <script src="script.js"></script>
+  <!-- GREEN IT PREVIEW ──────────────────────────────────────────────────── -->
+  <section class="section" style="background: #F0FDF4; border-top: 1px solid #D1FAE5; border-bottom: 1px solid #D1FAE5;">
+    <div class="container">
+      <div class="section-header">
+        <h2>🌱 Calculadora Green IT</h2>
+        <p>Estima el impacto ambiental de tu eficiencia digital. Menos solicitudes = menos energía = menos CO₂.</p>
+      </div>
+      <div class="green-calculator" style="max-width: 700px; margin: 0 auto;">
+        <div class="inputs-row">
+          <div class="form-group">
+            <label for="green-requests">Solicitudes/día</label>
+            <input type="number" id="green-requests" value="1000" min="0">
+          </div>
+          <div class="form-group">
+            <label for="green-reduction">% Reducción</label>
+            <input type="number" id="green-reduction" value="47" min="0" max="100">
+          </div>
+          <div class="form-group">
+            <label for="green-days">Días/año</label>
+            <input type="number" id="green-days" value="250" min="0">
+          </div>
+        </div>
+        <div id="green-result">Calculando...</div>
+        <div class="text-center mt-4">
+          <a href="pages/green-it.html" class="btn btn-green btn-sm">Ver calculadora completa →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL ─────────────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="container" style="text-align: center;">
+      <h2>¿Listo para proteger tu operación?</h2>
+      <p style="max-width: 500px; margin: 12px auto 32px;">Prueba el terminal transaccional ahora mismo. Simula una caída de conexión y comprueba cómo EcoSync protege tus datos.</p>
+      <div class="hero-cta">
+        <a href="pages/terminal.html" class="btn btn-primary btn-lg">Abrir Terminal →</a>
+        <a href="pages/precios.html" class="btn btn-ghost btn-lg">Ver planes</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ FOOTER ═══════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <p style="margin-bottom: 8px;"><strong style="color: #E2E8F0;">EcoSync</strong> — Sistema de resiliencia de formularios</p>
+    <p>Demo académico · Sin servidor real · Todos los datos son locales</p>
+    <div style="margin-top: 16px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+      <a href="pages/solucion.html">Solución</a>
+      <a href="pages/green-it.html">Green IT</a>
+      <a href="pages/precios.html">Precios</a>
+      <a href="pages/dashboard.html">Dashboard</a>
+      <a href="pages/integracion.html">Integración</a>
+      <a href="pages/historial.html">Historial</a>
+      <a href="pages/terminal.html">Terminal</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ DIAGNOSTICS DRAWER ═══════════════════════════════════════════════ -->
+<div id="diagnostics-drawer">
+  <div class="console-header">
+    <div class="console-title">EcoSync Diagnostics Console</div>
+    <div class="console-actions">
+      <button class="console-btn" id="btn-export-console">📥 Exportar JSON</button>
+      <button class="console-btn danger" id="btn-clear-console">🗑 Limpiar</button>
+      <button id="btn-close-console" title="Cerrar">&times;</button>
+    </div>
+  </div>
+  <div id="console-output"></div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/diagnostics.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // FAQ accordion (landing page)
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      item.classList.toggle('open');
+    });
+  });
+
+  // Code tab switcher (for integration page)
+  document.querySelectorAll('.code-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const wrapper = tab.closest('.code-switcher')?.parentElement;
+      if (!wrapper) return;
+      wrapper.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+      wrapper.querySelectorAll('.code-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      wrapper.querySelector('#code-' + tab.dataset.lang)?.classList.add('active');
+    });
+  });
+</script>
 </body>
 </html>

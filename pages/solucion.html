@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solución Tecnológica — EcoSync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-brand">
+      <div class="brand-icon">⚡</div>
+      EcoSync
+    </a>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="./solucion.html" class="nav-link active">Solución</a>
+      <a href="./green-it.html" class="nav-link">Green IT</a>
+      <a href="./precios.html" class="nav-link">Precios</a>
+      <a href="./dashboard.html" class="nav-link">Dashboard</a>
+      <a href="./integracion.html" class="nav-link">Integración</a>
+      <a href="./historial.html" class="nav-link">Historial</a>
+      <a href="./terminal.html" class="nav-link">Terminal</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="nav-console-btn" id="btn-toggle-console" title="Ctrl+Shift+D">&gt;_ Consola</button>
+      <div id="nav-user-area">
+        <button class="btn btn-primary btn-sm" onclick="window.EcoSync.auth.showModal()">Iniciar sesión</button>
+      </div>
+    </div>
+    <button id="nav-toggle" aria-label="Menú">☰</button>
+  </div>
+</header>
+
+<div id="contingency-banner">⚠️ MODO CONTINGENCIA ACTIVO — Los datos se guardan localmente.</div>
+
+<div id="auth-modal">
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close">&times;</button>
+      <div class="modal-title">Acceso a EcoSync</div>
+      <div class="modal-subtitle">Plataforma de resiliencia transaccional B2B</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
+        <button class="auth-tab" data-tab="register">Registrarse</button>
+      </div>
+      <div class="auth-panel active" id="panel-login">
+        <div class="demo-users">
+          <button class="demo-user-btn" data-login="1"><div class="user-avatar-lg">RS</div><div class="user-info"><strong>Ing. Roberto Silva</strong><small>Administrador</small></div></button>
+          <button class="demo-user-btn" data-login="2"><div class="user-avatar-lg" style="background:#10B981;">CS</div><div class="user-info"><strong>Camila Soto</strong><small>Operadora</small></div></button>
+        </div>
+      </div>
+      <div class="auth-panel" id="panel-register">
+        <form id="register-form">
+          <div class="form-group mb-4"><label for="reg-name">Nombre</label><input type="text" id="reg-name" required></div>
+          <div class="form-group mb-4"><label for="reg-email">Email</label><input type="email" id="reg-email" required></div>
+          <button type="submit" class="btn btn-primary w-full">Crear cuenta demo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <h1>Solución Tecnológica</h1>
+      <p>Cómo EcoSync garantiza la continuidad operacional ante interrupciones de red.</p>
+    </div>
+
+    <!-- Hero description -->
+    <div class="card mb-8" style="border-left: 4px solid var(--color-primary); padding: 32px;">
+      <h2 style="margin-bottom: 12px;">¿Cómo funciona EcoSync?</h2>
+      <p style="font-size: 1rem; max-width: 760px;">EcoSync intercepta cada interacción del usuario con formularios empresariales y persiste el estado localmente mediante LocalStorage. Cuando se detecta una interrupción de red, el sistema activa el modo contingencia de forma transparente, garantizando cero pérdida de datos. Al restaurarse la conexión, un motor de sincronización reconoce el estado local y lo prepara para envío al servidor.</p>
+    </div>
+
+    <!-- Architecture Diagram -->
+    <h2 style="margin-bottom: 16px;">Arquitectura del sistema</h2>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="arch-icon">🖥️</div>
+        <div class="arch-label">Cliente</div>
+        <div class="arch-sub">Formulario web interactivo con captura de eventos en tiempo real</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-icon">💾</div>
+        <div class="arch-label">LocalStorage</div>
+        <div class="arch-sub">Persistencia local encriptada con sanitización de PII automática</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-icon">⚙️</div>
+        <div class="arch-label">Sync Engine</div>
+        <div class="arch-sub">Motor de sincronización con retry exponencial y gestión de conflictos</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-icon">🌐</div>
+        <div class="arch-label">API Gateway</div>
+        <div class="arch-sub">Endpoint REST con TLS 1.3 y autenticación por token</div>
+      </div>
+    </div>
+
+    <!-- Pillars -->
+    <h2 style="margin: 48px 0 8px;">Los 3 pilares de EcoSync</h2>
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-number">01</div>
+        <div class="card-icon blue" style="margin-bottom: 12px;">💾</div>
+        <h3>Auto-persistencia local</h3>
+        <p>Cada campo del formulario es monitorizado. Los cambios se escriben en LocalStorage cada 600ms con un sistema de debounce optimizado. La estructura del draft incluye metadatos de timestamp para auditoría.</p>
+        <ul style="margin-top: 16px; padding-left: 20px; list-style: disc;" class="text-sm">
+          <li style="margin-bottom: 8px; color: var(--color-text-muted);">Serialización JSON automática</li>
+          <li style="margin-bottom: 8px; color: var(--color-text-muted);">Sanitización de RUT y email antes de loggear</li>
+          <li style="margin-bottom: 8px; color: var(--color-text-muted);">Versionado de draft (ecosync_draft_v1)</li>
+        </ul>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-number">02</div>
+        <div class="card-icon orange" style="margin-bottom: 12px;">🔄</div>
+        <h3>Resiliencia de red</h3>
+        <p>El motor de detección de contingencias monitoriza el estado de la conexión. Al detectar una caída, activa el banner de contingencia y bloquea los intentos de sincronización hasta que se restaure la conectividad.</p>
+        <ul style="margin-top: 16px; padding-left: 20px; list-style: disc;" class="text-sm">
+          <li style="margin-bottom: 8px; color: var(--color-text-muted);">Banner naranja de alerta visible</li>
+          <li style="margin-bottom: 8px; color: var(--color-text-muted);">Bloqueo de sync en modo offline</li>
+          <li style="margin-bottom: 8px; color: var(--color-text-muted);">Contador de eventos de contingencia</li>
+        </ul>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-number">03</div>
+        <div class="card-icon purple" style="margin-bottom: 12px;">🔍</div>
+        <h3>Trazabilidad forense</h3>
+        <p>La consola técnica registra cada evento del sistema con timestamp, tipo y descripción. Los logs se persisten en LocalStorage (máx. 500 entradas) y pueden exportarse en formato JSON para auditorías.</p>
+        <ul style="margin-top: 16px; padding-left: 20px; list-style: disc;" class="text-sm">
+          <li style="margin-bottom: 8px; color: var(--color-text-muted);">Tipos: info, warn, error, success</li>
+          <li style="margin-bottom: 8px; color: var(--color-text-muted);">PII sanitizado automáticamente</li>
+          <li style="margin-bottom: 8px; color: var(--color-text-muted);">Exportación JSON con un clic</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tech Specs -->
+    <div class="card mt-8">
+      <h3 style="margin-bottom: 20px;">Especificaciones técnicas</h3>
+      <table class="specs-table">
+        <tbody>
+          <tr><td>Lenguaje</td><td>JavaScript Vanilla (ES6+) — sin frameworks</td></tr>
+          <tr><td>Persistencia</td><td>Web Storage API (LocalStorage)</td></tr>
+          <tr><td>Intervalo de autoguardado</td><td>600ms (debounce tras último cambio)</td></tr>
+          <tr><td>Capacidad de log</td><td>500 entradas máx. (FIFO)</td></tr>
+          <tr><td>Sanitización PII</td><td>Regex para email y RUT chileno (7-8 dígitos + DV)</td></tr>
+          <tr><td>Compatibilidad</td><td>Chrome 90+, Firefox 88+, Safari 14+, Edge 90+</td></tr>
+          <tr><td>Protocolo de sync</td><td>Simulado — sin envío real a servidores</td></tr>
+          <tr><td>Seguridad de token</td><td>Prefijo <code>ecosync_pub_</code> — solo tokens públicos en cliente</td></tr>
+          <tr><td>Protocolo TLS</td><td>TLS 1.3 (referencia arquitectónica — demo local)</td></tr>
+          <tr><td>Formato de draft</td><td>JSON con campo <code>_savedAt</code> (ISO 8601)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong style="color: #E2E8F0;">EcoSync</strong> — Solución Tecnológica · Demo académico</p>
+  </div>
+</footer>
+
+<div id="diagnostics-drawer">
+  <div class="console-header">
+    <div class="console-title">EcoSync Diagnostics Console</div>
+    <div class="console-actions">
+      <button class="console-btn" id="btn-export-console">📥 Exportar JSON</button>
+      <button class="console-btn danger" id="btn-clear-console">🗑 Limpiar</button>
+      <button id="btn-close-console">&times;</button>
+    </div>
+  </div>
+  <div id="console-output"></div>
+</div>
+
+<script src="../js/storage.js"></script>
+<script src="../js/diagnostics.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal Transaccional — EcoSync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══════════════════════════════════════════════════════════ -->
+<header class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-brand">
+      <div class="brand-icon">⚡</div>
+      EcoSync
+    </a>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="./solucion.html" class="nav-link">Solución</a>
+      <a href="./green-it.html" class="nav-link">Green IT</a>
+      <a href="./precios.html" class="nav-link">Precios</a>
+      <a href="./dashboard.html" class="nav-link">Dashboard</a>
+      <a href="./integracion.html" class="nav-link">Integración</a>
+      <a href="./historial.html" class="nav-link">Historial</a>
+      <a href="./terminal.html" class="nav-link active">Terminal</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="nav-console-btn" id="btn-toggle-console" title="Ctrl+Shift+D">
+        &gt;_ Consola
+      </button>
+      <div id="nav-user-area">
+        <button class="btn btn-primary btn-sm" onclick="window.EcoSync.auth.showModal()">Iniciar sesión</button>
+      </div>
+    </div>
+    <button id="nav-toggle" aria-label="Menú">☰</button>
+  </div>
+</header>
+
+<!-- ═══ CONTINGENCY BANNER ═══════════════════════════════════════════════ -->
+<div id="contingency-banner">
+  ⚠️ MODO CONTINGENCIA ACTIVO — Los datos se guardan localmente. Sin conexión al servidor.
+</div>
+
+<!-- ═══ AUTH MODAL ════════════════════════════════════════════════════════ -->
+<div id="auth-modal">
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close" aria-label="Cerrar">&times;</button>
+      <div class="modal-title">Acceso a EcoSync</div>
+      <div class="modal-subtitle">Plataforma de resiliencia transaccional B2B</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
+        <button class="auth-tab" data-tab="register">Registrarse</button>
+      </div>
+      <div class="auth-panel active" id="panel-login">
+        <p class="text-sm text-muted mb-4">Selecciona un usuario de demostración:</p>
+        <div class="demo-users">
+          <button class="demo-user-btn" data-login="1">
+            <div class="user-avatar-lg">RS</div>
+            <div class="user-info">
+              <strong>Ing. Roberto Silva</strong>
+              <small>Administrador del sistema</small>
+            </div>
+          </button>
+          <button class="demo-user-btn" data-login="2">
+            <div class="user-avatar-lg" style="background:#10B981;">CS</div>
+            <div class="user-info">
+              <strong>Camila Soto</strong>
+              <small>Operadora transaccional</small>
+            </div>
+          </button>
+        </div>
+        <div class="info-box mt-6">
+          🔒 Demo de autenticación — no se envían credenciales reales.
+        </div>
+      </div>
+      <div class="auth-panel" id="panel-register">
+        <form id="register-form">
+          <div class="form-group mb-4">
+            <label for="reg-name">Nombre completo</label>
+            <input type="text" id="reg-name" placeholder="Tu nombre" required>
+          </div>
+          <div class="form-group mb-4">
+            <label for="reg-email">Correo empresarial</label>
+            <input type="email" id="reg-email" placeholder="tu@empresa.cl" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-full">Crear cuenta demo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN CONTENT ══════════════════════════════════════════════════════ -->
+<main>
+  <div class="container">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="flex items-center gap-4" style="flex-wrap: wrap;">
+        <div>
+          <h1>Terminal Transaccional</h1>
+          <p>Formulario de cotización con autoguardado y simulación de contingencia de red.</p>
+        </div>
+        <div class="demo-note" style="margin-left: auto;">⚠️ Datos de demostración — no se envía nada a servidores</div>
+      </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <div id="connection-status">
+        <span id="connection-label">🟢 Conectado</span>
+      </div>
+      <div id="autosave-status" class="autosave-status">Sin borrador guardado</div>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Estado de conexión</div>
+        <div class="kpi-value green" id="dashboard-connection">🟢 Conectado</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Borrador</div>
+        <div class="kpi-value blue" id="dashboard-form-status">⬜ Sin borrador</div>
+        <div class="kpi-sub">Estado actual del formulario</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Último autoguardado</div>
+        <div class="kpi-value" id="dashboard-last-save" style="font-size: 1rem;">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Intentos de sync</div>
+        <div class="kpi-value blue" id="dashboard-sync-attempts">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Eventos contingencia</div>
+        <div class="kpi-value orange" id="dashboard-contingency-events">0</div>
+      </div>
+    </div>
+
+    <!-- Main layout: form + calc -->
+    <div class="terminal-layout">
+
+      <!-- LEFT: Form -->
+      <div>
+        <div class="form-card">
+          <div class="form-section-title">Datos del cliente</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="rut">RUT empresa</label>
+              <input type="text" id="rut" placeholder="76.543.210-5">
+            </div>
+            <div class="form-group">
+              <label for="razon-social">Razón social</label>
+              <input type="text" id="razon-social" placeholder="Empresa S.A.">
+            </div>
+            <div class="form-group">
+              <label for="contacto">Contacto</label>
+              <input type="text" id="contacto" placeholder="Nombre del contacto">
+            </div>
+            <div class="form-group">
+              <label for="email">Correo electrónico</label>
+              <input type="email" id="email" placeholder="contacto@empresa.cl">
+            </div>
+          </div>
+
+          <div class="form-section-title">Detalle de cotización</div>
+          <div class="form-grid">
+            <div class="form-group span-2">
+              <label for="producto">Producto / Servicio</label>
+              <input type="text" id="producto" placeholder="Descripción del producto o servicio">
+            </div>
+            <div class="form-group">
+              <label for="cantidad">Cantidad</label>
+              <input type="number" id="cantidad" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+              <label for="precio-unitario">Precio unitario (CLP)</label>
+              <input type="number" id="precio-unitario" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+              <label for="descuento">Descuento (%)</label>
+              <input type="number" id="descuento" placeholder="0" min="0" max="100">
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-section-title">Acciones del borrador</div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="btn-save-draft">💾 Guardar borrador</button>
+            <button class="btn btn-secondary" id="btn-recover-draft">📂 Recuperar</button>
+            <button class="btn btn-danger" id="btn-clear-form">🗑 Limpiar</button>
+          </div>
+        </div>
+
+        <!-- Simulation controls -->
+        <div class="form-card mt-6">
+          <div class="form-section-title">Simulación de red</div>
+          <div class="info-box">
+            ℹ️ Estos controles simulan caídas y restauraciones de conexión. <strong>No se envía ningún dato a servidores reales.</strong>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-orange" id="btn-simulate-offline">🔴 Simular desconexión</button>
+            <button class="btn btn-green" id="btn-restore-connection">🟢 Restaurar conexión</button>
+            <button class="btn btn-ghost" id="btn-sync">🔄 Sincronizar (simulado)</button>
+          </div>
+        </div>
+
+        <!-- Resilience Guide -->
+        <div class="form-card mt-6">
+          <h3 style="margin-bottom: 24px;">Guía de resiliencia EcoSync</h3>
+          <div class="steps-list">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Completa el formulario</h4>
+                <p>Ingresa los datos del cliente y el detalle de cotización. EcoSync comienza a autoguardar tras cada cambio.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Simula una caída de red</h4>
+                <p>Haz clic en "Simular desconexión". El banner naranja se activa y el modo contingencia protege tus datos localmente.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Continúa trabajando</h4>
+                <p>El formulario sigue funcionando con total normalidad. Todos los cambios se guardan en LocalStorage cada 600ms.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Restaura la conexión y sincroniza</h4>
+                <p>Haz clic en "Restaurar conexión" y luego "Sincronizar". La simulación completa el ciclo de resiliencia.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">5</div>
+              <div class="step-content">
+                <h4>Revisa la consola técnica</h4>
+                <p>Presiona <kbd style="background:#EEE; padding: 2px 6px; border-radius: 4px; font-family: monospace;">Ctrl+Shift+D</kbd> para ver el log completo de eventos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Calculation Summary -->
+      <div>
+        <div class="calc-card">
+          <div class="calc-title">Resumen de cotización</div>
+          <div class="calc-row">
+            <span class="label">Subtotal</span>
+            <span class="value" id="calc-subtotal">$0</span>
+          </div>
+          <div class="calc-row">
+            <span class="label">Descuento</span>
+            <span class="value" style="color: var(--color-orange);" id="calc-descuento">- $0</span>
+          </div>
+          <div class="calc-row">
+            <span class="label">Base imponible</span>
+            <span class="value" id="calc-base">$0</span>
+          </div>
+          <div class="calc-row">
+            <span class="label">IVA (19%)</span>
+            <span class="value" id="calc-iva">$0</span>
+          </div>
+          <div class="calc-total-row">
+            <span class="label">TOTAL</span>
+            <span class="value" id="calc-total">$0</span>
+          </div>
+          <p class="text-xs text-muted mt-4">* Todos los montos en pesos chilenos (CLP). Cálculo automático en tiempo real.</p>
+        </div>
+
+        <!-- Mini diagnostics info -->
+        <div class="form-card mt-6" style="padding: 20px;">
+          <div class="form-section-title">Consola técnica</div>
+          <p class="text-sm" style="margin-bottom: 12px;">Abre la consola de diagnóstico para ver el log completo de eventos.</p>
+          <button class="btn btn-secondary w-full" id="btn-toggle-console-2" onclick="window.EcoSync.logger.toggle()">
+            &gt;_ Abrir consola (Ctrl+Shift+D)
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ═══ FOOTER ═══════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <p><strong style="color: #E2E8F0;">EcoSync</strong> — Terminal Transaccional · Demo académico · Sin servidor real</p>
+  </div>
+</footer>
+
+<!-- ═══ DIAGNOSTICS DRAWER ═══════════════════════════════════════════════ -->
+<div id="diagnostics-drawer">
+  <div class="console-header">
+    <div class="console-title">EcoSync Diagnostics Console</div>
+    <div class="console-actions">
+      <button class="console-btn" id="btn-export-console">📥 Exportar JSON</button>
+      <button class="console-btn danger" id="btn-clear-console">🗑 Limpiar</button>
+      <button id="btn-close-console" title="Cerrar">&times;</button>
+    </div>
+  </div>
+  <div id="console-output"></div>
+</div>
+
+<script src="../js/storage.js"></script>
+<script src="../js/diagnostics.js"></script>
+<script src="../js/terminal.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>

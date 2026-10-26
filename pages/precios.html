@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planes y Precios — EcoSync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-brand">
+      <div class="brand-icon">⚡</div>
+      EcoSync
+    </a>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="./solucion.html" class="nav-link">Solución</a>
+      <a href="./green-it.html" class="nav-link">Green IT</a>
+      <a href="./precios.html" class="nav-link active">Precios</a>
+      <a href="./dashboard.html" class="nav-link">Dashboard</a>
+      <a href="./integracion.html" class="nav-link">Integración</a>
+      <a href="./historial.html" class="nav-link">Historial</a>
+      <a href="./terminal.html" class="nav-link">Terminal</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="nav-console-btn" id="btn-toggle-console" title="Ctrl+Shift+D">&gt;_ Consola</button>
+      <div id="nav-user-area">
+        <button class="btn btn-primary btn-sm" onclick="window.EcoSync.auth.showModal()">Iniciar sesión</button>
+      </div>
+    </div>
+    <button id="nav-toggle" aria-label="Menú">☰</button>
+  </div>
+</header>
+
+<div id="contingency-banner">⚠️ MODO CONTINGENCIA ACTIVO — Los datos se guardan localmente.</div>
+
+<div id="auth-modal">
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close">&times;</button>
+      <div class="modal-title">Acceso a EcoSync</div>
+      <div class="modal-subtitle">Plataforma de resiliencia transaccional B2B</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
+        <button class="auth-tab" data-tab="register">Registrarse</button>
+      </div>
+      <div class="auth-panel active" id="panel-login">
+        <div class="demo-users">
+          <button class="demo-user-btn" data-login="1"><div class="user-avatar-lg">RS</div><div class="user-info"><strong>Ing. Roberto Silva</strong><small>Administrador</small></div></button>
+          <button class="demo-user-btn" data-login="2"><div class="user-avatar-lg" style="background:#10B981;">CS</div><div class="user-info"><strong>Camila Soto</strong><small>Operadora</small></div></button>
+        </div>
+      </div>
+      <div class="auth-panel" id="panel-register">
+        <form id="register-form">
+          <div class="form-group mb-4"><label for="reg-name">Nombre</label><input type="text" id="reg-name" required></div>
+          <div class="form-group mb-4"><label for="reg-email">Email</label><input type="email" id="reg-email" required></div>
+          <button type="submit" class="btn btn-primary w-full">Crear cuenta demo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="container">
+    <div class="page-header" style="text-align: center;">
+      <h1>Planes y Precios</h1>
+      <p>Elige el plan que mejor se adapta a las necesidades de tu organización.</p>
+      <div class="demo-note" style="display: inline-flex; margin-top: 8px;">⚠️ Precios de demostración — no representan una oferta comercial real</div>
+    </div>
+
+    <!-- Toggle -->
+    <div class="pricing-toggle">
+      <span class="text-sm font-600" id="toggle-label-monthly" style="font-weight: 600; color: var(--color-text);">Mensual</span>
+      <button class="toggle-switch monthly" id="billing-toggle" onclick="toggleBilling()"></button>
+      <span class="text-sm" id="toggle-label-annual" style="color: var(--color-text-muted);">Anual <span class="badge badge-green">-20%</span></span>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="pricing-grid">
+
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price"><sup>USD</sup><span id="price-starter">49</span></div>
+        <div class="pricing-period">por mes · <span id="period-starter">facturación mensual</span></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Autoguardado de formularios</li>
+          <li><span class="check">✓</span> Hasta 3 usuarios</li>
+          <li><span class="check">✓</span> 1.000 solicitudes/día</li>
+          <li><span class="check">✓</span> Consola técnica básica</li>
+          <li><span class="check">✓</span> Soporte por email (48h)</li>
+          <li><span class="cross">✗</span> SDK de integración</li>
+          <li><span class="cross">✗</span> Historial forense avanzado</li>
+          <li><span class="cross">✗</span> SLA garantizado</li>
+        </ul>
+        <button class="btn btn-secondary w-full" onclick="alert('Demo: no hay proceso de pago real.')">Comenzar gratis</button>
+      </div>
+
+      <!-- Business (Featured) -->
+      <div class="pricing-card featured">
+        <div class="pricing-popular">⭐ Más popular</div>
+        <div class="pricing-name">Business</div>
+        <div class="pricing-price"><sup>USD</sup><span id="price-business">149</span></div>
+        <div class="pricing-period">por mes · <span id="period-business">facturación mensual</span></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Todo lo de Starter</li>
+          <li><span class="check">✓</span> Hasta 25 usuarios</li>
+          <li><span class="check">✓</span> Solicitudes ilimitadas</li>
+          <li><span class="check">✓</span> SDK REST + Webhook</li>
+          <li><span class="check">✓</span> Historial forense 90 días</li>
+          <li><span class="check">✓</span> Green IT Dashboard</li>
+          <li><span class="check">✓</span> Soporte prioritario (4h)</li>
+          <li><span class="cross">✗</span> SLA 99.9% garantizado</li>
+        </ul>
+        <button class="btn btn-primary w-full" onclick="alert('Demo: no hay proceso de pago real.')">Contratar ahora</button>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price" style="font-size: 1.8rem;">Personalizado</div>
+        <div class="pricing-period">contactar para cotización</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Todo lo de Business</li>
+          <li><span class="check">✓</span> Usuarios ilimitados</li>
+          <li><span class="check">✓</span> Despliegue on-premise</li>
+          <li><span class="check">✓</span> SDK completo (REST, GraphQL, WS)</li>
+          <li><span class="check">✓</span> Historial forense ilimitado</li>
+          <li><span class="check">✓</span> SLA 99.9% garantizado</li>
+          <li><span class="check">✓</span> Gerente de cuenta dedicado</li>
+          <li><span class="check">✓</span> Soporte 24/7 + teléfono</li>
+        </ul>
+        <button class="btn btn-ghost w-full" onclick="alert('Demo: no hay contacto comercial real.')">Contactar ventas</button>
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <h2 style="margin: 56px 0 24px; text-align: center;">Comparativa completa de planes</h2>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="width: 40%;">Característica</th>
+            <th style="text-align: center;">Starter</th>
+            <th style="text-align: center;">Business</th>
+            <th style="text-align: center;">Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Autoguardado de formularios</td>
+            <td class="check-cell">✓</td>
+            <td class="check-cell">✓</td>
+            <td class="check-cell">✓</td>
+          </tr>
+          <tr>
+            <td>Consola técnica de diagnóstico</td>
+            <td class="check-cell">Básica</td>
+            <td class="check-cell">Completa</td>
+            <td class="check-cell">Completa</td>
+          </tr>
+          <tr>
+            <td>SDK de integración</td>
+            <td class="cross-cell">✗</td>
+            <td class="check-cell">REST + Webhook</td>
+            <td class="check-cell">REST + WS + GraphQL</td>
+          </tr>
+          <tr>
+            <td>Historial forense</td>
+            <td class="cross-cell">✗</td>
+            <td class="check-cell">90 días</td>
+            <td class="check-cell">Ilimitado</td>
+          </tr>
+          <tr>
+            <td>Green IT Dashboard</td>
+            <td class="cross-cell">✗</td>
+            <td class="check-cell">✓</td>
+            <td class="check-cell">✓</td>
+          </tr>
+          <tr>
+            <td>SLA garantizado</td>
+            <td class="cross-cell">✗</td>
+            <td class="cross-cell">✗</td>
+            <td class="check-cell">99.9%</td>
+          </tr>
+          <tr>
+            <td>Soporte técnico</td>
+            <td>Email (48h)</td>
+            <td>Prioritario (4h)</td>
+            <td>24/7 + teléfono</td>
+          </tr>
+          <tr>
+            <td>Despliegue</td>
+            <td>Cloud</td>
+            <td>Cloud</td>
+            <td>Cloud + On-premise</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FAQ -->
+    <h2 style="margin: 56px 0 24px; text-align: center;">Preguntas frecuentes</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">
+          ¿Los datos de mis formularios se envían a servidores de EcoSync?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          No. En esta demo académica, todos los datos se almacenan únicamente en el LocalStorage de tu navegador. En una implementación real, la sincronización con servidor requeriría autenticación TLS 1.3 y tokens de acceso con prefijo <code>ecosync_pub_</code>.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          ¿Puedo cambiar de plan en cualquier momento?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          En un sistema de producción real, los planes serían escalables de forma inmediata. Los upgrades se aplican al instante y los downgrades al próximo ciclo de facturación. Esta es una página de demostración sin proceso de pago real.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          ¿Qué incluye el SLA del plan Enterprise?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          El SLA Enterprise garantizaría una disponibilidad del 99.9% mensual, con compensación proporcional por períodos de inactividad. Esto incluiría el motor de persistencia, el sistema de sincronización y la API de integración.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          ¿Hay período de prueba gratuita?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Esta demo completa actúa como período de prueba. En un escenario comercial real, todos los planes incluirían 14 días de prueba sin tarjeta de crédito requerida.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong style="color: #E2E8F0;">EcoSync</strong> — Precios de demostración · No representan oferta comercial</p>
+  </div>
+</footer>
+
+<div id="diagnostics-drawer">
+  <div class="console-header">
+    <div class="console-title">EcoSync Diagnostics Console</div>
+    <div class="console-actions">
+      <button class="console-btn" id="btn-export-console">📥 Exportar JSON</button>
+      <button class="console-btn danger" id="btn-clear-console">🗑 Limpiar</button>
+      <button id="btn-close-console">&times;</button>
+    </div>
+  </div>
+  <div id="console-output"></div>
+</div>
+
+<script src="../js/storage.js"></script>
+<script src="../js/diagnostics.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  // FAQ Accordion
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.closest('.faq-item').classList.toggle('open');
+    });
+  });
+
+  // Billing toggle
+  let isAnnual = false;
+  function toggleBilling() {
+    isAnnual = !isAnnual;
+    const btn = document.getElementById('billing-toggle');
+    btn.classList.toggle('monthly', !isAnnual);
+
+    const prices = { starter: isAnnual ? 39 : 49, business: isAnnual ? 119 : 149 };
+    document.getElementById('price-starter').textContent = prices.starter;
+    document.getElementById('price-business').textContent = prices.business;
+
+    const period = isAnnual ? 'facturación anual' : 'facturación mensual';
+    document.getElementById('period-starter').textContent = period;
+    document.getElementById('period-business').textContent = period;
+
+    document.getElementById('toggle-label-monthly').style.color = isAnnual ? 'var(--color-text-muted)' : 'var(--color-text)';
+    document.getElementById('toggle-label-annual').style.color = isAnnual ? 'var(--color-text)' : 'var(--color-text-muted)';
+  }
+</script>
+</body>
+</html>

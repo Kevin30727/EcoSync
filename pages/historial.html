@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial Forense — EcoSync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-brand">
+      <div class="brand-icon">⚡</div>
+      EcoSync
+    </a>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="./solucion.html" class="nav-link">Solución</a>
+      <a href="./green-it.html" class="nav-link">Green IT</a>
+      <a href="./precios.html" class="nav-link">Precios</a>
+      <a href="./dashboard.html" class="nav-link">Dashboard</a>
+      <a href="./integracion.html" class="nav-link">Integración</a>
+      <a href="./historial.html" class="nav-link active">Historial</a>
+      <a href="./terminal.html" class="nav-link">Terminal</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="nav-console-btn" id="btn-toggle-console" title="Ctrl+Shift+D">&gt;_ Consola</button>
+      <div id="nav-user-area">
+        <button class="btn btn-primary btn-sm" onclick="window.EcoSync.auth.showModal()">Iniciar sesión</button>
+      </div>
+    </div>
+    <button id="nav-toggle" aria-label="Menú">☰</button>
+  </div>
+</header>
+
+<div id="contingency-banner">⚠️ MODO CONTINGENCIA ACTIVO — Los datos se guardan localmente.</div>
+
+<div id="auth-modal">
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close">&times;</button>
+      <div class="modal-title">Acceso a EcoSync</div>
+      <div class="modal-subtitle">Plataforma de resiliencia transaccional B2B</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
+        <button class="auth-tab" data-tab="register">Registrarse</button>
+      </div>
+      <div class="auth-panel active" id="panel-login">
+        <div class="demo-users">
+          <button class="demo-user-btn" data-login="1"><div class="user-avatar-lg">RS</div><div class="user-info"><strong>Ing. Roberto Silva</strong><small>Administrador</small></div></button>
+          <button class="demo-user-btn" data-login="2"><div class="user-avatar-lg" style="background:#10B981;">CS</div><div class="user-info"><strong>Camila Soto</strong><small>Operadora</small></div></button>
+        </div>
+      </div>
+      <div class="auth-panel" id="panel-register">
+        <form id="register-form">
+          <div class="form-group mb-4"><label for="reg-name">Nombre</label><input type="text" id="reg-name" required></div>
+          <div class="form-group mb-4"><label for="reg-email">Email</label><input type="email" id="reg-email" required></div>
+          <button type="submit" class="btn btn-primary w-full">Crear cuenta demo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <div class="flex items-center justify-between" style="flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1>Historial Forense</h1>
+          <p>Registro completo de incidentes, contingencias y eventos de sincronización.</p>
+          <div class="demo-note">⚠️ Datos de demostración — no representan incidentes reales</div>
+        </div>
+        <div class="flex gap-3">
+          <button class="btn btn-secondary" onclick="exportHAR()">📥 Exportar HAR</button>
+          <button class="btn btn-secondary" onclick="applyFilters()">🔍 Filtrar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="form-group">
+        <label for="filter-date">Fecha desde</label>
+        <input type="date" id="filter-date" value="2024-01-01">
+      </div>
+      <div class="form-group">
+        <label for="filter-type">Tipo de evento</label>
+        <select id="filter-type">
+          <option value="">Todos los tipos</option>
+          <option value="contingency">Contingencia</option>
+          <option value="sync">Sincronización</option>
+          <option value="recovery">Recuperación</option>
+          <option value="timeout">Timeout</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="filter-status">Estado</label>
+        <select id="filter-status">
+          <option value="">Todos</option>
+          <option value="resolved">Resuelto</option>
+          <option value="pending">Pendiente</option>
+          <option value="active">Activo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="filter-severity">Severidad</label>
+        <select id="filter-severity">
+          <option value="">Todas</option>
+          <option value="high">Alta</option>
+          <option value="medium">Media</option>
+          <option value="low">Baja</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="applyFilters()">Aplicar filtros</button>
+    </div>
+
+    <!-- Summary KPIs -->
+    <div class="kpi-row mb-6">
+      <div class="kpi-card">
+        <div class="kpi-label">Total incidentes</div>
+        <div class="kpi-value">5</div>
+        <div class="kpi-sub">Período demostrado</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Resueltos</div>
+        <div class="kpi-value green">4</div>
+        <div class="kpi-sub">80% tasa de resolución</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Pendientes</div>
+        <div class="kpi-value orange">1</div>
+        <div class="kpi-sub">En revisión</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">MTTR promedio</div>
+        <div class="kpi-value blue">3.2 min</div>
+        <div class="kpi-sub">Tiempo medio de recuperación</div>
+      </div>
+    </div>
+
+    <!-- Incidents Table -->
+    <div class="table-wrapper" id="incidents-table">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fecha / Hora</th>
+            <th>Tipo</th>
+            <th>Descripción</th>
+            <th>Severidad</th>
+            <th>Estado</th>
+            <th>MTTR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Incident 1 -->
+          <tr class="expandable" onclick="toggleTrace(1)">
+            <td><code>#INC-001</code></td>
+            <td><span class="font-mono" style="font-size: 0.8rem;">2024-01-15 09:52:01</span></td>
+            <td><span class="badge badge-orange">Contingencia</span></td>
+            <td>Pérdida de conexión durante cotización — formulario protegido por autoguardado</td>
+            <td><span class="severity-badge high">Alta</span></td>
+            <td><span class="status-pill resolved">✓ Resuelto</span></td>
+            <td>2.3 min</td>
+          </tr>
+          <tr class="trace-row" id="trace-1" style="display:none;">
+            <td colspan="7">
+              <pre>INC-001 | 2024-01-15T09:52:01.034Z | CONTINGENCY
+Estado: RESOLVED | MTTR: 2.3 min | Severidad: HIGH
+
+TRACE FORENSE:
+  [09:52:01.034] NETWORK_LOST — timeout 30000ms
+  [09:52:01.035] CONTINGENCY_MODE_ON — banner activado
+  [09:52:01.036] AUTOSAVE_TRIGGER — draft guardado en LocalStorage
+  [09:52:04.210] AUTOSAVE_OK — 3 campos persistidos correctamente
+  [09:54:15.889] NETWORK_RESTORED — latencia: 187ms
+  [09:54:16.012] CONTINGENCY_MODE_OFF — modo normal restaurado
+  [09:54:18.341] SYNC_SIMULATED — 0 datos perdidos ✓
+
+PII: sanitizado — no se registran RUT ni email en este log.</pre>
+            </td>
+          </tr>
+
+          <!-- Incident 2 -->
+          <tr class="expandable" onclick="toggleTrace(2)">
+            <td><code>#INC-002</code></td>
+            <td><span class="font-mono" style="font-size: 0.8rem;">2024-01-15 08:15:44</span></td>
+            <td><span class="badge badge-gray">Timeout</span></td>
+            <td>504 Gateway Timeout — API no respondió en 30 segundos</td>
+            <td><span class="severity-badge medium">Media</span></td>
+            <td><span class="status-pill resolved">✓ Resuelto</span></td>
+            <td>4.1 min</td>
+          </tr>
+          <tr class="trace-row" id="trace-2" style="display:none;">
+            <td colspan="7">
+              <pre>INC-002 | 2024-01-15T08:15:44.211Z | HTTP_TIMEOUT
+Estado: RESOLVED | MTTR: 4.1 min | Severidad: MEDIUM
+
+TRACE FORENSE:
+  [08:15:44.211] REQUEST_SENT — POST /api/v1/drafts/sync
+  [08:16:14.211] TIMEOUT_504 — Gateway did not respond (30000ms)
+  [08:16:14.212] RETRY_1 — intento 1/3 con backoff exponencial
+  [08:16:46.000] RETRY_2 — intento 2/3
+  [08:17:58.000] RETRY_3 — intento 3/3
+  [08:19:52.441] SYNC_FALLBACK — datos guardados localmente
+  [08:19:53.000] INCIDENT_CLOSED — resolución por fallback local
+
+HTTP Raw:
+  HTTP/1.1 504 Gateway Timeout
+  Server: nginx/1.21.6
+  Content-Type: text/html
+  X-EcoSync-RequestId: req_demo_abc456</pre>
+            </td>
+          </tr>
+
+          <!-- Incident 3 -->
+          <tr class="expandable" onclick="toggleTrace(3)">
+            <td><code>#INC-003</code></td>
+            <td><span class="font-mono" style="font-size: 0.8rem;">2024-01-14 16:33:07</span></td>
+            <td><span class="badge badge-blue">Recuperación</span></td>
+            <td>Restauración de borrador tras reinicio del navegador — sin pérdida de datos</td>
+            <td><span class="severity-badge low">Baja</span></td>
+            <td><span class="status-pill resolved">✓ Resuelto</span></td>
+            <td>&lt;1 min</td>
+          </tr>
+          <tr class="trace-row" id="trace-3" style="display:none;">
+            <td colspan="7">
+              <pre>INC-003 | 2024-01-14T16:33:07.889Z | BROWSER_RECOVERY
+Estado: RESOLVED | MTTR: &lt;1 min | Severidad: LOW
+
+TRACE FORENSE:
+  [16:33:07.889] PAGE_LOAD — EcoSync Terminal inicializado
+  [16:33:07.912] DRAFT_CHECK — ecosync_draft_v1 encontrado en LocalStorage
+  [16:33:07.913] DRAFT_AGE — guardado hace 3 min
+  [16:33:08.200] USER_CONFIRM — usuario aceptó recuperar borrador
+  [16:33:08.201] DRAFT_RESTORED — 8 campos restaurados exitosamente
+  [16:33:08.202] CALCULATIONS_UPDATED — subtotal recalculado
+  [16:33:08.203] STATUS_OK — formulario listo para continuar ✓</pre>
+            </td>
+          </tr>
+
+          <!-- Incident 4 -->
+          <tr class="expandable" onclick="toggleTrace(4)">
+            <td><code>#INC-004</code></td>
+            <td><span class="font-mono" style="font-size: 0.8rem;">2024-01-13 11:20:15</span></td>
+            <td><span class="badge badge-orange">Contingencia</span></td>
+            <td>Señal WiFi inestable — 3 reconexiones en 5 minutos</td>
+            <td><span class="severity-badge medium">Media</span></td>
+            <td><span class="status-pill resolved">✓ Resuelto</span></td>
+            <td>5.8 min</td>
+          </tr>
+          <tr class="trace-row" id="trace-4" style="display:none;">
+            <td colspan="7">
+              <pre>INC-004 | 2024-01-13T11:20:15.000Z | INTERMITTENT_CONNECTION
+Estado: RESOLVED | MTTR: 5.8 min | Severidad: MEDIUM
+
+TRACE FORENSE:
+  [11:20:15.000] NETWORK_UNSTABLE — fluctuación detectada
+  [11:20:15.001] CONTINGENCY_MODE_ON — activación preventiva
+  [11:21:03.000] RECONNECT_1 — latencia 890ms (inestable)
+  [11:22:44.000] RECONNECT_2 — latencia 1240ms (inestable)
+  [11:24:11.000] RECONNECT_3 — latencia 145ms (estable)
+  [11:25:58.000] CONTINGENCY_MODE_OFF — conexión estable confirmada
+  [11:25:59.441] SYNC_SIMULATED — 0 datos perdidos ✓</pre>
+            </td>
+          </tr>
+
+          <!-- Incident 5 - Pending -->
+          <tr class="expandable" onclick="toggleTrace(5)">
+            <td><code>#INC-005</code></td>
+            <td><span class="font-mono" style="font-size: 0.8rem;">2024-01-15 10:30:00</span></td>
+            <td><span class="badge badge-gray">Sincronización</span></td>
+            <td>Error de sincronización — conflicto de versión de borrador</td>
+            <td><span class="severity-badge high">Alta</span></td>
+            <td><span class="status-pill pending">⏳ Pendiente</span></td>
+            <td>—</td>
+          </tr>
+          <tr class="trace-row" id="trace-5" style="display:none;">
+            <td colspan="7">
+              <pre>INC-005 | 2024-01-15T10:30:00.000Z | SYNC_CONFLICT
+Estado: PENDING | Severidad: HIGH
+
+TRACE FORENSE:
+  [10:30:00.000] SYNC_ATTEMPT — POST /api/v1/drafts/sync
+  [10:30:00.341] CONFLICT_409 — versión de borrador desactualizada
+  [10:30:00.342] CONFLICT_HANDLER — estrategia: last-write-wins
+  [10:30:00.343] REVIEW_REQUIRED — intervención manual necesaria
+
+ACCIÓN REQUERIDA:
+  Revisar borrador local vs. versión en servidor.
+  Resolver conflicto manualmente en el panel de administración.
+  Referencia: draft_conflict_20240115_103000
+
+PII: sanitizado</pre>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <p class="text-xs text-muted mt-4">* Todos los registros son datos de demostración con fines académicos. Los timestamps y eventos no corresponden a incidentes reales. PII sanitizado en todos los logs.</p>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong style="color: #E2E8F0;">EcoSync</strong> — Historial Forense · Demo académico</p>
+  </div>
+</footer>
+
+<div id="diagnostics-drawer">
+  <div class="console-header">
+    <div class="console-title">EcoSync Diagnostics Console</div>
+    <div class="console-actions">
+      <button class="console-btn" id="btn-export-console">📥 Exportar JSON</button>
+      <button class="console-btn danger" id="btn-clear-console">🗑 Limpiar</button>
+      <button id="btn-close-console">&times;</button>
+    </div>
+  </div>
+  <div id="console-output"></div>
+</div>
+
+<script src="../js/storage.js"></script>
+<script src="../js/diagnostics.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  function toggleTrace(id) {
+    const row = document.getElementById('trace-' + id);
+    if (!row) return;
+    const isVisible = row.style.display !== 'none';
+    row.style.display = isVisible ? 'none' : 'table-row';
+    window.EcoSync.logger.log('info', `Trace INC-00${id} ${isVisible ? 'cerrado' : 'expandido'}`);
+  }
+
+  function exportHAR() {
+    const harData = {
+      log: {
+        version: '1.2',
+        creator: { name: 'EcoSync', version: '1.0', comment: 'Demo — no data sent to real servers' },
+        comment: 'Archivo HAR de demostración — datos simulados sin RUT ni email reales',
+        entries: [
+          {
+            startedDateTime: '2024-01-15T09:52:01.034Z',
+            time: 2340,
+            request: { method: 'POST', url: 'https://api.ecosync.cl/v1/drafts/sync [SIMULADO]', headers: [], queryString: [], postData: { mimeType: 'application/json', text: '{"draft":{"_note":"PII sanitizado"},"clientId":"demo-client-001"}' }, headersSize: -1, bodySize: 90, httpVersion: 'HTTP/1.1', cookies: [] },
+            response: { status: 200, statusText: 'OK', headers: [], content: { size: 45, mimeType: 'application/json', text: '{"status":"synced","draftId":"dr_demo_001"}' }, redirectURL: '', headersSize: -1, bodySize: 45, httpVersion: 'HTTP/1.1', cookies: [] },
+            cache: {},
+            timings: { send: 5, wait: 1800, receive: 535 }
+          }
+        ]
+      }
+    };
+
+    const blob = new Blob([JSON.stringify(harData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ecosync-har-demo-${Date.now()}.har`;
+    a.click();
+    URL.revokeObjectURL(url);
+    window.EcoSync.logger.log('info', 'Archivo HAR de demostración exportado (datos simulados)');
+  }
+
+  function applyFilters() {
+    const type = document.getElementById('filter-type').value;
+    const status = document.getElementById('filter-status').value;
+    const severity = document.getElementById('filter-severity').value;
+    window.EcoSync.logger.log('info', `Filtros aplicados: tipo="${type || 'todos'}" estado="${status || 'todos'}" severidad="${severity || 'todas'}"`);
+    alert('Filtros aplicados (demo — muestra todos los registros de demostración).');
+  }
+</script>
+</body>
+</html>

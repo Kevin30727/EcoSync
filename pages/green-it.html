@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Green IT — EcoSync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-brand">
+      <div class="brand-icon">⚡</div>
+      EcoSync
+    </a>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="./solucion.html" class="nav-link">Solución</a>
+      <a href="./green-it.html" class="nav-link active">Green IT</a>
+      <a href="./precios.html" class="nav-link">Precios</a>
+      <a href="./dashboard.html" class="nav-link">Dashboard</a>
+      <a href="./integracion.html" class="nav-link">Integración</a>
+      <a href="./historial.html" class="nav-link">Historial</a>
+      <a href="./terminal.html" class="nav-link">Terminal</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="nav-console-btn" id="btn-toggle-console" title="Ctrl+Shift+D">&gt;_ Consola</button>
+      <div id="nav-user-area">
+        <button class="btn btn-primary btn-sm" onclick="window.EcoSync.auth.showModal()">Iniciar sesión</button>
+      </div>
+    </div>
+    <button id="nav-toggle" aria-label="Menú">☰</button>
+  </div>
+</header>
+
+<div id="contingency-banner">⚠️ MODO CONTINGENCIA ACTIVO — Los datos se guardan localmente.</div>
+
+<div id="auth-modal">
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close">&times;</button>
+      <div class="modal-title">Acceso a EcoSync</div>
+      <div class="modal-subtitle">Plataforma de resiliencia transaccional B2B</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
+        <button class="auth-tab" data-tab="register">Registrarse</button>
+      </div>
+      <div class="auth-panel active" id="panel-login">
+        <div class="demo-users">
+          <button class="demo-user-btn" data-login="1"><div class="user-avatar-lg">RS</div><div class="user-info"><strong>Ing. Roberto Silva</strong><small>Administrador</small></div></button>
+          <button class="demo-user-btn" data-login="2"><div class="user-avatar-lg" style="background:#10B981;">CS</div><div class="user-info"><strong>Camila Soto</strong><small>Operadora</small></div></button>
+        </div>
+      </div>
+      <div class="auth-panel" id="panel-register">
+        <form id="register-form">
+          <div class="form-group mb-4"><label for="reg-name">Nombre</label><input type="text" id="reg-name" required></div>
+          <div class="form-group mb-4"><label for="reg-email">Email</label><input type="email" id="reg-email" required></div>
+          <button type="submit" class="btn btn-primary w-full">Crear cuenta demo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <h1>🌱 Green IT Calculator</h1>
+      <p>Estima el impacto ambiental de tu eficiencia digital. Reduce solicitudes redundantes y disminuye tu huella de carbono digital.</p>
+      <div class="demo-note">⚠️ Estimaciones basadas en modelos académicos — no representan datos reales certificados</div>
+    </div>
+
+    <!-- Calculator -->
+    <div class="green-calculator mb-8">
+      <h2 style="margin-bottom: 24px;">Calculadora de impacto ambiental</h2>
+      <div class="inputs-row">
+        <div class="form-group">
+          <label for="green-requests">Solicitudes por día</label>
+          <input type="number" id="green-requests" value="1000" min="0" placeholder="1000">
+          <small class="text-muted text-xs">Número total de requests al servidor por día</small>
+        </div>
+        <div class="form-group">
+          <label for="green-reduction">% Reducción con EcoSync</label>
+          <input type="number" id="green-reduction" value="47" min="0" max="100" placeholder="47">
+          <small class="text-muted text-xs">Porcentaje de solicitudes evitadas mediante persistencia local</small>
+        </div>
+        <div class="form-group">
+          <label for="green-days">Días operacionales / año</label>
+          <input type="number" id="green-days" value="250" min="0" placeholder="250">
+          <small class="text-muted text-xs">Días hábiles en que el sistema opera</small>
+        </div>
+      </div>
+      <div id="green-result" style="margin-top: 8px;">Calculando...</div>
+      <p class="text-xs text-muted mt-4">
+        * Factor de conversión: 0.0000021 kg CO₂e por solicitud HTTP (estimación basada en modelo académico Aslan et al., 2018).
+        Este cálculo es aproximado y no constituye una certificación de sostenibilidad.
+      </p>
+    </div>
+
+    <!-- SCI Explanation -->
+    <div class="sci-box mb-8">
+      <h3>📊 Software Carbon Intensity (SCI)</h3>
+      <p style="margin-top: 8px;">El estándar SCI, desarrollado por la Green Software Foundation, mide la intensidad de carbono del software como la cantidad de emisiones de carbono equivalente por unidad de trabajo funcional. EcoSync contribuye a reducir el SCI al disminuir las solicitudes redundantes al servidor, optimizando el ciclo de vida de cada petición HTTP.</p>
+      <p style="margin-top: 12px;"><strong style="color: var(--color-green);">SCI = (E × I) + M / R</strong></p>
+      <p class="text-sm">Donde E = Energía consumida, I = Intensidad de carbono de la red, M = Carbono embebido del hardware, R = Unidad funcional (solicitudes).</p>
+    </div>
+
+    <!-- Environmental Metrics -->
+    <h2 style="margin-bottom: 24px;">Métricas de impacto ambiental (demo)</h2>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Solicitudes evitadas est.</div>
+        <div class="kpi-value green">117,500</div>
+        <div class="kpi-sub">Año · 1000 req/día · 47% · 250 días</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">CO₂e ahorrado</div>
+        <div class="kpi-value green">246.8g</div>
+        <div class="kpi-sub">Estimación anual (CO₂ equivalente)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Energía evitada</div>
+        <div class="kpi-value blue">~0.35 kWh</div>
+        <div class="kpi-sub">Estimación basada en modelo académico</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Equivalente a</div>
+        <div class="kpi-value">~2.5 km</div>
+        <div class="kpi-sub">Auto promedio (no conducidos)</div>
+      </div>
+    </div>
+
+    <div class="warning-box mt-6">
+      ⚠️ <strong>Aviso:</strong> Todas las métricas de impacto ambiental mostradas son estimaciones basadas en modelos académicos publicados. No constituyen certificaciones de sostenibilidad, auditorías ambientales ni cumplen con estándares ISO 14064. Para certificaciones reales, consulte un organismo competente.
+    </div>
+
+    <!-- How to reduce -->
+    <div class="card mt-6">
+      <h3 style="margin-bottom: 16px;">¿Cómo EcoSync reduce tu huella digital?</h3>
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Persistencia local antes de sincronizar</h4>
+            <p>En lugar de enviar cada campo al servidor en tiempo real, EcoSync guarda localmente y sincroniza por lotes, reduciendo el volumen de requests.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Eliminación de solicitudes duplicadas</h4>
+            <p>El motor de debounce evita el envío de múltiples requests por cambios rápidos en un mismo campo, filtrando las solicitudes redundantes.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Recuperación sin re-ingreso</h4>
+            <p>Al recuperar borradores locales, se evitan sesiones completas de re-ingreso de datos, eliminando decenas de solicitudes adicionales por evento de contingencia.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong style="color: #E2E8F0;">EcoSync</strong> — Green IT · Demo académico · Estimaciones no certificadas</p>
+  </div>
+</footer>
+
+<div id="diagnostics-drawer">
+  <div class="console-header">
+    <div class="console-title">EcoSync Diagnostics Console</div>
+    <div class="console-actions">
+      <button class="console-btn" id="btn-export-console">📥 Exportar JSON</button>
+      <button class="console-btn danger" id="btn-clear-console">🗑 Limpiar</button>
+      <button id="btn-close-console">&times;</button>
+    </div>
+  </div>
+  <div id="console-output"></div>
+</div>
+
+<script src="../js/storage.js"></script>
+<script src="../js/diagnostics.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>

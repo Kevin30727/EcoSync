@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Ejecutivo — EcoSync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-brand">
+      <div class="brand-icon">⚡</div>
+      EcoSync
+    </a>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="./solucion.html" class="nav-link">Solución</a>
+      <a href="./green-it.html" class="nav-link">Green IT</a>
+      <a href="./precios.html" class="nav-link">Precios</a>
+      <a href="./dashboard.html" class="nav-link active">Dashboard</a>
+      <a href="./integracion.html" class="nav-link">Integración</a>
+      <a href="./historial.html" class="nav-link">Historial</a>
+      <a href="./terminal.html" class="nav-link">Terminal</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="nav-console-btn" id="btn-toggle-console" title="Ctrl+Shift+D">&gt;_ Consola</button>
+      <div id="nav-user-area">
+        <button class="btn btn-primary btn-sm" onclick="window.EcoSync.auth.showModal()">Iniciar sesión</button>
+      </div>
+    </div>
+    <button id="nav-toggle" aria-label="Menú">☰</button>
+  </div>
+</header>
+
+<div id="contingency-banner">
+  ⚠️ MODO CONTINGENCIA ACTIVO — Los datos se guardan localmente.
+</div>
+
+<div id="auth-modal">
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close">&times;</button>
+      <div class="modal-title">Acceso a EcoSync</div>
+      <div class="modal-subtitle">Plataforma de resiliencia transaccional B2B</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
+        <button class="auth-tab" data-tab="register">Registrarse</button>
+      </div>
+      <div class="auth-panel active" id="panel-login">
+        <div class="demo-users">
+          <button class="demo-user-btn" data-login="1">
+            <div class="user-avatar-lg">RS</div>
+            <div class="user-info"><strong>Ing. Roberto Silva</strong><small>Administrador</small></div>
+          </button>
+          <button class="demo-user-btn" data-login="2">
+            <div class="user-avatar-lg" style="background:#10B981;">CS</div>
+            <div class="user-info"><strong>Camila Soto</strong><small>Operadora</small></div>
+          </button>
+        </div>
+      </div>
+      <div class="auth-panel" id="panel-register">
+        <form id="register-form">
+          <div class="form-group mb-4"><label for="reg-name">Nombre</label><input type="text" id="reg-name" required></div>
+          <div class="form-group mb-4"><label for="reg-email">Email</label><input type="email" id="reg-email" required></div>
+          <button type="submit" class="btn btn-primary w-full">Crear cuenta demo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <h1>Dashboard Ejecutivo</h1>
+      <p>Métricas operacionales y estado del sistema en tiempo real.</p>
+      <div class="demo-note">⚠️ Datos de demostración — no representan métricas reales</div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Recovery Rate</div>
+        <div class="kpi-value green">99.8%</div>
+        <div class="kpi-sub">Tasa de recuperación exitosa</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Mitigaciones Activas</div>
+        <div class="kpi-value blue">247</div>
+        <div class="kpi-sub">Eventos gestionados este mes</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Tiempo de respuesta</div>
+        <div class="kpi-value">187ms</div>
+        <div class="kpi-sub">Promedio de recuperación</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Ahorro estimado</div>
+        <div class="kpi-value green">$2.4M</div>
+        <div class="kpi-sub">CLP en pérdidas evitadas (demo)</div>
+      </div>
+    </div>
+
+    <!-- Chart + Events -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;">
+
+      <!-- SVG Line Chart -->
+      <div class="chart-wrapper">
+        <div class="chart-title">Tasa de recuperación últimos 7 días (simulado)</div>
+        <svg viewBox="0 0 600 180" style="width:100%; height:auto;">
+          <defs>
+            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2563EB" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#2563EB" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          <!-- Grid lines -->
+          <line x1="40" y1="20" x2="580" y2="20" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="40" y1="60" x2="580" y2="60" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="40" y1="100" x2="580" y2="100" stroke="#E2E8F0" stroke-width="1"/>
+          <line x1="40" y1="140" x2="580" y2="140" stroke="#E2E8F0" stroke-width="1"/>
+          <!-- Y labels -->
+          <text x="32" y="24" text-anchor="end" font-size="11" fill="#94A3B8">100%</text>
+          <text x="32" y="64" text-anchor="end" font-size="11" fill="#94A3B8">99.5%</text>
+          <text x="32" y="104" text-anchor="end" font-size="11" fill="#94A3B8">99.0%</text>
+          <text x="32" y="144" text-anchor="end" font-size="11" fill="#94A3B8">98.5%</text>
+          <!-- X labels -->
+          <text x="90"  y="168" text-anchor="middle" font-size="11" fill="#94A3B8">Lun</text>
+          <text x="170" y="168" text-anchor="middle" font-size="11" fill="#94A3B8">Mar</text>
+          <text x="250" y="168" text-anchor="middle" font-size="11" fill="#94A3B8">Mié</text>
+          <text x="330" y="168" text-anchor="middle" font-size="11" fill="#94A3B8">Jue</text>
+          <text x="410" y="168" text-anchor="middle" font-size="11" fill="#94A3B8">Vie</text>
+          <text x="490" y="168" text-anchor="middle" font-size="11" fill="#94A3B8">Sáb</text>
+          <text x="565" y="168" text-anchor="middle" font-size="11" fill="#94A3B8">Dom</text>
+          <!-- Area fill -->
+          <polygon points="90,28 170,24 250,55 330,22 410,28 490,20 565,24 565,140 90,140"
+                   fill="url(#chartGrad)"/>
+          <!-- Line -->
+          <polyline points="90,28 170,24 250,55 330,22 410,28 490,20 565,24"
+                    fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+          <!-- Points -->
+          <circle cx="90" cy="28" r="4" fill="#2563EB"/>
+          <circle cx="170" cy="24" r="4" fill="#2563EB"/>
+          <circle cx="250" cy="55" r="4" fill="#E07A5F"/>
+          <circle cx="330" cy="22" r="4" fill="#2563EB"/>
+          <circle cx="410" cy="28" r="4" fill="#2563EB"/>
+          <circle cx="490" cy="20" r="4" fill="#10B981"/>
+          <circle cx="565" cy="24" r="4" fill="#2563EB"/>
+        </svg>
+        <p class="text-xs text-muted mt-4">* Valores simulados con fines demostrativos. No representan métricas reales del sistema.</p>
+      </div>
+
+      <!-- Quick Stats -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="kpi-card" style="flex: 1;">
+          <div class="kpi-label">Solicitudes evitadas</div>
+          <div class="kpi-value blue">58,400</div>
+          <div class="kpi-sub">Este mes (simulado)</div>
+        </div>
+        <div class="kpi-card" style="flex: 1;">
+          <div class="kpi-label">CO₂ ahorrado est.</div>
+          <div class="kpi-value green">122.6g</div>
+          <div class="kpi-sub">CO₂e (estimación)</div>
+        </div>
+        <div class="kpi-card" style="flex: 1;">
+          <div class="kpi-label">Borradores activos</div>
+          <div class="kpi-value">1</div>
+          <div class="kpi-sub">Guardados en LocalStorage</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Events Feed -->
+    <div class="events-feed">
+      <div class="chart-title">Eventos recientes del sistema</div>
+      <div class="event-row">
+        <span class="event-dot green"></span>
+        <span class="event-time">09:54:19</span>
+        <div><strong>Sincronización exitosa</strong> — Borrador recuperado y formulario intacto tras reconexión</div>
+      </div>
+      <div class="event-row">
+        <span class="event-dot orange"></span>
+        <span class="event-time">09:52:01</span>
+        <div><strong>Contingencia activada</strong> — Pérdida de conexión detectada · Autoguardado local activado</div>
+      </div>
+      <div class="event-row">
+        <span class="event-dot blue"></span>
+        <span class="event-time">09:47:33</span>
+        <div><strong>Borrador cargado</strong> — Datos previos recuperados desde LocalStorage al iniciar sesión</div>
+      </div>
+      <div class="event-row">
+        <span class="event-dot green"></span>
+        <span class="event-time">08:30:12</span>
+        <div><strong>Sistema iniciado</strong> — EcoSync Terminal listo · Modo online activo</div>
+      </div>
+      <div class="event-row">
+        <span class="event-dot orange"></span>
+        <span class="event-time">08:15:44</span>
+        <div><strong>Evento previo</strong> — Timeout 504 registrado y gestionado por el motor de contingencia</div>
+      </div>
+      <p class="text-xs text-muted" style="margin-top: 16px;">* Eventos de demostración — timestamps no corresponden a eventos reales</p>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong style="color: #E2E8F0;">EcoSync</strong> — Dashboard Ejecutivo · Demo académico</p>
+  </div>
+</footer>
+
+<div id="diagnostics-drawer">
+  <div class="console-header">
+    <div class="console-title">EcoSync Diagnostics Console</div>
+    <div class="console-actions">
+      <button class="console-btn" id="btn-export-console">📥 Exportar JSON</button>
+      <button class="console-btn danger" id="btn-clear-console">🗑 Limpiar</button>
+      <button id="btn-close-console">&times;</button>
+    </div>
+  </div>
+  <div id="console-output"></div>
+</div>
+
+<script src="../js/storage.js"></script>
+<script src="../js/diagnostics.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>

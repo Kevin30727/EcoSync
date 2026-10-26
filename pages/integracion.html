@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centro de Integración SDK — EcoSync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-brand">
+      <div class="brand-icon">⚡</div>
+      EcoSync
+    </a>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="./solucion.html" class="nav-link">Solución</a>
+      <a href="./green-it.html" class="nav-link">Green IT</a>
+      <a href="./precios.html" class="nav-link">Precios</a>
+      <a href="./dashboard.html" class="nav-link">Dashboard</a>
+      <a href="./integracion.html" class="nav-link active">Integración</a>
+      <a href="./historial.html" class="nav-link">Historial</a>
+      <a href="./terminal.html" class="nav-link">Terminal</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="nav-console-btn" id="btn-toggle-console" title="Ctrl+Shift+D">&gt;_ Consola</button>
+      <div id="nav-user-area">
+        <button class="btn btn-primary btn-sm" onclick="window.EcoSync.auth.showModal()">Iniciar sesión</button>
+      </div>
+    </div>
+    <button id="nav-toggle" aria-label="Menú">☰</button>
+  </div>
+</header>
+
+<div id="contingency-banner">⚠️ MODO CONTINGENCIA ACTIVO — Los datos se guardan localmente.</div>
+
+<div id="auth-modal">
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close">&times;</button>
+      <div class="modal-title">Acceso a EcoSync</div>
+      <div class="modal-subtitle">Plataforma de resiliencia transaccional B2B</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
+        <button class="auth-tab" data-tab="register">Registrarse</button>
+      </div>
+      <div class="auth-panel active" id="panel-login">
+        <div class="demo-users">
+          <button class="demo-user-btn" data-login="1"><div class="user-avatar-lg">RS</div><div class="user-info"><strong>Ing. Roberto Silva</strong><small>Administrador</small></div></button>
+          <button class="demo-user-btn" data-login="2"><div class="user-avatar-lg" style="background:#10B981;">CS</div><div class="user-info"><strong>Camila Soto</strong><small>Operadora</small></div></button>
+        </div>
+      </div>
+      <div class="auth-panel" id="panel-register">
+        <form id="register-form">
+          <div class="form-group mb-4"><label for="reg-name">Nombre</label><input type="text" id="reg-name" required></div>
+          <div class="form-group mb-4"><label for="reg-email">Email</label><input type="email" id="reg-email" required></div>
+          <button type="submit" class="btn btn-primary w-full">Crear cuenta demo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <h1>Centro de Integración SDK</h1>
+      <p>Conecta EcoSync a tus sistemas existentes mediante REST API, Webhooks, GraphQL o WebSocket.</p>
+      <div class="demo-note">⚠️ Token de demostración — no conecta a ningún servidor real</div>
+    </div>
+
+    <!-- Token Display -->
+    <h2 style="margin-bottom: 16px;">Token de acceso (demo)</h2>
+    <div class="token-box">
+      <div>
+        <div class="token-label">Token público de demostración</div>
+        <div class="token-value" id="demo-token">ecosync_pub_demo_tk_2024_abc123</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="copyToken()">📋 Copiar</button>
+    </div>
+
+    <div class="warning-box">
+      ⚠️ Este es un token de <strong>demostración pública</strong> con prefijo <code>ecosync_pub_</code>. No conecta a ningún servidor real. En producción, los tokens son generados de forma única por organización con rotación automática cada 90 días.
+    </div>
+
+    <!-- TLS Status -->
+    <div class="tls-status">
+      <div class="tls-icon">🔒</div>
+      <div class="tls-info">
+        <strong>TLS 1.3 — Handshake simulado exitoso</strong>
+        <small>Cipher: TLS_AES_256_GCM_SHA384 · HSTS: max-age=31536000 · Demo local — sin servidor real</small>
+      </div>
+    </div>
+
+    <!-- Code Snippets -->
+    <h2 style="margin-bottom: 16px;">Ejemplos de integración</h2>
+
+    <div class="code-switcher">
+      <button class="code-tab active" data-lang="js" onclick="switchCode('js')">JavaScript</button>
+      <button class="code-tab" data-lang="py" onclick="switchCode('py')">Python</button>
+      <button class="code-tab" data-lang="curl" onclick="switchCode('curl')">cURL</button>
+    </div>
+
+    <!-- JavaScript -->
+    <div class="code-panel active" id="code-js">
+      <pre><span class="c-gray">// EcoSync SDK — Integración JavaScript</span>
+<span class="c-gray">// NOTA: Simulación local — no hay servidor real en esta demo</span>
+
+<span class="c-blue">const</span> ecosync = {
+  token: <span class="c-yellow">'ecosync_pub_demo_tk_2024_abc123'</span>,
+  baseUrl: <span class="c-yellow">'https://api.ecosync.cl/v1'</span>,  <span class="c-gray">// demo — no opera</span>
+
+  <span class="c-green">async</span> syncDraft(draftData) {
+    <span class="c-gray">// En producción, esto haría un POST real al servidor</span>
+    <span class="c-blue">const</span> response = <span class="c-green">await</span> fetch(<span class="c-yellow">`${this.baseUrl}/drafts/sync`</span>, {
+      method: <span class="c-yellow">'POST'</span>,
+      headers: {
+        <span class="c-yellow">'Authorization'</span>: <span class="c-yellow">`Bearer ${this.token}`</span>,
+        <span class="c-yellow">'Content-Type'</span>: <span class="c-yellow">'application/json'</span>
+      },
+      body: JSON.stringify({
+        draft: draftData,
+        clientId: <span class="c-yellow">'demo-client-001'</span>,
+        timestamp: <span class="c-blue">new</span> Date().toISOString()
+      })
+    });
+    <span class="c-blue">return</span> response.json();
+  }
+};
+
+<span class="c-gray">// Uso:</span>
+<span class="c-blue">const</span> draft = window.EcoSync.storage.loadDraft();
+<span class="c-green">await</span> ecosync.syncDraft(draft);
+</pre>
+    </div>
+
+    <!-- Python -->
+    <div class="code-panel" id="code-py">
+      <pre><span class="c-gray"># EcoSync SDK — Integración Python</span>
+<span class="c-gray"># NOTA: Simulación — no hay servidor real en esta demo</span>
+
+<span class="c-blue">import</span> requests
+<span class="c-blue">import</span> json
+
+ECOSYNC_TOKEN = <span class="c-yellow">"ecosync_pub_demo_tk_2024_abc123"</span>
+BASE_URL = <span class="c-yellow">"https://api.ecosync.cl/v1"</span>  <span class="c-gray"># demo — no opera</span>
+
+<span class="c-green">def</span> sync_draft(draft_data: dict) -> dict:
+    <span class="c-yellow">"""Sincroniza un borrador con el servidor EcoSync (demo)."""</span>
+    headers = {
+        <span class="c-yellow">"Authorization"</span>: <span class="c-yellow">f"Bearer {ECOSYNC_TOKEN}"</span>,
+        <span class="c-yellow">"Content-Type"</span>: <span class="c-yellow">"application/json"</span>
+    }
+    payload = {
+        <span class="c-yellow">"draft"</span>: draft_data,
+        <span class="c-yellow">"client_id"</span>: <span class="c-yellow">"demo-client-001"</span>
+    }
+    <span class="c-gray"># En producción: response = requests.post(f"{BASE_URL}/drafts/sync", ...)</span>
+    <span class="c-blue">return</span> {<span class="c-yellow">"status"</span>: <span class="c-yellow">"simulated"</span>, <span class="c-yellow">"message"</span>: <span class="c-yellow">"Demo local — sin servidor"</span>}
+
+<span class="c-gray"># Uso:</span>
+result = sync_draft({<span class="c-yellow">"producto"</span>: <span class="c-yellow">"EcoSync Business"</span>, <span class="c-yellow">"cantidad"</span>: 5})
+print(result)
+</pre>
+    </div>
+
+    <!-- cURL -->
+    <div class="code-panel" id="code-curl">
+      <pre><span class="c-gray"># EcoSync SDK — Integración cURL</span>
+<span class="c-gray"># NOTA: Simulación — no hay servidor real en esta demo</span>
+
+<span class="c-green">curl</span> -X POST <span class="c-yellow">"https://api.ecosync.cl/v1/drafts/sync"</span> \
+  -H <span class="c-yellow">"Authorization: Bearer ecosync_pub_demo_tk_2024_abc123"</span> \
+  -H <span class="c-yellow">"Content-Type: application/json"</span> \
+  -d <span class="c-yellow">'{
+    "draft": {
+      "rut": "[sanitized]",
+      "producto": "EcoSync Business License",
+      "cantidad": 5,
+      "precioUnitario": 149000
+    },
+    "clientId": "demo-client-001",
+    "timestamp": "2024-01-15T09:47:33.000Z"
+  }'</span>
+
+<span class="c-gray"># Respuesta esperada (demo):</span>
+<span class="c-gray"># { "status": "synced", "draftId": "dr_abc123", "timestamp": "..." }</span>
+</pre>
+    </div>
+
+    <!-- Connectors -->
+    <h2 style="margin: 40px 0 16px;">Conectores disponibles</h2>
+    <div class="connector-grid">
+      <div class="connector-card">
+        <div class="connector-icon">🔌</div>
+        <div class="connector-name">REST API</div>
+        <div class="connector-desc">Endpoints HTTPS para sincronización de borradores, historial y métricas</div>
+        <div style="margin-top: 12px;"><span class="badge badge-green">Disponible</span></div>
+      </div>
+      <div class="connector-card">
+        <div class="connector-icon">🪝</div>
+        <div class="connector-name">Webhook</div>
+        <div class="connector-desc">Eventos en tiempo real hacia tu sistema al detectar contingencias</div>
+        <div style="margin-top: 12px;"><span class="badge badge-green">Disponible</span></div>
+      </div>
+      <div class="connector-card">
+        <div class="connector-icon">📊</div>
+        <div class="connector-name">GraphQL</div>
+        <div class="connector-desc">Consultas flexibles para dashboards e integraciones personalizadas</div>
+        <div style="margin-top: 12px;"><span class="badge badge-blue">Enterprise</span></div>
+      </div>
+      <div class="connector-card">
+        <div class="connector-icon">⚡</div>
+        <div class="connector-name">WebSocket</div>
+        <div class="connector-desc">Canal bidireccional para estado de conexión en tiempo real</div>
+        <div style="margin-top: 12px;"><span class="badge badge-blue">Enterprise</span></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong style="color: #E2E8F0;">EcoSync</strong> — Centro de Integración · Demo académico · Sin servidor real</p>
+  </div>
+</footer>
+
+<div id="diagnostics-drawer">
+  <div class="console-header">
+    <div class="console-title">EcoSync Diagnostics Console</div>
+    <div class="console-actions">
+      <button class="console-btn" id="btn-export-console">📥 Exportar JSON</button>
+      <button class="console-btn danger" id="btn-clear-console">🗑 Limpiar</button>
+      <button id="btn-close-console">&times;</button>
+    </div>
+  </div>
+  <div id="console-output"></div>
+</div>
+
+<script src="../js/storage.js"></script>
+<script src="../js/diagnostics.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  function switchCode(lang) {
+    document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.code-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+    document.getElementById('code-' + lang).classList.add('active');
+    window.EcoSync.logger.log('info', `Snippet de integración visualizado: ${lang.toUpperCase()}`);
+  }
+
+  function copyToken() {
+    const token = document.getElementById('demo-token').textContent;
+    navigator.clipboard.writeText(token).then(() => {
+      alert('Token copiado al portapapeles (solo demo).');
+      window.EcoSync.logger.log('info', 'Token de demo copiado al portapapeles');
+    });
+  }
+</script>
+</body>
+</html>
