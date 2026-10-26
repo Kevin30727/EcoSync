@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoSync — Resiliencia Digital, Continuidad Operativa y Green IT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- BANNER GLOBAL DE CONTINGENCIA (Simulación de caída de red) -->
+  <div id="contingency-banner" class="contingency-banner hidden" role="alert">
+    <div class="banner-content">
+      <span class="banner-icon">⚠️</span>
+      <div class="banner-text">
+        <strong>¡Ups! Detectamos una caída momentánea de red.</strong>
+        <span>Modo contingencia activo: Tu borrador permanece guardado localmente de forma segura. Puedes seguir editando sin perder avances. La sincronización se pausará hasta que se restaure la conexión.</span>
+      </div>
+      <div class="banner-actions">
+        <button id="btn-banner-restore" class="btn btn-sm btn-white">Restaurar Conexión</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVEGACIÓN SUPERIOR EMPRESARIAL -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-logo" id="nav-brand" role="button" tabindex="0">
+        <div class="logo-mark">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="#10B981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="brand-name">EcoSync</span>
+          <span class="brand-tag">ENTERPRISE</span>
+        </div>
+      </div>
+
+      <nav class="main-nav" aria-label="Navegación principal">
+        <button class="nav-link active" data-target="view-inicio">Inicio</button>
+        <button class="nav-link" data-target="view-solucion">Solución Tecnológica</button>
+        <button class="nav-link" data-target="view-green-it">Impacto Green IT</button>
+        <button class="nav-link" data-target="view-precios">Planes y Precios</button>
+        <button class="nav-link nav-link-highlight" data-target="view-terminal">Terminal Demo</button>
+      </nav>
+
+      <div class="header-right">
+        <!-- Indicador de conexión -->
+        <div class="connection-pill" id="global-connection-pill">
+          <span class="status-indicator online" id="global-status-dot"></span>
+          <span id="global-status-text">En Línea</span>
+        </div>
+
+        <!-- Usuario de demostración -->
+        <div class="user-chip" title="Sesión de Demostración Activa">
+          <div class="avatar">CIO</div>
+          <div class="user-meta">
+            <span class="user-name">CIO Desk</span>
+            <span class="user-role">Demo Lead</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-sm" id="btn-header-cta">Probar Demostración</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR DE VISTAS (SPA VANILLA) -->
+  <main id="app-viewport">
+
+    <!-- ========================================== -->
+    <!-- 1. VISTA: INICIO / LANDING PAGE            -->
+    <!-- ========================================== -->
+    <section id="view-inicio" class="view-section active">
+      <!-- HERO SECTION -->
+      <div class="hero-section">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>NUEVA VERSIÓN 2.0 • ARQUITECTURA ZERO-DATA LOSS & GREEN IT</span>
+        </div>
+        
+        <h1 class="hero-title">
+          La continuidad de tu operación, <br>
+          <span class="gradient-text">incluso cuando la red falla</span>
+        </h1>
+        
+        <p class="hero-subtitle">
+          El SaaS de integración universal que elimina la pérdida de sesiones, reduce hasta un 74% los tickets de soporte por incidentes de formulario y disminuye el consumo energético en data centers corporativos.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" id="btn-hero-try">
+            <span>Probar Demostración</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <button class="btn btn-secondary btn-lg" id="btn-hero-tech">
+            <span>▷ Ver Arquitectura Técnica</span>
+          </button>
+        </div>
+
+        <div class="hero-trust-bar">
+          <div class="trust-item"><span class="check-icon">✓</span> Despliegue en 15 minutos</div>
+          <div class="trust-item"><span class="check-icon">✓</span> Sin código invasivo</div>
+          <div class="trust-item"><span class="check-icon">✓</span> Compatible con ERP, Salesforce y Microsoft 365</div>
+        </div>
+
+        <!-- TELEMETRÍA EN DIRECTO CARD (Referencia Imagen 1) -->
+        <div class="telemetry-card">
+          <div class="window-header">
+            <div class="window-controls">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="window-title">
+              ECOSYNC TELEMETRÍA EN DIRECTO [CLÚSTER MULTI-REGION SA-01] • <span class="badge-live">🟢 SIMULACIÓN EN VIVO</span>
+            </div>
+          </div>
+
+          <div class="telemetry-metrics-grid">
+            <div class="telemetry-box">
+              <div class="box-header">
+                <span class="box-label">TICKETS REDUCIDOS</span>
+                <span class="box-icon">📉</span>
+              </div>
+              <div class="box-value text-blue">-68% <span class="box-sub">vs mes anterior</span></div>
+              <div class="box-desc">Incidentes por pérdida y reinicio de formulario resueltos en cliente.</div>
+            </div>
+
+            <div class="telemetry-box">
+              <div class="box-header">
+                <span class="box-label">DATOS ASEGURADOS</span>
+                <span class="box-icon">🛡️</span>
+              </div>
+              <div class="box-value text-slate">99.99% <span class="box-badge-sla">SLA Real</span></div>
+              <div class="box-desc">Recuperación contextual con snapshot criptográfico local.</div>
+            </div>
+
+            <div class="telemetry-box">
+              <div class="box-header">
+                <span class="box-label">AHORRO ENERGÉTICO</span>
+                <span class="box-icon">🍃</span>
+              </div>
+              <div class="box-value text-green">14,280 <span class="box-sub">kWh</span></div>
+              <div class="box-desc">Equivalente a 3.8 tCO2e evitadas en transacciones redundantes.</div>
+            </div>
+          </div>
+
+          <div class="telemetry-status-bar">
+            <div class="status-alert">
+              <span class="alert-icon">⚡</span>
+              <div>
+                <strong>Filtro de Descarte Adaptativo:</strong>
+                <span>2,452 peticiones innecesarias mitigadas en tiempo real durante las últimas 12 hrs.</span>
+              </div>
+            </div>
+            <div class="status-stat">
+              <span class="sparkline-sim">∿∿∿</span>
+              <span class="stat-text">ESTATUS <strong>99.98% Óptimo</strong></span>
+            </div>
+          </div>
+          <div class="demo-disclaimer-note">* Mediciones simuladas en entorno de evaluación académica.</div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: INTEGRACIÓN EN 3 CLICS -->
+      <section class="content-block text-center">
+        <div class="section-badge">DISTRIBUCIÓN DE DESPLIEGUE</div>
+        <h2 class="section-title">Integración Universal en 3 Clics</h2>
+        <p class="section-subtitle">
+          EcoSync opera como un plugin unificado de capa adaptativa sobre cualquier CRM, ERP o portal corporativo sin alterar sus bases existentes, sin APIs intrusivas y en preservación zero-trust.
+        </p>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h3 class="step-title">Inyectar Script o Extensión</h3>
+            <p class="step-desc">Copia el snippet adaptativo o distribuye vía directivas corporativas a través de tu CDN o MDM.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h3 class="step-title">Detección Auto-Contextual</h3>
+            <p class="step-desc">El motor detecta estructuras de formulario y asigna caché compresivo en memoria volátil de sesión.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h3 class="step-title">Activación Inmediata</h3>
+            <p class="step-desc">Beneficia telemetría, mitigación de fallas y reporte ESG en segundos sin reiniciar servidores.</p>
+          </div>
+        </div>
+
+        <div class="compatibility-container">
+          <div class="compat-label">COMPATIBILIDAD NATIVA CERTIFICADA</div>
+          <div class="logo-badges">
+            <span class="logo-chip">SAP Fiori</span>
+            <span class="logo-chip">Salesforce</span>
+            <span class="logo-chip">Oracle Cloud</span>
+            <span class="logo-chip">Workday</span>
+            <span class="logo-chip">ServiceNow</span>
+            <span class="logo-chip">Jira Software</span>
+            <span class="logo-chip">HubSpot Enterprise</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN: LOS 3 PILARES ESTRATÉGICOS -->
+      <section class="content-block bg-white-rounded">
+        <div class="section-badge text-center">ARQUITECTURA HOLÍSTICA</div>
+        <h2 class="section-title text-center">Los 3 Pilares Estratégicos de EcoSync</h2>
+        <p class="section-subtitle text-center">
+          Una solución de triple impacto diseñada con rigor para cumplir las expectativas simultáneas de Finanzas, Operaciones de TI y Comités de Sustentabilidad.
+        </p>
+
+        <div class="pillars-grid">
+          <!-- Pilar 1 -->
+          <div class="pillar-card">
+            <div class="pillar-tag">PILAR 01 // CONTINUIDAD OPERATIVA</div>
+            <h3 class="pillar-title">Experiencia de Usuario Ininterrumpida (UX)</h3>
+            <p class="pillar-desc">
+              Cero frustración en el llenado de procesos críticos. Auto-scroll inteligente y preservación instantánea en formularios complejos de alta densidad.
+            </p>
+            <div class="pillar-quote">
+              "Incluso si la pestaña se cierra o colapsa el token de sesión SSO, el colaborador reanuda su tarea sin perder ni una sola línea de captura."
+            </div>
+            <div class="pillar-metric">
+              <span class="metric-num">0%</span>
+              <span class="metric-label">pérdidas de información por caídas de sesión o red</span>
+            </div>
+          </div>
+
+          <!-- Pilar 2 -->
+          <div class="pillar-card">
+            <div class="pillar-tag text-orange">PILAR 02 // EFICIENCIA FINANCIERA</div>
+            <h3 class="pillar-title">Ahorro Financiero Directo (ROI Garantizado)</h3>
+            <p class="pillar-desc">
+              Reducción masiva de solicitudes al Help Desk TI. Menor tiempo de horas-hombre invertidas en depuración y re-ingreso forzado de datos.
+            </p>
+            <div class="pillar-quote">
+              "Recorta las horas redundantes de soporte L1/L2 dedicadas a desbloquear o reconstruir transacciones incompletas en Finanzas y Ventas."
+            </div>
+            <div class="pillar-metric">
+              <span class="metric-num text-orange">$42,000 USD</span>
+              <span class="metric-label">ahorro anual promedio proyectado por cada 500 puestos</span>
+            </div>
+          </div>
+
+          <!-- Pilar 3 -->
+          <div class="pillar-card">
+            <div class="pillar-tag text-green">PILAR 03 // SUSTENTABILIDAD DIGITAL</div>
+            <h3 class="pillar-title">Eficiencia Energética (Green IT Certificado)</h3>
+            <p class="pillar-desc">
+              Optimización de transacciones cliente-servidor para recortar ciclos de cómputo innecesarios y minimizar la huella de carbono digital corporativa.
+            </p>
+            <div class="pillar-quote">
+              "Reduce la carga en clústeres elásticos en AWS, Azure o data centers on-premise con trazabilidad auditable para directivas ESG."
+            </div>
+            <div class="pillar-metric">
+              <span class="metric-num text-green">-45%</span>
+              <span class="metric-label">solicitudes redundantes hacia servidores corporativos</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN: TESTIMONIOS -->
+      <section class="content-block">
+        <div class="section-badge text-center">VALIDACIÓN EN LA INDUSTRIA</div>
+        <h2 class="section-title text-center">Liderazgo Tecnológico y Sustentable</h2>
+        <p class="section-subtitle text-center">
+          Historias de éxito reales de corporaciones de misión crítica optimizando sus plataformas diarias.
+        </p>
+
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="quote-mark">“</div>
+            <p class="quote-body">
+              Redujimos en 2 semanas los incidentes críticos de soporte en nuestro ERP SAP. La implementación fue inmediata y los colaboradores jamás volvieron a quejarse de formularios colapsados.
+            </p>
+            <div class="author-info">
+              <div class="author-avatar">EM</div>
+              <div>
+                <strong>Elena Morales</strong>
+                <span class="author-role">Directora de TI en Vesta Logística</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="quote-mark">“</div>
+            <p class="quote-body">
+              EcoSync nos permitió reportar ahorros cuantificables de huella de carbono digital en nuestro informe ESG anual, uniendo finalmente la eficiencia tecnológica con la sustentabilidad corporativa.
+            </p>
+            <div class="author-info">
+              <div class="author-avatar">CV</div>
+              <div>
+                <strong>Carlos Valenzuela</strong>
+                <span class="author-role">VP de Sustentabilidad Corporativa</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA FINAL INICIO -->
+      <section class="cta-banner">
+        <div class="cta-content">
+          <span class="cta-icon">🚀</span>
+          <h2 class="cta-title">¿Listo para optimizar la infraestructura digital de tu empresa?</h2>
+          <p class="cta-desc">
+            Evalúa el impacto inmediato de EcoSync en tu entorno con un piloto de bajo impacto y métricas de resiliencia verificables en minutos.
+          </p>
+          <div class="cta-buttons">
+            <button class="btn btn-white btn-lg" id="btn-cta-terminal">Abrir Terminal de Demostración</button>
+          </div>
+          <div class="cta-footnote">SIN COMPROMISO COMERCIAL • SIMULACIÓN LOCAL DISPONIBLE</div>
+        </div>
+      </section>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- 2. VISTA: SOLUCIÓN TECNOLÓGICA             -->
+    <!-- ========================================== -->
+    <section id="view-solucion" class="view-section">
+      <div class="section-header-hero">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>ARQUITECTURA Y FUNCIONAMIENTO TÉCNICO • RESILIENCIA Y CERO-DATA-LOSS</span>
+        </div>
+        <h1 class="hero-title">Tecnología Invisible, <br><span class="gradient-text">Rendimiento Imparable</span></h1>
+        <p class="hero-subtitle">
+          Descubre la ingeniería detrás de nuestra sincronización de estado sin sobrecarga de red y el motor de preservación contextual para la empresa moderna.
+        </p>
+        
+        <div class="tech-quick-stats">
+          <div class="quick-stat-box">
+            <span class="stat-label">TIEMPO DE RESPUESTA</span>
+            <span class="stat-val text-blue">&lt; 1.8 ms</span>
+          </div>
+          <div class="quick-stat-box">
+            <span class="stat-label">PETICIONES REDUCIDAS</span>
+            <span class="stat-val text-green">-96.2%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUTO-SCROLL CONTEXTUAL INTELIGENTE (Referencia Imagen 3) -->
+      <div class="tech-deep-dive">
+        <div class="deep-dive-left">
+          <div class="tech-tag">MÓDULO DINÁMICO 01</div>
+          <h2 class="deep-dive-title">Auto-Scroll Contextual Inteligente</h2>
+          
+          <div class="feature-bullet-list">
+            <div class="feature-bullet">
+              <div class="bullet-idx">01</div>
+              <div>
+                <strong>Detección Vectorial de Foco</strong>
+                <p>El micro-kernel de EcoSync mapea el DOM en tiempo real, catalogando campos interactivos en formularios de alta densidad (&gt;100 campos ERP) sin ralentizar el layout.</p>
+              </div>
+            </div>
+            
+            <div class="feature-bullet">
+              <div class="bullet-idx">02</div>
+              <div>
+                <strong>Suavizado Cinemático Adaptativo</strong>
+                <p>Desplaza la lente autónoma basándose en las matrices activas que conducen la vista hacia el siguiente bloque de validación óptimo, eliminando el scroll errático.</p>
+              </div>
+            </div>
+
+            <div class="feature-bullet">
+              <div class="bullet-idx">03</div>
+              <div>
+                <strong>Recuperación Sub-Pixel de Posición</strong>
+                <p>Ante caídas de pestaña o desconexión transitoria, el viewport restaura el cursor y la posición topográfica de pantalla con precisión milimétrica.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="deep-dive-right">
+          <div class="terminal-mock">
+            <div class="terminal-mock-head">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+              <span class="mock-head-text">TELEMETRÍA EN DIRECTO • Consola ERP Cloud</span>
+            </div>
+            <div class="terminal-mock-body">
+              <div class="mock-row">
+                <span class="mock-label">ID DE RECURSO:</span>
+                <span class="mock-code">CLS-492-RD-PLT#39111-HCP188 [ERP Compute Node]</span>
+              </div>
+              <div class="mock-row">
+                <span class="mock-label">ESTADO:</span>
+                <span class="mock-badge-success">SINCRONIZADO</span>
+              </div>
+              <div class="mock-divider"></div>
+              <div class="mock-row">
+                <span class="mock-label">SN-2 VARIABILIDAD AMBIENTAL:</span>
+                <span class="mock-val">SUPERVISIÓN 7500K</span>
+              </div>
+              <div class="mock-row">
+                <span class="mock-label">MAX_CARBON_INTENSITY:</span>
+                <span class="mock-val">248 gCO2/kWh [Auto-Throttle On]</span>
+              </div>
+              <div class="mock-row">
+                <span class="mock-label">SN-3 HISTORIAL CRÍTICO:</span>
+                <span class="mock-val">COMPLETADO [0 DROPS]</span>
+              </div>
+              <div class="mock-row">
+                <span class="mock-label">TX_ACCOUNT:</span>
+                <span class="mock-code">040551-002-IT OFFSHORE CENTER</span>
+              </div>
+            </div>
+            <div class="terminal-mock-foot">
+              <span>Viewport Top-Y: <strong>144.20 px</strong></span>
+              <span>Latencia: <strong>15.8 ms (59.8 FPS)</strong></span>
+              <span>Carga CPU: <strong>0.02% avg</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PERSISTENCIA CERO PÉRDIDAS -->
+      <section class="content-block text-center">
+        <div class="tech-tag">MÓDULO DINÁMICO 02</div>
+        <h2 class="section-title">Persistencia Cero-Pérdidas con Cifrado Local</h2>
+        <p class="section-subtitle">
+          Arquitectura orientada a eventos para proteger cada byte ingresado sin inundar los endpoints de la nube con peticiones innecesarias.
+        </p>
+
+        <div class="pillars-grid">
+          <div class="feature-card">
+            <span class="feature-card-icon">🔒</span>
+            <h3 class="feature-card-title">Buffer Delta Encriptado</h3>
+            <p class="feature-card-desc">
+              Guarda en auto-salvaguardas los cambios atómicos en el LocalStorage del cliente con llaves de sesión efímeras en memoria volátil.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <span class="feature-card-icon">🍃</span>
+            <h3 class="feature-card-title">Ahorro Extremo de Tráfico</h3>
+            <p class="feature-card-desc">
+              En lugar de emitir un guardado HTTP con cada tecla presionada, los datos se consolidan localmente y viajan únicamente al confirmar.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <span class="feature-card-icon">🛡️</span>
+            <h3 class="feature-card-title">Inmunidad a Fallos de Red</h3>
+            <p class="feature-card-desc">
+              Si la VPN corporativa cae, el navegador se cuelga o el usuario cierra su portátil por error, el estado se preserva íntegro.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- MATRIZ COMPARATIVA DE INGENIERÍA -->
+      <section class="content-block">
+        <div class="section-badge text-center">MATRIZ COMPARATIVA DE INGENIERÍA</div>
+        <h2 class="section-title text-center">Arquitecturas Web Clásicas vs EcoSync</h2>
+
+        <div class="comparison-grid">
+          <div class="compare-col bad">
+            <div class="compare-head">
+              <span class="badge-status-red">INEFICIENTE</span>
+              <h3>Arquitecturas Web Clásicas</h3>
+            </div>
+            <ul class="compare-list">
+              <li>❌ Pérdida absoluta de avances cuando la sesión expira o el token SSO caduca.</li>
+              <li>❌ Sobrecarga severa de servidores Web/API con peticiones redundantes tipo auto-save continuo.</li>
+              <li>❌ Falsos negativos y riesgo de duplicidad de transacciones al reintentar a ciegas en mala red.</li>
+              <li>❌ Sin tolerancia a latencias altas en sucursales remotas ni operabilidad offline.</li>
+            </ul>
+          </div>
+
+          <div class="compare-col good">
+            <div class="compare-head">
+              <span class="badge-status-blue">OPTIMIZADO</span>
+              <h3>EcoSync Edge Resilience</h3>
+            </div>
+            <ul class="compare-list">
+              <li>✅ Snapshot local resiliente encriptado en el almacenamiento del cliente.</li>
+              <li>✅ Consumo de ancho de banda minimizado: consolidación inteligente antes de emitir tráfico.</li>
+              <li>✅ Recuperación instantánea ante caídas de VPN, microcortes o recarga accidental de pestaña.</li>
+              <li>✅ Integridad criptográfica garantizada: cero riesgo de pérdida de capturas en campo.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- INTEGRACIÓN UNIVERSAL SIN TOCAR BACKEND -->
+      <section class="content-block bg-white-rounded">
+        <div class="section-badge text-center">INTEGRACIÓN TRANSPARENTE</div>
+        <h2 class="section-title text-center">Integración Universal Sin Alterar el Backend</h2>
+        <p class="section-subtitle text-center">
+          Arquitectura no invasiva tipo headless wrapper: conecta las plataformas neurálgicas de tu organización en minutos sin tocar el código central.
+        </p>
+
+        <div class="arch-flow-diagram">
+          <div class="arch-node">
+            <div class="node-icon">👤</div>
+            <div class="node-title">Usuario en Navegador</div>
+            <div class="node-sub">Captura de campos, eventos de teclado y detección de caídas de red.</div>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node arch-node-core">
+            <div class="node-icon">⚡</div>
+            <div class="node-title">EcoSync LocalEngine</div>
+            <div class="node-sub">Micro-kernel ligero: autoguardado LocalStorage, auto-scroll y consolidación de peticiones.</div>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node">
+            <div class="node-icon">🏢</div>
+            <div class="node-title">ERP / CRM Corporativo</div>
+            <div class="node-sub">Recibe únicamente datos completos y validados, reduciendo hasta un 90% el cómputo de servidor.</div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- 3. VISTA: IMPACTO GREEN IT                 -->
+    <!-- ========================================== -->
+    <section id="view-green-it" class="view-section">
+      <div class="section-header-hero">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>SOSTENIBILIDAD DIGITAL Y GREEN COMPUTING</span>
+        </div>
+        <h1 class="hero-title">Reduce la Huella de Carbono <br><span class="gradient-text">de tu Infraestructura TI</span></h1>
+        <p class="hero-subtitle">
+          La eficiencia de software es el vector de descarbonización corporativa más rápido y rentable. Calcula tu impacto ambiental en segundos y acelera tus compromisos Net-Zero.
+        </p>
+        <div class="standards-pills">
+          <span class="std-pill">🌱 Alcance 2 & 3 GHG Protocol</span>
+          <span class="std-pill">📑 Cumplimiento CSRD & GRI 302</span>
+          <span class="std-pill">⚙️ SCI (Software Carbon Intensity) Auditable</span>
+        </div>
+      </div>
+
+      <!-- CALCULADORA DINÁMICA DE IMPACTO ESG (Referencia Imagen 4) -->
+      <div class="esg-calculator-container">
+        <div class="calculator-card">
+          <div class="calc-header">
+            <div>
+              <span class="calc-badge">MOTOR GEOMÉTRICO DE SIMULACIÓN</span>
+              <h2 class="calc-title">Calculadora Dinámica de Impacto ESG</h2>
+            </div>
+            <div class="calc-tag-right">Algoritmo calibrado v2.4b (Factor IEA 2023: 0.385 kg CO2e/kWh)</div>
+          </div>
+
+          <div class="calc-grid">
+            <!-- Columna Parámetros -->
+            <div class="calc-inputs-col">
+              <div class="calc-input-group">
+                <div class="input-head">
+                  <label for="range-users">Usuarios y Puestos Activos:</label>
+                  <span class="input-val-badge" id="val-users">2,500</span>
+                </div>
+                <input type="range" id="range-users" min="100" max="10000" step="100" value="2500" class="custom-slider">
+                <div class="range-limits"><span>100</span><span>10,000+</span></div>
+              </div>
+
+              <div class="calc-input-group">
+                <label for="select-erp">Plataforma Primaria ERP/CRM:</label>
+                <select id="select-erp" class="custom-select">
+                  <option value="1.2">SAP S/4HANA & SAP Fiori (Alta densidad)</option>
+                  <option value="1.0">Salesforce Enterprise & LWC</option>
+                  <option value="1.1">Microsoft Dynamics 365 Finance</option>
+                  <option value="1.15">Oracle Cloud ERP / Financials</option>
+                </select>
+              </div>
+
+              <div class="calc-input-group">
+                <div class="input-head">
+                  <label for="range-tx">Consultas / Transacciones Diarias por Usuario:</label>
+                  <span class="input-val-badge" id="val-tx">120</span>
+                </div>
+                <input type="range" id="range-tx" min="20" max="500" step="10" value="120" class="custom-slider">
+                <div class="range-limits"><span>20 transacciones</span><span>500 transacciones</span></div>
+              </div>
+
+              <div class="calc-notice">
+                ℹ️ El motor proyecta el ahorro eliminando peticiones redundantes mediante Cache LocalStorage Heurístico y compresión delta en el cliente.
+              </div>
+            </div>
+
+            <!-- Columna Resultados Dinámicos -->
+            <div class="calc-results-col">
+              <div class="results-grid">
+                <div class="result-tile">
+                  <div class="result-head">
+                    <span>AHORRO ENERGÉTICO ANUAL</span>
+                    <span class="result-icon">⚡</span>
+                  </div>
+                  <div class="result-val text-blue" id="res-energy">5,606 <span class="val-unit">kWh / año</span></div>
+                  <div class="result-sub" id="res-homes">Equivalente a alimentar 5 hogares promedio durante 1 año.</div>
+                </div>
+
+                <div class="result-tile">
+                  <div class="result-head">
+                    <span>HUELLA CO2E EVITADA</span>
+                    <span class="result-icon">☁️</span>
+                  </div>
+                  <div class="result-val text-green" id="res-carbon">2.2 <span class="val-unit">Ton CO2e</span></div>
+                  <div class="result-sub">Reducción neta directa en Alcance 3 corporativo.</div>
+                </div>
+
+                <div class="result-tile">
+                  <div class="result-head">
+                    <span>EQUIVALENTE ARBÓREO</span>
+                    <span class="result-icon">🌳</span>
+                  </div>
+                  <div class="result-val text-slate" id="res-trees">100 <span class="val-unit">árboles</span></div>
+                  <div class="result-sub">Árboles urbanos absorbiendo emisiones durante 10 años.</div>
+                </div>
+
+                <div class="result-tile">
+                  <div class="result-head">
+                    <span>AHORRO ECONÓMICO TI</span>
+                    <span class="result-icon">💵</span>
+                  </div>
+                  <div class="result-val text-orange" id="res-money">$2,113 <span class="val-unit">USD / año</span></div>
+                  <div class="result-sub">Reducción directa en facturación Cloud, egress & vCPU.</div>
+                </div>
+              </div>
+
+              <button class="btn btn-outline-primary btn-block" id="btn-download-esg">
+                📄 Descargar Resumen de Impacto ESG (.txt)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALCULADORA GREEN IT SIMPLIFICADA (Requisito Académico 8) -->
+      <section class="content-block">
+        <div class="section-badge text-center">FÓRMULA OPERATIVA</div>
+        <h2 class="section-title text-center">Calculadora Green IT Simplificada</h2>
+        <p class="section-subtitle text-center">
+          Demuestra la estimación directa de solicitudes evitadas al año para comprobar la descongestión de servidores corporativos.
+        </p>
+
+        <div class="simple-calc-box">
+          <div class="simple-calc-grid">
+            <div class="form-group">
+              <label for="sc-req">Solicitudes redundantes por día:</label>
+              <input type="number" id="sc-req" value="2400" min="0" class="form-control">
+              <small class="text-muted">Peticiones repetitivas generadas por validación continua.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="sc-reduction">Porcentaje de reducción estimado (%):</label>
+              <input type="number" id="sc-reduction" value="65" min="0" max="100" class="form-control">
+              <small class="text-muted">Porcentaje filtrado y consolidado por EcoSync.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="sc-days">Días de operación al año:</label>
+              <input type="number" id="sc-days" value="250" min="1" max="365" class="form-control">
+              <small class="text-muted">Jornadas laborales anuales estándar.</small>
+            </div>
+          </div>
+
+          <div class="simple-calc-result">
+            <div class="calc-formula-display">
+              <strong>Fórmula:</strong> Solicitudes evitadas al año = Solicitudes redundantes × % Reducción × Días de operación
+            </div>
+            <div class="formula-output">
+              <span>Total de solicitudes evitadas al año:</span>
+              <strong id="sc-total-result" class="text-green">390,000 peticiones</strong>
+            </div>
+            <p class="formula-disclaimer">
+              * Nota: Este cálculo es una estimación ilustrativa basada en promedios operativos de arquitectura web.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ¿POR QUÉ AHORRA ENERGÍA EL SOFTWARE ECOSYNC? -->
+      <section class="content-block bg-white-rounded">
+        <div class="section-badge text-center">FUNDAMENTO CIENTÍFICO Y TÉCNICO</div>
+        <h2 class="section-title text-center">¿Por qué ahorra energía el software EcoSync?</h2>
+        <p class="section-subtitle text-center">
+          A diferencia de proyectos de hardware que toman años, la optimización algorítmica de software produce reducciones medibles en menos de 48 horas tras su despliegue.
+        </p>
+
+        <div class="pillars-grid">
+          <div class="feature-card">
+            <div class="card-kpi text-blue">-45% Peticiones HTTP</div>
+            <h3 class="feature-card-title">Eliminación de Tráfico Redundante</h3>
+            <p class="feature-card-desc">
+              EcoSync analiza y cataloga transacciones en el LocalStorage del cliente. Evita que miles de usuarios bombardeen el gateway corporativo con peticiones continuas de cada tecla.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="card-kpi text-green">Menor Uso de CPU</div>
+            <h3 class="feature-card-title">Alivio en Bases de Datos SQL/ERP</h3>
+            <p class="feature-card-desc">
+              Al procesar validaciones y auto-scroll en el cliente antes del envío final, los clústeres centrales suprimen colas de reintentos y bloqueos de tablas en horas pico.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="card-kpi text-orange">Menor Huella Térmica</div>
+            <h3 class="feature-card-title">Menor Refrigeración en Data Centers</h3>
+            <p class="feature-card-desc">
+              Cada kilovatio no disipado en clústeres de servidores (AWS, Azure o centros On-Premises) ahorra un 40% adicional en los sistemas HVAC de enfriamiento industrial.
+            </p>
+          </div>
+        </div>
+
+        <!-- SCI BOX -->
+        <div class="sci-box">
+          <div class="sci-head">
+            <strong>Medición SCI (Software Carbon Intensity) en Tiempo Real:</strong>
+            <code>SCI = ((E × I) + M) / R</code>
+          </div>
+          <div class="sci-metrics">
+            <div>Intensidad de Red: <strong>0.012 g CO2e / req</strong> (-92% vs legacy)</div>
+            <div>Reducción Térmica Proyectada: <strong>-4.1 °C</strong> en rack clusters</div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- 4. VISTA: PLANES Y PRECIOS                 -->
+    <!-- ========================================== -->
+    <section id="view-precios" class="view-section">
+      <div class="section-header-hero">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>INVERSIÓN CLARA Y TRANSPARENTE</span>
+        </div>
+        <h1 class="hero-title">Planes Diseñados para Escalar <br><span class="gradient-text">con tu Operación</span></h1>
+        <p class="hero-subtitle">
+          Licenciamiento SaaS flexible con retorno de inversión garantizado en menos de 90 días. Todos los planes incluyen actualizaciones continuas de seguridad y módulos Green IT.
+        </p>
+
+        <!-- FACTURACIÓN SWITCH (Referencia Imagen 2) -->
+        <div class="billing-switch-wrapper">
+          <span class="switch-label active" id="lbl-billing-monthly">Facturación Mensual</span>
+          <button class="switch-toggle" id="btn-billing-toggle" role="switch" aria-checked="false">
+            <span class="switch-thumb"></span>
+          </button>
+          <span class="switch-label" id="lbl-billing-annual">
+            Facturación Anual <span class="badge-discount">-20% + ESG Report</span>
+          </span>
+        </div>
+
+        <div class="guarantee-pills">
+          <span>🛡️ Sin permanencia forzada</span>
+          <span>🌿 Métrica Scope 2 incluida</span>
+          <span>⚡ Despliegue en 48 horas</span>
+        </div>
+      </div>
+
+      <!-- TARJETAS DE PRECIOS -->
+      <div class="pricing-cards-grid">
+        <!-- PLAN PYME -->
+        <div class="pricing-card">
+          <div class="pricing-card-header">
+            <div class="card-icon">💻</div>
+            <h3 class="plan-name">Plan Pyme</h3>
+            <p class="plan-desc">Para empresas en crecimiento que buscan robustecer sus primeros procesos críticos sin fricción técnica.</p>
+            <div class="plan-capacity">👥 Hasta 50 usuarios activos</div>
+          </div>
+
+          <div class="plan-price-block">
+            <div class="plan-price">
+              <span class="price-currency">$</span>
+              <span class="price-val" id="price-pyme">249</span>
+              <span class="price-cycle">USD / mes</span>
+            </div>
+            <div class="plan-billing-note" id="note-pyme">Facturado mes a mes</div>
+            <div class="plan-onboarding">ONBOARDING: $450 USD (PAGO ÚNICO)</div>
+          </div>
+
+          <ul class="plan-features-list">
+            <li><span class="f-check">✓</span> Auto-Scroll Contextual estándar</li>
+            <li><span class="f-check">✓</span> Autoguardado LocalStorage con encriptación local</li>
+            <li><span class="f-check">✓</span> 1 Conector integrado (Salesforce o CRM compatible)</li>
+            <li><span class="f-check">✓</span> Soporte estándar vía tickets (L-V 9h-18h)</li>
+            <li><span class="f-check">✓</span> Métricas básicas de ahorro y Green IT</li>
+          </ul>
+
+          <button class="btn btn-outline-primary btn-block" data-select-plan="Pyme">Comenzar Prueba Gratuita 14 Días</button>
+        </div>
+
+        <!-- PLAN CORPORATIVO (MÁS POPULAR) -->
+        <div class="pricing-card featured">
+          <div class="popular-ribbon">MÁS POPULAR</div>
+          <div class="pricing-card-header">
+            <div class="card-icon">🏢</div>
+            <h3 class="plan-name">Plan Corporativo</h3>
+            <p class="plan-desc">Para medianas y grandes corporaciones con operación intensiva de datos, alta concurrencia y auditoría ESG.</p>
+            <div class="plan-capacity">👥 Hasta 500 usuarios activos</div>
+          </div>
+
+          <div class="plan-price-block">
+            <div class="plan-price">
+              <span class="price-currency">$</span>
+              <span class="price-val" id="price-corp">890</span>
+              <span class="price-cycle">USD / mes</span>
+            </div>
+            <div class="plan-billing-note" id="note-corp">Facturado mes a mes</div>
+            <div class="plan-onboarding text-green">ONBOARDING: BONIFICADO ($1,200 USD CONFIGURACIÓN TÉCNICA)</div>
+          </div>
+
+          <div class="green-efficiency-banner">
+            🌱 EFICIENCIA GREEN IT PROYECTADA: <strong>44% AHORRO DE CO2</strong>
+          </div>
+
+          <ul class="plan-features-list">
+            <li><span class="f-check">✓</span> <strong>Todo lo del Plan Pyme, más:</strong></li>
+            <li><span class="f-check">✓</span> Hasta 3 Conectores simultáneos (SAP Fiori, Salesforce, Dynamics)</li>
+            <li><span class="f-check">✓</span> Calculadora y Dashboard Green IT en tiempo real</li>
+            <li><span class="f-check">✓</span> Consola de auditoría de sesiones para administradores TI</li>
+            <li><span class="f-check">✓</span> SLA de disponibilidad garantizada 99.9%</li>
+            <li><span class="f-check">✓</span> Soporte prioritario 24/5 (Canal dedicado en Slack / Teams)</li>
+            <li><span class="f-check">✓</span> Certificado digital de reducción huella para reporte ESG anual</li>
+          </ul>
+
+          <button class="btn btn-primary btn-block" data-select-plan="Corporativo">Solicitar Demo y Cotización →</button>
+        </div>
+
+        <!-- PLAN ENTERPRISE -->
+        <div class="pricing-card">
+          <div class="pricing-card-header">
+            <div class="card-icon">🌐</div>
+            <h3 class="plan-name">Plan Enterprise</h3>
+            <p class="plan-desc">Para grandes corporativos globales con requisitos de gobernanza a medida, despliegues custom y máxima resiliencia.</p>
+            <div class="plan-capacity">👥 Usuarios y puestos ilimitados</div>
+          </div>
+
+          <div class="plan-price-block">
+            <div class="plan-price">
+              <span class="price-currency">$</span>
+              <span class="price-val" id="price-enterprise">2,190</span>
+              <span class="price-cycle">USD / mes</span>
+            </div>
+            <div class="plan-billing-note" id="note-enterprise">Tarifa base a la medida</div>
+            <div class="plan-onboarding">INTEGRACIÓN A LA MEDIDA / HARDENING Y SLA CUSTOM</div>
+          </div>
+
+          <ul class="plan-features-list">
+            <li><span class="f-check">✓</span> <strong>Todo lo del Plan Corporativo, más:</strong></li>
+            <li><span class="f-check">✓</span> Conectores ERP y sistemas legados sin límite</li>
+            <li><span class="f-check">✓</span> Soporte 24/7/365 con Technical Account Manager asignado</li>
+            <li><span class="f-check">✓</span> Despliegue Híbrido, VPC o On-Premises Dedicado</li>
+            <li><span class="f-check">✓</span> Auditorías SOC 2 Type II y pentesting personalizado</li>
+            <li><span class="f-check">✓</span> SLA contractual de 99.99% con penalizaciones</li>
+            <li><span class="f-check">✓</span> Academia de certificación interna y workshops de TI</li>
+          </ul>
+
+          <button class="btn btn-outline-primary btn-block" data-select-plan="Enterprise">Contactar a Ventas Enterprise</button>
+        </div>
+      </div>
+
+      <!-- MATRIZ COMPARATIVA DE CARACTERÍSTICAS -->
+      <section class="content-block">
+        <div class="section-badge text-center">COMPARATIVA DETALLADA</div>
+        <h2 class="section-title text-center">Matriz Comparativa de Características</h2>
+
+        <div class="table-responsive">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Parámetro Técnico / Operativo</th>
+                <th>Pyme</th>
+                <th class="col-highlight">Corporativo</th>
+                <th>Enterprise</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="table-group-row">
+                <td colspan="4">1. ARQUITECTURA DE DATOS Y SINCRONIZACIÓN</td>
+              </tr>
+              <tr>
+                <td>Volumen de datos respaldados en buffer local</td>
+                <td>Hasta 250 MB / sesión</td>
+                <td class="col-highlight">Hasta 2.5 GB / sesión</td>
+                <td>Ilimitado (Multi-tenant)</td>
+              </tr>
+              <tr>
+                <td>Retención de estado ante caídas de red</td>
+                <td>7 Días</td>
+                <td class="col-highlight">30 Días</td>
+                <td>Configurable (hasta 90 días)</td>
+              </tr>
+              <tr>
+                <td>Encriptación local en el Edge</td>
+                <td>AES-256</td>
+                <td class="col-highlight">AES-256 + HMAC-SHA-512</td>
+                <td>HSM / BYOK (Llave propia)</td>
+              </tr>
+              <tr>
+                <td>Conectores simultáneos de software central</td>
+                <td>1 Conector</td>
+                <td class="col-highlight">3 Conectores</td>
+                <td>Ilimitados ERP / Custom</td>
+              </tr>
+
+              <tr class="table-group-row">
+                <td colspan="4">2. SOSTENIBILIDAD Y GREEN IT (SCOPE 2 & 3)</td>
+              </tr>
+              <tr>
+                <td>Cálculo de huella energética de terminales en tiempo real</td>
+                <td>Estimación Mensual</td>
+                <td class="col-highlight">En tiempo real</td>
+                <td>En tiempo real</td>
+              </tr>
+              <tr>
+                <td>Exportación auditada según marco GHG Protocol / GRI</td>
+                <td>—</td>
+                <td class="col-highlight">Sí</td>
+                <td>Sí</td>
+              </tr>
+              <tr>
+                <td>Controlador Inteligente de CPU / Ahorro térmico</td>
+                <td>Básico</td>
+                <td class="col-highlight">Avanzado (Heurístico)</td>
+                <td>Motor Predictivo AI</td>
+              </tr>
+
+              <tr class="table-group-row">
+                <td colspan="4">3. SEGURIDAD, SOPORTE Y GARANTÍA CONTRACTUAL</td>
+              </tr>
+              <tr>
+                <td>Tiempo de respuesta garantizado (SLA Incidencias)</td>
+                <td>&lt; 12 Horas</td>
+                <td class="col-highlight">&lt; 2 Horas</td>
+                <td>&lt; 15 Minutos (Severidad 1)</td>
+              </tr>
+              <tr>
+                <td>Tipo de despliegue de infraestructura</td>
+                <td>Cloud Multi-Tenant</td>
+                <td class="col-highlight">Cloud Aislado</td>
+                <td>On-Premise / VPC Dedicada</td>
+              </tr>
+              <tr>
+                <td>Reportes de Auditoría SOC 2 Type II e ISO 27001</td>
+                <td>—</td>
+                <td class="col-highlight">Sí</td>
+                <td>Sí</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PREGUNTAS FRECUENTES (ACORDEÓN) -->
+      <section class="content-block">
+        <div class="section-badge text-center">PREGUNTAS FRECUENTES</div>
+        <h2 class="section-title text-center">Dudas Frecuentes de Contratación</h2>
+        <p class="section-subtitle text-center">Respuestas técnicas y operativas para comités de adquisiciones, CISO y directores de Finanzas.</p>
+
+        <div class="faq-accordion">
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>¿Qué incluye exactamente el costo de integración inicial?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              El costo de onboarding cubre el análisis de esquemas de formularios ERP/CRM, la configuración del plugin adaptativo, pruebas de no-intrusión y la capacitación técnica del equipo de soporte.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>¿Es posible cambiar de plan a medida que sumamos nuevos empleados?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              Sí. Los planes pueden escalar o descender mes a mes de forma flexible. El escalado de volumen y la habilitación de nuevos conectores se realiza en menos de 2 horas.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>¿Cómo garantizan que no almacenan datos confidenciales de nuestros clientes?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              EcoSync implementa arquitectura Zero-Knowledge y Zero-Retention de PII. La información del borrador se conserva de forma exclusiva en el LocalStorage del navegador del cliente y viaja únicamente al endpoint de la empresa cuando el usuario confirma la operación.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>¿Ofrecen un período de prueba o piloto controlado (PoC)?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              Sí. Brindamos una prueba piloto de 30 días en entornos de staging o producción controlada, con métricas de resiliencia y telemetría de huella digital garantizadas por contrato.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GARANTÍA PILOTO 30 DÍAS -->
+      <div class="guarantee-box">
+        <div class="guarantee-content">
+          <div class="guarantee-badge">GARANTÍA CONTRACTUAL ECOSYNC</div>
+          <h3 class="guarantee-title">Prueba piloto de 30 días con garantía de satisfacción del 100%</h3>
+          <p class="guarantee-text">
+            Si durante el primer mes la reducción en pérdida de transacciones y el ahorro térmico en terminales no cumple las métricas acordadas en el SLA, te reembolsamos el 100% del costo de integración inicial. Sin cláusulas ocultas.
+          </p>
+        </div>
+        <div class="guarantee-seals">
+          <div class="seal-item">🛡️ SOC 2 Type II Compliant</div>
+          <div class="seal-item">🔒 ISO 27001 & ISO 14001</div>
+          <div class="seal-item">⚖️ GDPR / CCPA Ready</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- 5. VISTA: TERMINAL TRANSACCIONAL & RESILIENCIA -->
+    <!-- ========================================== -->
+    <section id="view-terminal" class="view-section">
+      <div class="section-header-hero">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>TERMINAL DE DEMOSTRACIÓN TÉCNICA • RESILIENCIA EN TIEMPO REAL</span>
+        </div>
+        <h1 class="hero-title">Terminal Transaccional <br><span class="gradient-text">y Recuperación Guiada</span></h1>
+        <p class="hero-subtitle">
+          Experimenta en vivo cómo EcoSync protege el progreso de un formulario de cotización corporativo ante interrupciones de conectividad y recargas intempestivas.
+        </p>
+      </div>
+
+      <!-- DASHBOARD DE DEMOSTRACIÓN (Requisito 4.B) -->
+      <div class="demo-dashboard">
+        <div class="dashboard-header">
+          <span class="dash-title">DASHBOARD DE TELEMETRÍA EN VIVO</span>
+          <span class="dash-subtitle">* Métricas actualizadas dinámicamente mediante JavaScript</span>
+        </div>
+        <div class="dashboard-cards-grid">
+          <div class="dash-card">
+            <span class="dash-card-label">ESTADO DE CONEXIÓN</span>
+            <div class="dash-card-val" id="dash-connection-status">
+              <span class="status-indicator online"></span>
+              <span id="dash-connection-text">En Línea</span>
+            </div>
+            <span class="dash-card-sub" id="dash-connection-desc">Simulación operativa disponible</span>
+          </div>
+
+          <div class="dash-card">
+            <span class="dash-card-label">ESTADO DEL FORMULARIO</span>
+            <div class="dash-card-val text-blue" id="dash-form-status">Sin cambios</div>
+            <span class="dash-card-sub" id="dash-form-sub">Formulario listo para captura</span>
+          </div>
+
+          <div class="dash-card">
+            <span class="dash-card-label">ÚLTIMO AUTOGUARDADO</span>
+            <div class="dash-card-val text-slate" id="dash-last-saved">Ninguno aún</div>
+            <span class="dash-card-sub" id="dash-saved-bytes">Buffer LocalStorage vacío</span>
+          </div>
+
+          <div class="dash-card">
+            <span class="dash-card-label">INTENTOS DE SYNC</span>
+            <div class="dash-card-val text-slate" id="dash-sync-attempts">0</div>
+            <span class="dash-card-sub">Peticiones locales de prueba</span>
+          </div>
+
+          <div class="dash-card">
+            <span class="dash-card-label">EVENTOS DE CONTINGENCIA</span>
+            <div class="dash-card-val text-orange" id="dash-contingency-count">0</div>
+            <span class="dash-card-sub">Caídas simuladas detectadas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="terminal-layout-grid">
+        <!-- FORMULARIO DE COTIZACIÓN (Requisito 4.C) -->
+        <div class="form-container-card">
+          <!-- Status Banner de Autoguardado -->
+          <div class="autosave-status-bar" id="autosave-bar">
+            <span class="autosave-icon" id="autosave-icon">💾</span>
+            <span class="autosave-text" id="autosave-text">Listo. Las modificaciones se autoguardarán localmente.</span>
+            <span class="autosave-time" id="autosave-time"></span>
+          </div>
+
+          <form id="quote-form" novalidate>
+            <div class="form-section-title">1. Datos de la Empresa y Contacto</div>
+            
+            <div class="form-row">
+              <div class="form-group col-6">
+                <label for="f-rut">RUT Corporativo: <span class="req">*</span></label>
+                <input type="text" id="f-rut" class="form-control" placeholder="Ej: 76.432.189-K" required>
+              </div>
+              <div class="form-group col-6">
+                <label for="f-razon">Razón Social: <span class="req">*</span></label>
+                <input type="text" id="f-razon" class="form-control" placeholder="Ej: Logística & Distribución Andina S.A." required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-6">
+                <label for="f-contacto">Nombre del Contacto: <span class="req">*</span></label>
+                <input type="text" id="f-contacto" class="form-control" placeholder="Ej: Andrea Benítez" required>
+              </div>
+              <div class="form-group col-6">
+                <label for="f-email">Correo Electrónico: <span class="req">*</span></label>
+                <input type="email" id="f-email" class="form-control" placeholder="Ej: abenitez@andina.cl" required>
+              </div>
+            </div>
+
+            <div class="form-section-title">2. Producto, Servicio y Parámetros Comerciales</div>
+
+            <div class="form-row">
+              <div class="form-group col-12">
+                <label for="f-producto">Producto o Servicio: <span class="req">*</span></label>
+                <select id="f-producto" class="form-control">
+                  <option value="licencia-corp">EcoSync Plan Corporativo (Licencia Anual 500 Puestos)</option>
+                  <option value="licencia-pyme">EcoSync Plan Pyme (Licencia Anual 50 Puestos)</option>
+                  <option value="licencia-enterprise">EcoSync Enterprise Suite & Conectores Dedicados</option>
+                  <option value="conector-sap">Conector Especializado SAP Fiori & GUI Web</option>
+                  <option value="auditoria-esg">Auditoría y Certificación SCI de Huella Carbono TI</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-4">
+                <label for="f-cantidad">Cantidad: <span class="req">*</span></label>
+                <input type="number" id="f-cantidad" class="form-control" value="1" min="1" step="1" required>
+              </div>
+              <div class="form-group col-4">
+                <label for="f-precio">Precio Unitario ($ USD): <span class="req">*</span></label>
+                <input type="number" id="f-precio" class="form-control" value="890" min="0" step="10" required>
+              </div>
+              <div class="form-group col-4">
+                <label for="f-descuento">Descuento (%):</label>
+                <input type="number" id="f-descuento" class="form-control" value="10" min="0" max="100" step="1">
+              </div>
+            </div>
+
+            <!-- DESGLOSE ECONÓMICO AUTOMÁTICO (IVA 19%) -->
+            <div class="calculation-summary-card">
+              <div class="calc-row">
+                <span>Subtotal Bruto:</span>
+                <span id="calc-subtotal">$890.00 USD</span>
+              </div>
+              <div class="calc-row text-orange">
+                <span>Descuento Aplicado:</span>
+                <span id="calc-descuento">-$89.00 USD</span>
+              </div>
+              <div class="calc-row">
+                <span>Subtotal Neto:</span>
+                <span id="calc-neto">$801.00 USD</span>
+              </div>
+              <div class="calc-row">
+                <span>IVA (19%):</span>
+                <span id="calc-iva">$152.19 USD</span>
+              </div>
+              <div class="calc-row calc-total-row">
+                <span>TOTAL ESTIMADO:</span>
+                <span id="calc-total" class="text-blue">$953.19 USD</span>
+              </div>
+            </div>
+
+            <!-- BARRA DE ACCIONES Y CONTROLES -->
+            <div class="form-actions-toolbar">
+              <div class="action-buttons-group">
+                <button type="button" class="btn btn-primary" id="btn-save-draft" title="Guarda inmediatamente en LocalStorage">
+                  💾 Guardar Borrador
+                </button>
+                <button type="button" class="btn btn-outline-primary" id="btn-restore-draft" title="Recupera el borrador guardado">
+                  📥 Recuperar Borrador
+                </button>
+                <button type="button" class="btn btn-outline-danger" id="btn-clear-form" title="Limpia los campos del formulario">
+                  🧹 Limpiar Formulario
+                </button>
+              </div>
+
+              <div class="simulation-buttons-group">
+                <button type="button" class="btn btn-warning" id="btn-simulate-drop" title="Simula pérdida momentánea de conexión de red">
+                  ⚡ Simular Caída de Conexión
+                </button>
+                <button type="button" class="btn btn-success" id="btn-restore-connection" title="Restaura el estado de conexión simulado">
+                  🔄 Restaurar Conexión
+                </button>
+                <button type="button" class="btn btn-dark" id="btn-sync" title="Intenta procesar sincronización simulada">
+                  ☁️ Intentar Sincronizar
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- BANNER INFORMATIVO DE SINCRONIZACIÓN -->
+          <div id="sync-feedback-box" class="sync-feedback-box hidden"></div>
+        </div>
+
+        <!-- PRUEBA GUIADA DE RESILIENCIA (Requisito 7) -->
+        <div class="resilience-guide-card">
+          <div class="guide-header">
+            <span class="guide-badge">GUÍA INTERACTIVA</span>
+            <h3 class="guide-title">Prueba Guiada de Resiliencia</h3>
+            <p class="guide-desc">Sigue estos 8 pasos para comprobar cómo la arquitectura de EcoSync evita la pérdida de información:</p>
+          </div>
+
+          <div class="guide-steps-list">
+            <div class="guide-step" data-step="1">
+              <div class="step-check-circle" id="step-check-1">1</div>
+              <div class="step-info">
+                <strong>1. Completa varios campos del formulario</strong>
+                <p>Escribe en RUT, Razón Social, Contacto o ajusta cantidades.</p>
+              </div>
+            </div>
+
+            <div class="guide-step" data-step="2">
+              <div class="step-check-circle" id="step-check-2">2</div>
+              <div class="step-info">
+                <strong>2. Espera el indicador de autoguardado</strong>
+                <p>Verifica que el estado cambie a "Borrador guardado localmente".</p>
+              </div>
+            </div>
+
+            <div class="guide-step" data-step="3">
+              <div class="step-check-circle" id="step-check-3">3</div>
+              <div class="step-info">
+                <strong>3. Simula una caída de conexión</strong>
+                <p>Pulsa "Simular Caída de Conexión" y observa el banner naranja.</p>
+              </div>
+            </div>
+
+            <div class="guide-step" data-step="4">
+              <div class="step-check-circle" id="step-check-4">4</div>
+              <div class="step-info">
+                <strong>4. Continúa editando en contingencia</strong>
+                <p>Comprueba que el formulario sigue completamente editable sin red.</p>
+              </div>
+            </div>
+
+            <div class="guide-step" data-step="5">
+              <div class="step-check-circle" id="step-check-5">5</div>
+              <div class="step-info">
+                <strong>5. Recarga la página (F5 o botón demo)</strong>
+                <p>
+                  <button class="btn btn-sm btn-outline-primary" id="btn-sim-reload">Simular Recarga de Página</button>
+                </p>
+              </div>
+            </div>
+
+            <div class="guide-step" data-step="6">
+              <div class="step-check-circle" id="step-check-6">6</div>
+              <div class="step-info">
+                <strong>6. Recupera el borrador guardado</strong>
+                <p>Usa "Recuperar Borrador" si no se restaura automáticamente.</p>
+              </div>
+            </div>
+
+            <div class="guide-step" data-step="7">
+              <div class="step-check-circle" id="step-check-7">7</div>
+              <div class="step-info">
+                <strong>7. Restaura la conexión simulada</strong>
+                <p>Pulsa "Restaurar Conexión" para retirar el estado de contingencia.</p>
+              </div>
+            </div>
+
+            <div class="guide-step" data-step="8">
+              <div class="step-check-circle" id="step-check-8">8</div>
+              <div class="step-info">
+                <strong>8. Ejecuta la sincronización simulada</strong>
+                <p>Pulsa "Intentar Sincronizar" y abre la consola con <code>Ctrl + Shift + D</code>.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="guide-footer">
+            <button class="btn btn-outline-primary btn-block btn-sm" id="btn-open-console-guide">
+              💻 Abrir Consola Técnica de Diagnóstico
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- 6. CONSOLA TÉCNICA OCULTA (Requisito 6)    -->
+  <!-- ========================================== -->
+  <aside id="tech-console-drawer" class="tech-console-drawer hidden" aria-label="Consola de Diagnóstico Técnico">
+    <div class="console-header">
+      <div class="console-title-group">
+        <span class="console-dot-green"></span>
+        <span class="console-title">EcoSync Technical Diagnostic Terminal [v2.4]</span>
+        <span class="console-shortcut-badge">Atajo: Ctrl + Shift + D</span>
+      </div>
+      <div class="console-header-actions">
+        <button id="btn-console-clear" class="btn btn-console-action" title="Limpiar eventos">🗑️ Limpiar Historial</button>
+        <button id="btn-console-export" class="btn btn-console-action" title="Exportar a JSON">📥 Exportar JSON</button>
+        <button id="btn-console-close" class="btn btn-console-action" title="Cerrar consola">✕ Cerrar</button>
+      </div>
+    </div>
+
+    <div class="console-output" id="console-output" role="log" aria-live="polite">
+      <!-- Los eventos se inyectan dinámicamente con timestamp -->
+    </div>
+
+    <div class="console-footer">
+      <span class="console-status-text">Consola activa para pruebas de resiliencia • Cero datos personales (PII) son registrados en los logs.</span>
+      <span id="console-event-counter">Total eventos: 0</span>
+    </div>
+  </aside>
+
+  <!-- BOTÓN FLOTANTE PARA ABRIR LA CONSOLA TÉCNICA -->
+  <button id="btn-floating-console" class="btn-floating-console" title="Abrir consola técnica (Ctrl + Shift + D)">
+    <span class="icon">⌨️</span>
+    <span class="label">Consola TI (Ctrl+Shift+D)</span>
+  </button>
+
+  <!-- MODAL DE CONFIRMACIÓN DE RECUPERACIÓN -->
+  <div id="confirm-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <h3 class="modal-title">Confirmar reemplazo de datos</h3>
+      <p class="modal-body" id="confirm-modal-msg">El formulario actual contiene datos. ¿Deseas reemplazarlos con el borrador guardado en LocalStorage?</p>
+      <div class="modal-actions">
+        <button id="btn-modal-cancel" class="btn btn-secondary">Cancelar</button>
+        <button id="btn-modal-confirm" class="btn btn-primary">Sí, Restaurar Borrador</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER EMPRESARIAL -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand-col">
+        <div class="brand-logo">
+          <div class="logo-mark">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#2563EB" stroke-width="2.2"/>
+              <path d="M2 17L12 22L22 17" stroke="#10B981" stroke-width="2.2"/>
+            </svg>
+          </div>
+          <span class="brand-name">EcoSync</span>
+        </div>
+        <p class="footer-desc">
+          Infraestructura de software para supervisión energética, resiliencia transaccional y optimización de cómputo empresarial de alta densidad.
+        </p>
+        <div class="footer-compliance-badges">
+          <span class="badge-tag">SOC 2 TIPO II</span>
+          <span class="badge-tag">ISO 27001</span>
+          <span class="badge-tag">ISO 14064</span>
+        </div>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>PRODUCTO</h4>
+        <ul>
+          <li><a href="#" class="footer-link" data-target="view-solucion">Auto-Scroll Contextual</a></li>
+          <li><a href="#" class="footer-link" data-target="view-terminal">LocalStorage Sync</a></li>
+          <li><a href="#" class="footer-link" data-target="view-solucion">Conectores ERP/CRM</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>SOSTENIBILIDAD</h4>
+        <ul>
+          <li><a href="#" class="footer-link" data-target="view-green-it">Calculadora Huella de Carbono</a></li>
+          <li><a href="#" class="footer-link" data-target="view-green-it">Certificaciones ESG</a></li>
+          <li><a href="#" class="footer-link" data-target="view-green-it">Reporte Scope 2 & 3</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>EMPRESA</h4>
+        <ul>
+          <li><a href="#" class="footer-link" data-target="view-inicio">Acerca de EcoSync</a></li>
+          <li><a href="#" class="footer-link" data-target="view-precios">Planes y Precios</a></li>
+          <li><a href="#" class="footer-link" data-target="view-solucion">Seguridad & Cumplimiento</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>LEGAL</h4>
+        <ul>
+          <li><a href="#legal-privacidad" class="legal-notice-trigger">Privacidad de Datos (PII)</a></li>
+          <li><a href="#legal-terminos" class="legal-notice-trigger">Términos de Servicio Demo</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom-bar">
+      <div>© 2026 EcoSync. Todos los derechos reservados. Eficiencia IT y Sostenibilidad Global.</div>
+      <div class="footer-bottom-stats">
+        <span>🟢 99.99% Saliente SLA</span>
+        <span>• Simulación Académica</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
