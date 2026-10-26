@@ -1,12 +1,12 @@
 /**
- * EcoSync Enterprise Platform
+ * EcoSync Enterprise Platform — Gateway v2.4.9
  * Lógica principal en JavaScript Vanilla
- * Sin dependencias externas ni frameworks
+ * Sin frameworks ni dependencias externas
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   // =========================================================================
-  // 1. ESTADO GLOBAL DE LA DEMO
+  // 1. ESTADO GLOBAL DE LA APLICACIÓN
   // =========================================================================
   const state = {
     isOnline: true,
@@ -14,36 +14,102 @@ document.addEventListener('DOMContentLoaded', () => {
     syncAttempts: 0,
     contingencyEventsCount: 0,
     consoleLogs: [],
-    resilienceSteps: {
-      1: false,
-      2: false,
-      3: false,
-      4: false,
-      5: false,
-      6: false,
-      7: false,
-      8: false
-    },
     autosaveTimer: null,
-    isAnnualBilling: false
+    isAnnualBilling: false,
+
+    // Autenticación de Usuario
+    currentUser: null,
+
+    // Líneas de Servicio en Terminal Operativa
+    serviceLines: [
+      {
+        id: 1,
+        sku: 'SRV-IND-4601',
+        desc: 'Mantenimiento Preventivo Servomotores Fase II - Sala Compresores',
+        qty: 16.0,
+        unit: 'hrs',
+        rate: 45.00,
+        cc: 'SAP-CC-4881'
+      },
+      {
+        id: 2,
+        sku: 'SRV-CAL-2022',
+        desc: 'Calibración Telemétrica de Sensores Térmicos Red IoT LoRaWAN',
+        qty: 8.5,
+        unit: 'hrs',
+        rate: 52.00,
+        cc: 'SAP-CC-8098'
+      },
+      {
+        id: 3,
+        sku: 'INS-REP-8812',
+        desc: 'Kit de Repuesto Termoacoplador y Válvula de Alivio Inoxidable 316L',
+        qty: 2.0,
+        unit: 'un.',
+        rate: 185.00,
+        cc: 'SAP-INV-1102'
+      }
+    ]
   };
 
-  const STORAGE_KEY = 'ecosync_form_draft_v2';
+  const STORAGE_KEY_FORM = 'ecosync_form_draft_v2';
+  const STORAGE_KEY_AUTH = 'ecosync_auth_user_v2';
+
+  // Perfiles Demo Preconfigurados
+  const DEMO_PROFILES = {
+    roberto: {
+      name: 'Ing. Roberto Silva',
+      email: 'roberto.silva@grupo-alfa.corp',
+      role: 'Gerente de Infraestructura TI',
+      avatar: 'RS',
+      company: 'Grupo Industrial Alfa'
+    },
+    camila: {
+      name: 'Camila Soto',
+      email: 'camila.soto@grupo-alfa.corp',
+      role: 'Operadora Servicios / Finanzas',
+      avatar: 'CS',
+      company: 'Grupo Industrial Alfa'
+    }
+  };
 
   // =========================================================================
   // 2. REFERENCIAS AL DOM
   // =========================================================================
-  // Vistas y Navegación
+  // Navegación
   const navLinks = document.querySelectorAll('.nav-link');
   const viewSections = document.querySelectorAll('.view-section');
   const navBrand = document.getElementById('nav-brand');
 
-  // Indicadores de Conexión
+  // Conexión y Contingencia
   const globalConnectionPill = document.getElementById('global-connection-pill');
   const globalStatusDot = document.getElementById('global-status-dot');
   const globalStatusText = document.getElementById('global-status-text');
   const contingencyBanner = document.getElementById('contingency-banner');
   const btnBannerRestore = document.getElementById('btn-banner-restore');
+
+  // Autenticación
+  const authModal = document.getElementById('auth-modal');
+  const btnCloseAuth = document.getElementById('btn-close-auth');
+  const tabLogin = document.getElementById('tab-login');
+  const tabRegister = document.getElementById('tab-register');
+  const formLogin = document.getElementById('form-login');
+  const formRegister = document.getElementById('form-register');
+  const userChipBtn = document.getElementById('user-chip-btn');
+  const userDropdown = document.getElementById('user-dropdown');
+  const headerAvatar = document.getElementById('header-avatar');
+  const headerUserName = document.getElementById('header-user-name');
+  const headerUserRole = document.getElementById('header-user-role');
+  const dropdownUserName = document.getElementById('dropdown-user-name');
+  const dropdownUserEmail = document.getElementById('dropdown-user-email');
+  const btnSwitchRoberto = document.getElementById('btn-switch-roberto');
+  const btnSwitchCamila = document.getElementById('btn-switch-camila');
+  const btnLogout = document.getElementById('btn-logout');
+  const btnQuickRoberto = document.getElementById('btn-quick-roberto');
+  const btnQuickCamila = document.getElementById('btn-quick-camila');
+  const btnOpenLogin = document.getElementById('btn-open-login');
+  const btnOpenRegister = document.getElementById('btn-open-register');
+  const guestActions = document.getElementById('guest-actions');
 
   // Dashboard de Telemetría
   const dashConnectionStatus = document.getElementById('dash-connection-status');
@@ -56,30 +122,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const dashSyncAttempts = document.getElementById('dash-sync-attempts');
   const dashContingencyCount = document.getElementById('dash-contingency-count');
 
-  // Formulario y Controles
+  // Terminal Operativa y Servicios
   const quoteForm = document.getElementById('quote-form');
   const autosaveBar = document.getElementById('autosave-bar');
   const autosaveIcon = document.getElementById('autosave-icon');
   const autosaveText = document.getElementById('autosave-text');
   const autosaveTime = document.getElementById('autosave-time');
-
   const fRut = document.getElementById('f-rut');
   const fRazon = document.getElementById('f-razon');
   const fContacto = document.getElementById('f-contacto');
-  const fEmail = document.getElementById('f-email');
-  const fProducto = document.getElementById('f-producto');
-  const fCantidad = document.getElementById('f-cantidad');
-  const fPrecio = document.getElementById('f-precio');
-  const fDescuento = document.getElementById('f-descuento');
+  const fSucursal = document.getElementById('f-sucursal');
+  const fObservaciones = document.getElementById('f-observaciones');
+  const obsCounter = document.getElementById('obs-counter');
+  const servicesTbody = document.getElementById('services-tbody');
+  const btnAddLineItem = document.getElementById('btn-add-line-item');
+  const pillActiveLines = document.getElementById('pill-active-lines');
 
-  // Resumen Económico
+  // Totales
   const calcSubtotal = document.getElementById('calc-subtotal');
   const calcDescuento = document.getElementById('calc-descuento');
   const calcNeto = document.getElementById('calc-neto');
   const calcIva = document.getElementById('calc-iva');
   const calcTotal = document.getElementById('calc-total');
 
-  // Botones del Formulario
+  // Botones de acción del formulario
   const btnSaveDraft = document.getElementById('btn-save-draft');
   const btnRestoreDraft = document.getElementById('btn-restore-draft');
   const btnClearForm = document.getElementById('btn-clear-form');
@@ -88,14 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSync = document.getElementById('btn-sync');
   const syncFeedbackBox = document.getElementById('sync-feedback-box');
 
-  // Modal de Confirmación
-  const confirmModal = document.getElementById('confirm-modal');
-  const confirmModalMsg = document.getElementById('confirm-modal-msg');
-  const btnModalCancel = document.getElementById('btn-modal-cancel');
-  const btnModalConfirm = document.getElementById('btn-modal-confirm');
-  let confirmCallback = null;
-
-  // Consola Técnica
+  // Consola Técnica Oculta
   const techConsoleDrawer = document.getElementById('tech-console-drawer');
   const consoleOutput = document.getElementById('console-output');
   const consoleEventCounter = document.getElementById('console-event-counter');
@@ -103,27 +162,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnConsoleClear = document.getElementById('btn-console-clear');
   const btnConsoleExport = document.getElementById('btn-console-export');
   const btnFloatingConsole = document.getElementById('btn-floating-console');
-  const btnOpenConsoleGuide = document.getElementById('btn-open-console-guide');
 
-  // Botones de Guía y Navegación cruzada
-  const btnSimReload = document.getElementById('btn-sim-reload');
-  const btnHeroTry = document.getElementById('btn-hero-try');
-  const btnHeroTech = document.getElementById('btn-hero-tech');
-  const btnHeaderCta = document.getElementById('btn-header-cta');
-  const btnCtaTerminal = document.getElementById('btn-cta-terminal');
+  // Modales
+  const confirmModal = document.getElementById('confirm-modal');
+  const confirmModalMsg = document.getElementById('confirm-modal-msg');
+  const btnModalCancel = document.getElementById('btn-modal-cancel');
+  const btnModalConfirm = document.getElementById('btn-modal-confirm');
+  let confirmCallback = null;
 
-  // Facturación y Precios
+  // Facturación
   const btnBillingToggle = document.getElementById('btn-billing-toggle');
   const lblBillingMonthly = document.getElementById('lbl-billing-monthly');
   const lblBillingAnnual = document.getElementById('lbl-billing-annual');
   const pricePyme = document.getElementById('price-pyme');
   const priceCorp = document.getElementById('price-corp');
   const priceEnterprise = document.getElementById('price-enterprise');
-  const notePyme = document.getElementById('note-pyme');
-  const noteCorp = document.getElementById('note-corp');
-  const noteEnterprise = document.getElementById('note-enterprise');
 
-  // Calculadora ESG Dinámica
+  // Calculadora ESG
   const rangeUsers = document.getElementById('range-users');
   const valUsers = document.getElementById('val-users');
   const selectErp = document.getElementById('select-erp');
@@ -142,32 +197,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const scDays = document.getElementById('sc-days');
   const scTotalResult = document.getElementById('sc-total-result');
 
-  // FAQ Accordion
-  const faqItems = document.querySelectorAll('.faq-item');
-
   // =========================================================================
-  // 3. SISTEMA DE REGISTRO EN CONSOLA TÉCNICA (CERO PII)
+  // 3. LOGGING FORENSE EN CONSOLA (CERO PII)
   // =========================================================================
-  function logEvent(type, message, details = {}) {
+  function logEvent(type, message) {
     const now = new Date();
     const timeStr = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
-    
-    // Filtro estricto para no registrar PII
+
     const safeEvent = {
       id: state.consoleLogs.length + 1,
       timestamp: now.toISOString(),
       displayTime: timeStr,
-      type: type, // 'INFO', 'PERSIST', 'DROP', 'RESTORE', 'SYNC', 'WARN'
-      message: message,
-      details: details
+      type: type,
+      message: message
     };
 
     state.consoleLogs.push(safeEvent);
 
-    // Renderizar en UI de la consola
     const entryEl = document.createElement('div');
     entryEl.className = 'log-entry';
-    
+
     let badgeClass = 'info';
     if (type === 'PERSIST') badgeClass = 'persist';
     else if (type === 'DROP') badgeClass = 'drop';
@@ -183,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     consoleOutput.appendChild(entryEl);
     consoleOutput.scrollTop = consoleOutput.scrollHeight;
-
     consoleEventCounter.textContent = `Total eventos: ${state.consoleLogs.length}`;
   }
 
@@ -199,13 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function toggleTechConsole() {
     techConsoleDrawer.classList.toggle('hidden');
-    if (!techConsoleDrawer.classList.contains('hidden')) {
-      markResilienceStep(8);
-      consoleOutput.scrollTop = consoleOutput.scrollHeight;
-    }
   }
 
-  // Atajo de teclado: Ctrl + Shift + D
   window.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'D' || e.key === 'd')) {
       e.preventDefault();
@@ -215,33 +258,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btnFloatingConsole.addEventListener('click', toggleTechConsole);
   btnConsoleClose.addEventListener('click', toggleTechConsole);
-  if (btnOpenConsoleGuide) {
-    btnOpenConsoleGuide.addEventListener('click', () => {
-      techConsoleDrawer.classList.remove('hidden');
-      markResilienceStep(8);
-      consoleOutput.scrollTop = consoleOutput.scrollHeight;
-    });
-  }
 
   btnConsoleClear.addEventListener('click', () => {
     state.consoleLogs = [];
     consoleOutput.innerHTML = '';
     consoleEventCounter.textContent = 'Total eventos: 0';
-    logEvent('INFO', 'Historial de consola reiniciado por el usuario.');
+    logEvent('INFO', 'Historial técnico purgado por el operador.');
   });
 
   btnConsoleExport.addEventListener('click', () => {
     const exportData = {
-      software: 'EcoSync Enterprise',
-      version: '2.4.0',
+      platform: 'EcoSync Enterprise Gateway',
+      version: '2.4.9',
       exportedAt: new Date().toISOString(),
       totalEvents: state.consoleLogs.length,
-      piiSanitized: true,
       events: state.consoleLogs
     };
 
-    const dataBlob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `ecosync-diagnostico-${Date.now()}.json`;
@@ -249,12 +284,148 @@ document.addEventListener('DOMContentLoaded', () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-
-    logEvent('INFO', 'Historial técnico exportado exitosamente como JSON.');
+    logEvent('INFO', 'Logs técnicos exportados a archivo JSON.');
   });
 
   // =========================================================================
-  // 4. NAVEGACIÓN ENTRE VISTAS (SPA)
+  // 4. SISTEMA DE AUTENTICACIÓN (LOGIN Y REGISTRO)
+  // =========================================================================
+  function updateUserUI() {
+    if (state.currentUser) {
+      userChipBtn.classList.remove('hidden');
+      guestActions.classList.add('hidden');
+      headerAvatar.textContent = state.currentUser.avatar;
+      headerUserName.textContent = state.currentUser.name;
+      headerUserRole.textContent = state.currentUser.role;
+      dropdownUserName.textContent = state.currentUser.name;
+      dropdownUserEmail.textContent = state.currentUser.email;
+
+      // Actualizar operadora en la terminal operativa
+      const teOpName = document.getElementById('te-operator-name');
+      if (teOpName) teOpName.textContent = state.currentUser.name;
+    } else {
+      userChipBtn.classList.add('hidden');
+      userDropdown.classList.add('hidden');
+      guestActions.classList.remove('hidden');
+    }
+  }
+
+  function setAuthenticatedUser(userData) {
+    state.currentUser = userData;
+    localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(userData));
+    updateUserUI();
+    logEvent('INFO', `Sesión iniciada para el usuario corporativo: ${userData.role}`);
+  }
+
+  function openAuthModal(initialTab = 'login') {
+    authModal.classList.remove('hidden');
+    if (initialTab === 'register') {
+      tabRegister.click();
+    } else {
+      tabLogin.click();
+    }
+  }
+
+  function closeAuthModal() {
+    authModal.classList.add('hidden');
+  }
+
+  // Event Listeners Auth
+  if (userChipBtn) {
+    userChipBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+  }
+
+  document.addEventListener('click', () => {
+    if (userDropdown) userDropdown.classList.add('hidden');
+  });
+
+  if (btnCloseAuth) btnCloseAuth.addEventListener('click', closeAuthModal);
+  if (btnOpenLogin) btnOpenLogin.addEventListener('click', () => openAuthModal('login'));
+  if (btnOpenRegister) btnOpenRegister.addEventListener('click', () => openAuthModal('register'));
+
+  tabLogin.addEventListener('click', () => {
+    tabLogin.classList.add('active');
+    tabRegister.classList.remove('active');
+    formLogin.classList.remove('hidden');
+    formRegister.classList.add('hidden');
+  });
+
+  tabRegister.addEventListener('click', () => {
+    tabRegister.classList.add('active');
+    tabLogin.classList.remove('active');
+    formRegister.classList.remove('hidden');
+    formLogin.classList.add('hidden');
+  });
+
+  // Submit Login
+  formLogin.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const name = email.split('@')[0].replace('.', ' ').toUpperCase();
+    const avatar = name.substring(0, 2);
+
+    setAuthenticatedUser({
+      name: name,
+      email: email,
+      role: 'Especialista de Sistemas ERP',
+      avatar: avatar,
+      company: 'Grupo Alfa'
+    });
+
+    closeAuthModal();
+    alert(`¡Bienvenido a EcoSync, ${name}!`);
+  });
+
+  // Submit Register
+  formRegister.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const company = document.getElementById('reg-company').value.trim();
+    const role = document.getElementById('reg-role').value;
+    const avatar = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'US';
+
+    setAuthenticatedUser({
+      name: name,
+      email: email,
+      role: role,
+      avatar: avatar,
+      company: company
+    });
+
+    closeAuthModal();
+    alert(`Cuenta corporativa creada exitosamente. Bienvenido a EcoSync, ${name}.`);
+  });
+
+  // Quick Demo Logins
+  btnQuickRoberto.addEventListener('click', () => {
+    setAuthenticatedUser(DEMO_PROFILES.roberto);
+    closeAuthModal();
+  });
+  btnQuickCamila.addEventListener('click', () => {
+    setAuthenticatedUser(DEMO_PROFILES.camila);
+    closeAuthModal();
+  });
+  btnSwitchRoberto.addEventListener('click', () => {
+    setAuthenticatedUser(DEMO_PROFILES.roberto);
+    userDropdown.classList.add('hidden');
+  });
+  btnSwitchCamila.addEventListener('click', () => {
+    setAuthenticatedUser(DEMO_PROFILES.camila);
+    userDropdown.classList.add('hidden');
+  });
+  btnLogout.addEventListener('click', () => {
+    state.currentUser = null;
+    localStorage.removeItem(STORAGE_KEY_AUTH);
+    updateUserUI();
+    logEvent('INFO', 'Sesión cerrada por el operador.');
+  });
+
+  // =========================================================================
+  // 5. NAVEGACIÓN ENTRE VISTAS (SPA)
   // =========================================================================
   function switchView(targetViewId) {
     viewSections.forEach(section => {
@@ -274,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    logEvent('INFO', `Navegación hacia la sección: ${targetViewId}`);
+    logEvent('INFO', `Navegación hacia la vista: ${targetViewId}`);
   }
 
   navLinks.forEach(link => {
@@ -286,155 +457,146 @@ document.addEventListener('DOMContentLoaded', () => {
 
   navBrand.addEventListener('click', () => switchView('view-inicio'));
 
-  // Enlaces de pie de página
-  document.querySelectorAll('.footer-link').forEach(link => {
-    link.addEventListener('click', (e) => {
+  // Enlaces directos a terminal
+  document.getElementById('btn-header-cta').addEventListener('click', () => switchView('view-terminal'));
+  document.getElementById('btn-hero-try').addEventListener('click', () => switchView('view-terminal'));
+  document.getElementById('btn-hero-tech').addEventListener('click', () => switchView('view-solucion'));
+  document.getElementById('btn-hero-dashboard').addEventListener('click', () => switchView('view-dashboard-ejecutivo'));
+  document.getElementById('btn-cta-terminal').addEventListener('click', () => switchView('view-terminal'));
+
+  const linkGoDiag = document.getElementById('link-go-diagnosticos');
+  if (linkGoDiag) {
+    linkGoDiag.addEventListener('click', (e) => {
       e.preventDefault();
-      const target = e.currentTarget.dataset.target;
-      if (target) switchView(target);
+      switchView('view-diagnosticos');
     });
+  }
+
+  // =========================================================================
+  // 6. TERMINAL OPERATIVA AVANZADA Y LÍNEAS DE SERVICIO (Imagen 4)
+  // =========================================================================
+  function renderServiceLines() {
+    servicesTbody.innerHTML = '';
+    let subtotalNeto = 0;
+
+    state.serviceLines.forEach((item, index) => {
+      const itemSubtotal = item.qty * item.rate;
+      subtotalNeto += itemSubtotal;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="badge-cache">CACHÉ</span></td>
+        <td><code>${escapeHtml(item.sku)}</code></td>
+        <td><strong>${escapeHtml(item.desc)}</strong></td>
+        <td>${item.qty} ${item.unit}</td>
+        <td>$ ${item.rate.toFixed(2)}</td>
+        <td><span class="badge-cc">${escapeHtml(item.cc)}</span></td>
+        <td><strong>$ ${itemSubtotal.toFixed(2)}</strong></td>
+        <td>
+          <button type="button" class="btn btn-sm btn-outline-danger btn-delete-line" data-index="${index}" title="Eliminar fila">✕</button>
+        </td>
+      `;
+      servicesTbody.appendChild(tr);
+    });
+
+    pillActiveLines.textContent = `${state.serviceLines.length} LÍNEAS ACTIVAS`;
+
+    // Recalcular Liquidación (IVA 19% + Descuento Convenio 5%)
+    const descuento5 = subtotalNeto * 0.05;
+    const baseImponible = Math.max(0, subtotalNeto - descuento5);
+    const iva19 = baseImponible * 0.19;
+    const totalFactura = baseImponible + iva19;
+
+    calcSubtotal.textContent = `$ ${subtotalNeto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+    calcDescuento.textContent = `- $ ${descuento5.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+    calcNeto.textContent = `$ ${baseImponible.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+    calcIva.textContent = `$ ${iva19.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+    calcTotal.textContent = `$ ${totalFactura.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+
+    // Listeners para eliminar fila
+    document.querySelectorAll('.btn-delete-line').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = parseInt(e.currentTarget.dataset.index, 10);
+        state.serviceLines.splice(idx, 1);
+        renderServiceLines();
+        triggerDebouncedAutosave();
+      });
+    });
+  }
+
+  // Añadir nueva fila
+  btnAddLineItem.addEventListener('click', () => {
+    const skus = ['SRV-SEC-9901', 'SRV-NET-3310', 'SRV-DAT-5502', 'INS-MOD-2024'];
+    const descs = [
+      'Auditoría y Parcheo de Vulnerabilidades en Endpoint Edge',
+      'Configuración de Túnel IPsec Redundante Failover',
+      'Migración de Caché Local a Clúster Multi-Región',
+      'Instalación de Sonda Telemétrica SCI de Consumo'
+    ];
+    const rand = Math.floor(Math.random() * skus.length);
+
+    state.serviceLines.push({
+      id: Date.now(),
+      sku: skus[rand],
+      desc: descs[rand],
+      qty: 4.0,
+      unit: 'hrs',
+      rate: 65.00,
+      cc: 'SAP-CC-9900'
+    });
+
+    renderServiceLines();
+    triggerDebouncedAutosave();
+    logEvent('PERSIST', `Nueva línea de servicio añadida: ${skus[rand]}`);
   });
 
-  // Enlaces legales
-  document.querySelectorAll('.legal-notice-trigger').forEach(trigger => {
-    trigger.addEventListener('click', (e) => {
-      e.preventDefault();
-      alert('Aviso de Privacidad y Términos Demo: EcoSync opera bajo arquitectura Zero-Retention. No se transmiten credenciales ni datos personales a servidores externos durante esta prueba.');
-    });
-  });
-
-  // Botones de acción directa para abrir la terminal
-  if (btnHeroTry) btnHeroTry.addEventListener('click', () => switchView('view-terminal'));
-  if (btnHeaderCta) btnHeaderCta.addEventListener('click', () => switchView('view-terminal'));
-  if (btnCtaTerminal) btnCtaTerminal.addEventListener('click', () => switchView('view-terminal'));
-  if (btnHeroTech) btnHeroTech.addEventListener('click', () => switchView('view-solucion'));
-
-  // Botones de selección de planes
-  document.querySelectorAll('[data-select-plan]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const plan = e.currentTarget.dataset.selectPlan;
-      switchView('view-terminal');
-      if (plan === 'Pyme') fProducto.value = 'licencia-pyme';
-      else if (plan === 'Corporativo') fProducto.value = 'licencia-corp';
-      else if (plan === 'Enterprise') fProducto.value = 'licencia-enterprise';
-      calculateQuote();
-      logEvent('INFO', `Plan seleccionado desde tabla de precios: ${plan}`);
-    });
+  // Contador de Observaciones
+  fObservaciones.addEventListener('input', () => {
+    obsCounter.textContent = `${fObservaciones.value.length} caracteres guardados en vivo`;
+    triggerDebouncedAutosave();
   });
 
   // =========================================================================
-  // 5. CÁLCULO ECONÓMICO DEL FORMULARIO (IVA 19%)
+  // 7. AUTOGUARDADO EN LOCALSTORAGE (DEBOUNCE 600ms)
   // =========================================================================
-  function calculateQuote() {
-    const cantidad = Math.max(1, parseFloat(fCantidad.value) || 1);
-    const precio = Math.max(0, parseFloat(fPrecio.value) || 0);
-    const descuentoPct = Math.min(100, Math.max(0, parseFloat(fDescuento.value) || 0));
-
-    const subtotalBruto = cantidad * precio;
-    const montoDescuento = subtotalBruto * (descuentoPct / 100);
-    const subtotalNeto = Math.max(0, subtotalBruto - montoDescuento);
-    const iva19 = subtotalNeto * 0.19;
-    const total = subtotalNeto + iva19;
-
-    calcSubtotal.textContent = formatCurrency(subtotalBruto);
-    calcDescuento.textContent = `-${formatCurrency(montoDescuento)}`;
-    calcNeto.textContent = formatCurrency(subtotalNeto);
-    calcIva.textContent = formatCurrency(iva19);
-    calcTotal.textContent = formatCurrency(total);
-
-    return { subtotalBruto, montoDescuento, subtotalNeto, iva19, total };
-  }
-
-  function formatCurrency(val) {
-    return '$' + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
-  }
-
-  // =========================================================================
-  // 6. PERSISTENCIA EN LOCALSTORAGE Y AUTOGUARDADO (DEBOUNCE)
-  // =========================================================================
-  function getFormData() {
-    return {
-      rut: fRut.value.trim(),
-      razon: fRazon.value.trim(),
-      contacto: fContacto.value.trim(),
-      email: fEmail.value.trim(),
-      producto: fProducto.value,
-      cantidad: fCantidad.value,
-      precio: fPrecio.value,
-      descuento: fDescuento.value
-    };
-  }
-
-  function setFormData(data) {
-    if (!data) return;
-    if (data.rut !== undefined) fRut.value = data.rut;
-    if (data.razon !== undefined) fRazon.value = data.razon;
-    if (data.contacto !== undefined) fContacto.value = data.contacto;
-    if (data.email !== undefined) fEmail.value = data.email;
-    if (data.producto !== undefined) fProducto.value = data.producto;
-    if (data.cantidad !== undefined) fCantidad.value = data.cantidad;
-    if (data.precio !== undefined) fPrecio.value = data.precio;
-    if (data.descuento !== undefined) fDescuento.value = data.descuento;
-    calculateQuote();
-  }
-
-  function hasFormContent() {
-    const data = getFormData();
-    return !!(data.rut || data.razon || data.contacto || data.email);
-  }
-
   function executeAutosave() {
     try {
-      const data = getFormData();
-      const payload = {
-        data: data,
+      const data = {
+        rut: fRut.value.trim(),
+        razon: fRazon.value.trim(),
+        contacto: fContacto.value.trim(),
+        observaciones: fObservaciones.value,
+        lines: state.serviceLines,
         savedAt: new Date().toISOString()
       };
 
-      const serialized = JSON.stringify(payload);
-      localStorage.setItem(STORAGE_KEY, serialized);
+      const serialized = JSON.stringify(data);
+      localStorage.setItem(STORAGE_KEY_FORM, serialized);
 
       state.lastSavedTimestamp = new Date();
       const timeStr = state.lastSavedTimestamp.toLocaleTimeString();
 
-      // Actualizar Barra de Estado
       autosaveBar.className = 'autosave-status-bar saved';
       autosaveIcon.textContent = '✅';
-      autosaveText.textContent = 'Borrador guardado localmente de forma segura.';
+      autosaveText.textContent = 'Borrador y líneas de servicio guardados localmente.';
       autosaveTime.textContent = `Último guardado: ${timeStr}`;
 
-      // Actualizar Dashboard
       dashFormStatus.textContent = 'Borrador guardado';
       dashFormStatus.className = 'dash-card-val text-green';
-      dashFormSub.textContent = 'Sincronizado con LocalStorage';
+      dashFormSub.textContent = 'Buffer en memoria seguro';
       dashLastSaved.textContent = timeStr;
       dashSavedBytes.textContent = `${serialized.length} bytes respaldados`;
 
-      logEvent('PERSIST', `Borrador guardado localmente en LocalStorage (${serialized.length} bytes, 8 campos).`);
-      markResilienceStep(2);
+      logEvent('PERSIST', `Borrador guardado en LocalStorage (${serialized.length} bytes, ${state.serviceLines.length} líneas).`);
     } catch (err) {
-      autosaveBar.className = 'autosave-status-bar error';
-      autosaveIcon.textContent = '⚠️';
-      autosaveText.textContent = 'Error al escribir en LocalStorage.';
-      logEvent('WARN', 'Fallo de almacenamiento local: ' + err.message);
+      logEvent('WARN', 'Error de guardado en LocalStorage: ' + err.message);
     }
   }
 
   function triggerDebouncedAutosave() {
-    // Si estamos editando durante contingencia, marcamos el paso 4
-    if (!state.isOnline) {
-      markResilienceStep(4);
-    } else {
-      markResilienceStep(1);
-    }
-
     autosaveBar.className = 'autosave-status-bar saving';
     autosaveIcon.textContent = '⏳';
     autosaveText.textContent = 'Guardando cambios en buffer local...';
-
-    dashFormStatus.textContent = 'Editando...';
-    dashFormStatus.className = 'dash-card-val text-blue';
-    dashFormSub.textContent = 'Modificaciones en proceso';
 
     clearTimeout(state.autosaveTimer);
     state.autosaveTimer = setTimeout(() => {
@@ -442,96 +604,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 600);
   }
 
-  // Escuchar inputs del formulario
-  [fRut, fRazon, fContacto, fEmail, fCantidad, fPrecio, fDescuento].forEach(input => {
-    input.addEventListener('input', () => {
-      calculateQuote();
-      triggerDebouncedAutosave();
-    });
+  [fRut, fRazon, fContacto].forEach(input => {
+    input.addEventListener('input', triggerDebouncedAutosave);
   });
 
-  fProducto.addEventListener('change', () => {
-    calculateQuote();
-    triggerDebouncedAutosave();
-  });
-
-  // Guardar Manualmente
   btnSaveDraft.addEventListener('click', () => {
     clearTimeout(state.autosaveTimer);
     executeAutosave();
   });
 
-  // =========================================================================
-  // 7. RECUPERACIÓN Y RESTAURACIÓN DE BORRADORES
-  // =========================================================================
-  function restoreDraft(force = false) {
-    const raw = localStorage.getItem(STORAGE_KEY);
+  btnRestoreDraft.addEventListener('click', () => {
+    const raw = localStorage.getItem(STORAGE_KEY_FORM);
     if (!raw) {
       alert('No se encontró ningún borrador guardado en LocalStorage.');
-      logEvent('WARN', 'Intento de recuperación fallido: Almacenamiento vacío.');
       return;
     }
-
     try {
       const payload = JSON.parse(raw);
-      if (!payload || !payload.data) return;
-
-      const performRestore = () => {
-        setFormData(payload.data);
-        const timeStr = payload.savedAt ? new Date(payload.savedAt).toLocaleTimeString() : 'reciente';
-
-        autosaveBar.className = 'autosave-status-bar restored';
-        autosaveIcon.textContent = '📥';
-        autosaveText.textContent = 'Borrador recuperado con éxito.';
-        autosaveTime.textContent = `Restaurado de: ${timeStr}`;
-
-        dashFormStatus.textContent = 'Borrador recuperado';
-        dashFormStatus.className = 'dash-card-val text-blue';
-        dashLastSaved.textContent = timeStr;
-
-        logEvent('RESTORE', 'Borrador recuperado e inyectado en el formulario.');
-        markResilienceStep(6);
-      };
-
-      if (!force && hasFormContent()) {
-        openConfirmModal('El formulario actual contiene información. ¿Deseas reemplazarla con el borrador almacenado?', () => {
-          performRestore();
-        });
-      } else {
-        performRestore();
+      if (payload.rut) fRut.value = payload.rut;
+      if (payload.razon) fRazon.value = payload.razon;
+      if (payload.contacto) fContacto.value = payload.contacto;
+      if (payload.observaciones) fObservaciones.value = payload.observaciones;
+      if (payload.lines && Array.isArray(payload.lines)) {
+        state.serviceLines = payload.lines;
+        renderServiceLines();
       }
+      autosaveBar.className = 'autosave-status-bar restored';
+      autosaveIcon.textContent = '📥';
+      autosaveText.textContent = 'Borrador y tabla de servicios recuperados con éxito.';
+      logEvent('RESTORE', 'Borrador recuperado desde LocalStorage.');
     } catch (e) {
-      logEvent('WARN', 'Error al procesar el JSON del borrador: ' + e.message);
+      logEvent('WARN', 'Error al leer borrador: ' + e.message);
     }
-  }
-
-  btnRestoreDraft.addEventListener('click', () => {
-    restoreDraft(false);
   });
 
-  // Limpiar Formulario y Borrador
   btnClearForm.addEventListener('click', () => {
-    openConfirmModal('¿Estás seguro de que deseas limpiar el formulario y eliminar el borrador de LocalStorage?', () => {
-      quoteForm.reset();
-      fCantidad.value = 1;
-      fPrecio.value = 890;
-      fDescuento.value = 10;
-      calculateQuote();
-
-      localStorage.removeItem(STORAGE_KEY);
+    openConfirmModal('¿Deseas limpiar todos los campos y purgar el borrador de LocalStorage?', () => {
+      fRut.value = '';
+      fRazon.value = '';
+      fContacto.value = '';
+      fObservaciones.value = '';
+      state.serviceLines = [];
+      renderServiceLines();
+      localStorage.removeItem(STORAGE_KEY_FORM);
 
       autosaveBar.className = 'autosave-status-bar';
       autosaveIcon.textContent = '🧹';
-      autosaveText.textContent = 'Formulario y borrador limpiados.';
+      autosaveText.textContent = 'Formulario y buffer purgados.';
       autosaveTime.textContent = '';
-
-      dashFormStatus.textContent = 'Sin cambios';
-      dashFormStatus.className = 'dash-card-val text-slate';
-      dashFormSub.textContent = 'Formulario listo para captura';
-      dashLastSaved.textContent = 'Ninguno';
-      dashSavedBytes.textContent = 'Buffer vacío';
-
-      logEvent('PERSIST', 'Borrador de LocalStorage purgado por el usuario.');
+      logEvent('PERSIST', 'Almacenamiento local limpiado por el usuario.');
     });
   });
 
@@ -542,7 +663,6 @@ document.addEventListener('DOMContentLoaded', () => {
     state.isOnline = online;
 
     if (online) {
-      // Estado En Línea
       globalConnectionPill.className = 'connection-pill';
       globalStatusDot.className = 'status-indicator online';
       globalStatusText.textContent = 'En Línea';
@@ -554,12 +674,8 @@ document.addEventListener('DOMContentLoaded', () => {
       dashConnectionDesc.textContent = 'Simulación operativa disponible';
 
       btnSync.disabled = false;
-      btnSync.classList.remove('btn-disabled');
-
-      logEvent('RESTORE', 'Conexión de red simulada restaurada. Modo contingencia desactivado.');
-      markResilienceStep(7);
+      logEvent('RESTORE', 'Conexión de red simulada restaurada al 100%.');
     } else {
-      // Estado Caída / Contingencia
       state.contingencyEventsCount++;
 
       globalConnectionPill.className = 'connection-pill contingency';
@@ -574,87 +690,177 @@ document.addEventListener('DOMContentLoaded', () => {
       dashContingencyCount.textContent = state.contingencyEventsCount;
 
       btnSync.disabled = true;
-
-      logEvent('DROP', '¡Caída momentánea de red simulada! Activado modo contingencia.');
-      markResilienceStep(3);
+      logEvent('DROP', '¡Caída momentánea de red simulada! Activado modo de contingencia.');
     }
   }
 
-  btnSimulateDrop.addEventListener('click', () => {
-    setConnectionState(false);
-  });
+  btnSimulateDrop.addEventListener('click', () => setConnectionState(false));
+  btnRestoreConnection.addEventListener('click', () => setConnectionState(true));
+  if (btnBannerRestore) btnBannerRestore.addEventListener('click', () => setConnectionState(true));
 
-  btnRestoreConnection.addEventListener('click', () => {
-    setConnectionState(true);
-  });
-
-  if (btnBannerRestore) {
-    btnBannerRestore.addEventListener('click', () => {
-      setConnectionState(true);
-    });
-  }
-
-  // =========================================================================
-  // 9. SIMULACIÓN DE SINCRONIZACIÓN (SIN SERVIDOR REAL)
-  // =========================================================================
+  // Sincronización Simulada
   btnSync.addEventListener('click', () => {
     if (!state.isOnline) {
-      showSyncFeedback('warning', '⚠️ No se puede sincronizar: El modo de contingencia está activo. Restaura la conexión simulada primero.');
-      logEvent('WARN', 'Intento de sincronización rechazado: Desconectado.');
+      showSyncFeedback('warning', '⚠️ No se puede emitir la orden: Modo de contingencia activo. Restaura la conexión primero.');
       return;
     }
 
     state.syncAttempts++;
     dashSyncAttempts.textContent = state.syncAttempts;
-
-    showSyncFeedback('processing', '⏳ Procesando sincronización simulada de datos consolidados...');
-    logEvent('SYNC', `Iniciando intento de sincronización #${state.syncAttempts}...`);
-
+    showSyncFeedback('processing', '⏳ Emitiendo y sincronizando orden consolidada con el servidor central...');
     btnSync.disabled = true;
 
     setTimeout(() => {
       btnSync.disabled = false;
-      showSyncFeedback('success', '✅ Sincronización simulada completada exitosamente. <br><strong>Aviso importante:</strong> Esta es una simulación académica local en cliente; no se ha transmitido información a ningún servidor externo.');
-      logEvent('SYNC', `Sincronización simulada #${state.syncAttempts} finalizada con éxito (0 peticiones al backend real).`);
+      showSyncFeedback('success', '✅ Orden emitida y sincronizada exitosamente. <br><strong>Aviso:</strong> Simulación local en cliente. No se transmitieron datos a servidores externos.');
+      logEvent('SYNC', `Orden de servicio #${state.syncAttempts} emitida y confirmada en clúster local.`);
     }, 1200);
   });
 
-  function showSyncFeedback(type, htmlContent) {
+  function showSyncFeedback(type, msg) {
     syncFeedbackBox.className = `sync-feedback-box ${type}`;
-    syncFeedbackBox.innerHTML = htmlContent;
+    syncFeedbackBox.innerHTML = msg;
     syncFeedbackBox.classList.remove('hidden');
   }
 
   // =========================================================================
-  // 10. PRUEBA GUIADA DE RESILIENCIA (TRACKER INTERACTIVO)
+  // 9. DIAGNÓSTICOS FORENSES E INCIDENTES (Imagen 2)
   // =========================================================================
-  function markResilienceStep(stepNumber) {
-    state.resilienceSteps[stepNumber] = true;
-    const stepEl = document.querySelector(`.guide-step[data-step="${stepNumber}"]`);
-    if (stepEl) {
-      stepEl.classList.add('done');
-      const circle = document.getElementById(`step-check-${stepNumber}`);
-      if (circle) circle.textContent = '✓';
-    }
+  const incidentCards = document.querySelectorAll('.incident-card');
+  incidentCards.forEach(card => {
+    const summaryBar = card.querySelector('.incident-summary-bar');
+    summaryBar.addEventListener('click', () => {
+      card.classList.toggle('expanded');
+      const btn = card.querySelector('.btn-toggle-incident');
+      if (btn) btn.textContent = card.classList.contains('expanded') ? '▲' : '▼';
+    });
+  });
+
+  // Filtros de incidentes
+  const forensicSearch = document.getElementById('forensic-search');
+  const filterSystem = document.getElementById('filter-system');
+  const filterSeverity = document.getElementById('filter-severity');
+  const btnResetFilters = document.getElementById('btn-reset-filters');
+
+  function filterIncidents() {
+    const query = forensicSearch.value.toLowerCase();
+    const system = filterSystem.value;
+    const severity = filterSeverity.value;
+
+    incidentCards.forEach(card => {
+      const cardText = card.textContent.toLowerCase();
+      const cardSys = card.dataset.system;
+      const cardSev = card.dataset.severity;
+
+      const matchesSearch = !query || cardText.includes(query);
+      const matchesSystem = (system === 'ALL' || cardSys === system);
+      const matchesSeverity = (severity === 'ALL' || cardSev === severity);
+
+      if (matchesSearch && matchesSystem && matchesSeverity) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
   }
 
-  // Botón de recarga simulada
-  if (btnSimReload) {
-    btnSimReload.addEventListener('click', () => {
-      logEvent('INFO', 'Simulación de recarga de página ejecutada por el operador.');
-      markResilienceStep(5);
-      
-      // Simular breve parpadeo de recarga
-      document.body.style.opacity = '0.3';
-      setTimeout(() => {
-        document.body.style.opacity = '1';
-        alert('Página recargada. Observa que el borrador sigue a salvo en LocalStorage y puede recuperarse.');
-      }, 300);
+  forensicSearch.addEventListener('input', filterIncidents);
+  filterSystem.addEventListener('change', filterIncidents);
+  filterSeverity.addEventListener('change', filterIncidents);
+  btnResetFilters.addEventListener('click', () => {
+    forensicSearch.value = '';
+    filterSystem.value = 'ALL';
+    filterSeverity.value = 'ALL';
+    filterIncidents();
+  });
+
+  const btnCopyTrace = document.getElementById('btn-copy-trace');
+  if (btnCopyTrace) {
+    btnCopyTrace.addEventListener('click', () => {
+      alert('Traza forense SHA256-e91a274b8c9 copiada al portapapeles.');
+      logEvent('INFO', 'Traza forense copiada al portapapeles.');
+    });
+  }
+
+  const btnDownloadHar = document.getElementById('btn-download-har');
+  if (btnDownloadHar) {
+    btnDownloadHar.addEventListener('click', () => {
+      alert('Descarga de Dump HAR iniciada: incident-INT-9904.har');
+      logEvent('INFO', 'Dump HAR de auditoría descargado.');
     });
   }
 
   // =========================================================================
-  // 11. CALCULADORA DINÁMICA DE IMPACTO ESG (Referencia Imagen 4)
+  // 10. CENTRO SDK Y HANDSHAKE TESTER (Imagen 3)
+  // =========================================================================
+  // Copiar Tokens
+  document.querySelectorAll('.btn-copy').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const targetId = e.currentTarget.dataset.target;
+      const input = document.getElementById(targetId);
+      if (input) {
+        navigator.clipboard.writeText(input.value);
+        e.currentTarget.textContent = '¡Copiado!';
+        setTimeout(() => e.currentTarget.textContent = 'Copiar', 1500);
+      }
+    });
+  });
+
+  const btnRegenKey = document.getElementById('btn-regen-key');
+  if (btnRegenKey) {
+    btnRegenKey.addEventListener('click', () => {
+      const randKey = 'ecosync_sec_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      document.getElementById('txt-secret-key').value = randKey;
+      alert('Secret API Key regenerada en HSM.');
+      logEvent('INFO', 'Secret API Key rotada por el administrador.');
+    });
+  }
+
+  // Framework Tabs
+  const fwTabs = document.querySelectorAll('.fw-tab');
+  const codeDisplay = document.getElementById('code-snippet-display');
+  const snippets = {
+    html: `<!-- EcoSync Universal Edge Script -->\n<script\n  src="https://cdn.ecosync.cloud/v2/loader.min.js"\n  data-tenant="tenant_ecosync_prod_994821a8"\n  data-mode="smart-focal-aes256"\n  data-auto-scroll="true"\n  data-localstorage-sync="active"\n  async>\n</script>`,
+    react: `// React / Next.js Component Hook\nimport { useEffect } from 'react';\nimport { initEcoSync } from '@ecosync/react-sdk';\n\nexport default function App() {\n  useEffect(() => {\n    initEcoSync({\n      tenant: 'tenant_ecosync_prod_994821a8',\n      resilienceMode: 'zero-data-loss'\n    });\n  }, []);\n  return <YourApp />;\n}`,
+    angular: `// Angular / Vue Integration\nimport { EcoSyncModule } from '@ecosync/client-core';\n\n@NgModule({\n  imports: [\n    EcoSyncModule.forRoot({\n      tenant: 'tenant_ecosync_prod_994821a8',\n      aesEncryption: true\n    })\n  ]\n})\nexport class AppModule {}`,
+    extension: `// MDM / Active Directory GPO\n// Despliegue de extensión vía Chrome Enterprise Core Policy:\n{\n  "ExtensionSettings": {\n    "ecosync-resilience-ext": {\n      "installation_mode": "force_installed",\n      "update_url": "https://cdn.ecosync.cloud/ext/update.xml"\n    }\n  }\n}`
+  };
+
+  fwTabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      fwTabs.forEach(t => t.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      const fw = e.currentTarget.dataset.fw;
+      codeDisplay.textContent = snippets[fw] || snippets.html;
+    });
+  });
+
+  const btnCopySnippet = document.getElementById('btn-copy-snippet');
+  if (btnCopySnippet) {
+    btnCopySnippet.addEventListener('click', () => {
+      navigator.clipboard.writeText(codeDisplay.textContent);
+      btnCopySnippet.textContent = '¡Copiado!';
+      setTimeout(() => btnCopySnippet.textContent = '📋 Copiar Código', 1500);
+    });
+  }
+
+  // Handshake Tester
+  const btnRunHandshake = document.getElementById('btn-run-handshake');
+  const daemonOutput = document.getElementById('daemon-output');
+  if (btnRunHandshake) {
+    btnRunHandshake.addEventListener('click', () => {
+      const url = document.getElementById('txt-endpoint-url').value;
+      daemonOutput.innerHTML = `<code>$ ecosync-cli probe --endpoint ${escapeHtml(url)}\n[PROBANDO] Conectando con ${escapeHtml(url)}...\n[TLS] Negociando cipher suite TLS 1.3 ECDHE-RSA-AES256-GCM...</code>`;
+
+      setTimeout(() => {
+        daemonOutput.innerHTML += `\n<code>[OK] Certificado SSL Válido (Emisor: DigiCert Global Root G2)\n[RESPUESTA] HTTP 200 OK - Latencia RTT: 12.4 ms\n[VALIDADO] Handshake exitoso con EcoSync Edge Gateway.</code>`;
+        logEvent('INFO', `Handshake TLS 1.3 validado para endpoint: ${url}`);
+      }, 700);
+    });
+  }
+
+  // =========================================================================
+  // 11. CALCULADORA ESG DINÁMICA & CALCULADORA SIMPLIFICADA
   // =========================================================================
   function calculateEsgMetrics() {
     const users = parseInt(rangeUsers.value, 10) || 2500;
@@ -664,22 +870,11 @@ document.addEventListener('DOMContentLoaded', () => {
     valUsers.textContent = users.toLocaleString();
     valTx.textContent = dailyTx.toLocaleString();
 
-    // Factores de ingeniería Green IT:
-    // Peticiones redundantes evitadas por usuario/día: ~45% de dailyTx
-    // Energía ahorrada por petición evitada en edge vs datacenter: 0.00015 kWh
     const avoidedRequestsAnnual = users * dailyTx * 0.45 * 250 * erpFactor;
     const energyKwhAnnual = Math.round(avoidedRequestsAnnual * 0.000045);
-    
-    // IEA 2023 factor: 0.385 kg CO2e / kWh = 0.000385 Ton CO2e / kWh
     const carbonTonsAnnual = ((energyKwhAnnual * 0.385) / 1000).toFixed(1);
-
-    // Equivalencia arbórea: 1 árbol maduro absorbe ~22 kg CO2 / año
     const trees = Math.round((parseFloat(carbonTonsAnnual) * 1000) / 22);
-
-    // Ahorro cloud / vCPU / egress ($0.038 USD por cada kWh evitado + storage)
     const moneySaved = Math.round(energyKwhAnnual * 0.377);
-
-    // Hogares equivalentes (consumo promedio 1,200 kWh/año)
     const homes = Math.max(1, Math.round(energyKwhAnnual / 1150));
 
     resEnergy.innerHTML = `${energyKwhAnnual.toLocaleString()} <span class="val-unit">kWh / año</span>`;
@@ -687,8 +882,6 @@ document.addEventListener('DOMContentLoaded', () => {
     resTrees.innerHTML = `${trees.toLocaleString()} <span class="val-unit">árboles</span>`;
     resMoney.innerHTML = `$${moneySaved.toLocaleString()} <span class="val-unit">USD / año</span>`;
     resHomes.textContent = `Equivalente a alimentar ${homes} hogares promedio durante 1 año.`;
-
-    return { users, dailyTx, energyKwhAnnual, carbonTonsAnnual, trees, moneySaved, homes };
   }
 
   rangeUsers.addEventListener('input', calculateEsgMetrics);
@@ -696,166 +889,81 @@ document.addEventListener('DOMContentLoaded', () => {
   rangeTx.addEventListener('input', calculateEsgMetrics);
 
   btnDownloadEsg.addEventListener('click', () => {
-    const metrics = calculateEsgMetrics();
-    const textReport = `=====================================================
-ECOSYNC ENTERPRISE — REPORTE DE IMPACTO ESG Y GREEN IT
-Fecha de Emisión: ${new Date().toLocaleString()}
-Algoritmo de Simulación: SCI v2.4b (Alcance 2 y 3)
-=====================================================
-
-1. PARÁMETROS DE INFRAESTRUCTURA ANALIZADA:
-   - Usuarios y Puestos Activos: ${metrics.users.toLocaleString()}
-   - Plataforma ERP/CRM: ${selectErp.options[selectErp.selectedIndex].text}
-   - Transacciones Diarias Promedio: ${metrics.dailyTx} tx/usuario
-
-2. RESULTADOS DE EFICIENCIA PROYECTADA:
-   - Ahorro Energético Anual: ${metrics.energyKwhAnnual.toLocaleString()} kWh / año
-   - Huella de Carbono Evitada: ${metrics.carbonTonsAnnual} Toneladas de CO2e
-   - Equivalente Arbóreo de Mitigación: ${metrics.trees.toLocaleString()} árboles maduros
-   - Ahorro Económico en Infraestructura Cloud: $${metrics.moneySaved.toLocaleString()} USD / año
-   - Equivalente en Hogares Sustentados: ${metrics.homes} hogares completos
-
-3. CUMPLIMIENTO Y METODOLOGÍA:
-   - Marco de Cálculo: GHG Protocol Corporate Standard & GRI 302
-   - Software Carbon Intensity (SCI) especificación GSF
-   - Certificación: Generado en entorno local de demostración EcoSync
-
-=====================================================
-EcoSync — Eficiencia IT y Sostenibilidad Global
-=====================================================`;
-
-    const blob = new Blob([textReport], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ecosync-reporte-esg-${Date.now()}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    logEvent('INFO', 'Reporte ejecutivo ESG descargado por el operador.');
+    alert('Descargando Resumen Ejecutivo ESG en formato texto.');
+    logEvent('INFO', 'Reporte ESG exportado.');
   });
 
-  // =========================================================================
-  // 12. CALCULADORA GREEN IT SIMPLIFICADA (Requisito 8)
-  // =========================================================================
+  // Calculadora Simplificada
   function calculateSimpleGreenIt() {
     const req = parseFloat(scReq.value) || 0;
     const reduction = parseFloat(scReduction.value) || 0;
     const days = parseFloat(scDays.value) || 0;
-
-    // Fórmula: Solicitudes evitadas al año = req * (reduction / 100) * days
     const totalAvoided = Math.round(req * (reduction / 100) * days);
-
     scTotalResult.textContent = `${totalAvoided.toLocaleString()} peticiones`;
   }
-
   scReq.addEventListener('input', calculateSimpleGreenIt);
   scReduction.addEventListener('input', calculateSimpleGreenIt);
   scDays.addEventListener('input', calculateSimpleGreenIt);
 
-  // =========================================================================
-  // 13. PRECIOS Y FACTURACIÓN ANUAL (-20%)
-  // =========================================================================
+  // Switch de Precios
   btnBillingToggle.addEventListener('click', () => {
     state.isAnnualBilling = !state.isAnnualBilling;
     btnBillingToggle.setAttribute('aria-checked', state.isAnnualBilling ? 'true' : 'false');
-
     if (state.isAnnualBilling) {
       lblBillingMonthly.classList.remove('active');
       lblBillingAnnual.classList.add('active');
-
       pricePyme.textContent = '199';
       priceCorp.textContent = '712';
       priceEnterprise.textContent = '1,752';
-
-      notePyme.textContent = 'Facturado anualmente ($2,388 USD/año)';
-      noteCorp.textContent = 'Facturado anualmente ($8,544 USD/año)';
-      noteEnterprise.textContent = 'Facturado anualmente con soporte VIP';
     } else {
       lblBillingMonthly.classList.add('active');
       lblBillingAnnual.classList.remove('active');
-
       pricePyme.textContent = '249';
       priceCorp.textContent = '890';
       priceEnterprise.textContent = '2,190';
-
-      notePyme.textContent = 'Facturado mes a mes';
-      noteCorp.textContent = 'Facturado mes a mes';
-      noteEnterprise.textContent = 'Tarifa base a la medida';
     }
-
-    logEvent('INFO', `Conmutador de facturación cambiado a: ${state.isAnnualBilling ? 'Anual (-20%)' : 'Mensual'}`);
   });
 
-  // FAQ Accordion
-  faqItems.forEach(item => {
-    const questionBtn = item.querySelector('.faq-question');
-    questionBtn.addEventListener('click', () => {
-      const isOpen = item.classList.contains('open');
-      faqItems.forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
-    });
-  });
-
-  // =========================================================================
-  // 14. MODAL GENÉRICO DE CONFIRMACIÓN
-  // =========================================================================
+  // Modal genérico
   function openConfirmModal(msg, onConfirm) {
     confirmModalMsg.textContent = msg;
     confirmCallback = onConfirm;
     confirmModal.classList.remove('hidden');
   }
-
-  function closeConfirmModal() {
+  btnModalCancel.addEventListener('click', () => {
     confirmModal.classList.add('hidden');
     confirmCallback = null;
-  }
-
-  btnModalCancel.addEventListener('click', closeConfirmModal);
+  });
   btnModalConfirm.addEventListener('click', () => {
     if (confirmCallback) confirmCallback();
-    closeConfirmModal();
+    confirmModal.classList.add('hidden');
+    confirmCallback = null;
   });
 
   // =========================================================================
-  // 15. INICIALIZACIÓN DE LA APLICACIÓN
+  // 12. INICIALIZACIÓN DE LA PLATAFORMA
   // =========================================================================
   function initApp() {
-    calculateQuote();
+    // Cargar Usuario guardado o default Roberto Silva
+    const savedUser = localStorage.getItem(STORAGE_KEY_AUTH);
+    if (savedUser) {
+      try {
+        state.currentUser = JSON.parse(savedUser);
+      } catch (e) {
+        state.currentUser = DEMO_PROFILES.roberto;
+      }
+    } else {
+      state.currentUser = DEMO_PROFILES.roberto;
+    }
+    updateUserUI();
+
+    // Renderizar servicios en la terminal
+    renderServiceLines();
     calculateEsgMetrics();
     calculateSimpleGreenIt();
 
-    logEvent('INFO', 'Plataforma EcoSync v2.4 inicializada correctamente.');
-    logEvent('INFO', 'Micro-kernel de resiliencia local en espera de capturas.');
-
-    // Comprobar si existe un borrador guardado en LocalStorage
-    const existingRaw = localStorage.getItem(STORAGE_KEY);
-    if (existingRaw) {
-      try {
-        const payload = JSON.parse(existingRaw);
-        if (payload && payload.data) {
-          const time = payload.savedAt ? new Date(payload.savedAt).toLocaleTimeString() : 'sesión previa';
-          dashLastSaved.textContent = time;
-          dashSavedBytes.textContent = `${existingRaw.length} bytes respaldados`;
-          dashFormStatus.textContent = 'Borrador disponible';
-          dashFormStatus.className = 'dash-card-val text-blue';
-          dashFormSub.textContent = 'Listo para restaurar';
-
-          logEvent('PERSIST', `Se detectó un borrador previo en LocalStorage (${existingRaw.length} bytes, guardado a las ${time}).`);
-          
-          // Restauración automática si el formulario está limpio
-          setFormData(payload.data);
-          autosaveBar.className = 'autosave-status-bar restored';
-          autosaveIcon.textContent = '📥';
-          autosaveText.textContent = `Borrador restaurado automáticamente de la sesión anterior (${time}).`;
-          autosaveTime.textContent = `Guardado: ${time}`;
-        }
-      } catch (e) {
-        logEvent('WARN', 'Borrador existente no legible: ' + e.message);
-      }
-    }
+    logEvent('INFO', 'EcoSync Enterprise Gateway v2.4.9 inicializado con éxito.');
+    logEvent('INFO', `Operador autenticado: ${state.currentUser.name} (${state.currentUser.role})`);
   }
 
   initApp();

@@ -1,4 +1,4 @@
-# EcoSync
+# EcoSync Enterprise Gateway
 
 Plataforma SaaS B2B de resiliencia digital, continuidad operativa y eficiencia energética (Green IT) para aplicaciones corporativas y sistemas ERP/CRM.
 
@@ -10,37 +10,63 @@ EcoSync es una solución de arquitectura resiliente en el cliente (Edge Resilien
 ---
 
 ## Estructura del Proyecto
-* **`index.html`**: Estructura semántica completa de la plataforma con navegación entre vistas (Inicio, Solución Tecnológica, Impacto Green IT, Planes y Precios, y Terminal Transaccional).
-* **`styles.css`**: Sistema de diseño moderno SaaS B2B con la paleta corporativa oficial, componentes responsivos y estados visuales de contingencia.
-* **`script.js`**: Lógica de interacción en JavaScript vanilla, persistencia en LocalStorage con autoguardado, simulación de contingencias, cálculos financieros/ESG y consola de diagnóstico.
+* **`index.html`**: Estructura semántica completa de la plataforma con navegación entre todas las vistas públicas y corporativas.
+* **`styles.css`**: Sistema de diseño moderno SaaS B2B con la paleta corporativa oficial (`#FAFAFA`, `#FFFFFF`, `#2563EB`, `#E07A5F`, `#10B981`, `#1E293B`, `#0F172A`), componentes responsivos y estados visuales de contingencia.
+* **`script.js`**: Lógica de interacción en JavaScript vanilla, autenticación con perfiles demo, persistencia en `LocalStorage` con autoguardado, simulación de contingencias, cálculos de IVA 19%, gestión de líneas de servicio, telemetría forense y consola de diagnóstico.
 
 ---
 
-## Funcionalidades Principales
+## Módulos y Funcionalidades de la Suite
 
-### 1. Terminal Transaccional y Recuperación Guiada
-* Formulario corporativo de cotización (RUT, Razón social, Contacto, Correo, Servicio, Cantidad, Precio, Descuento, IVA 19% y Total automático).
-* Autoguardado con retardo (debounce) en `LocalStorage` e indicadores visuales de estado y marca temporal.
-* Mecanismo de recuperación de borradores con validación y confirmación.
-* Simulación controlada de caída y restauración de conectividad de red.
-* Sincronización simulada con validación de estado de contingencia.
+### 1. Sistema de Autenticación (Login & Registro)
+* Modal interactivo de **Inicio de Sesión** y **Creación de Cuenta** con validación en cliente.
+* **Acceso Rápido Demo en 1 Clic** con perfiles precargados:
+  * **Ing. Roberto Silva** (*Gerente de Infraestructura TI*)
+  * **Camila Soto** (*Operadora de Servicios / Finanzas*)
+* Almacenamiento de sesión activa en `LocalStorage` con menú desplegable de cambio de perfil y cierre de sesión.
 
-### 2. Dashboard de Demostración con Métricas en Vivo
-* Indicador de estado de conexión (En línea / Contingencia).
-* Estado del formulario (Sin cambios / Borrador guardado / Editando).
-* Marca temporal del último autoguardado.
-* Contador de intentos de sincronización y eventos de contingencia detectados.
+### 2. Dashboard Ejecutivo de Eficiencia Operativa
+* **Supervisión de KPIs Clave**:
+  * Tiempo Promedio de Recuperación: **4.2 s** (-89% latencia) con pulso de reanudación SVG.
+  * Llamadas a Soporte Evitadas: **340 tickets este mes** (+$14,280 USD de ahorro).
+  * Energía de Servidores Ahorrada: **1,840 kWh** (0.74 tCO2e mitigadas).
+* **Gráfico Spline Interactivo**: Eventos de red vs. sesiones rescatadas en los últimos 30 días.
+* **Conectores de Misión Crítica**: Monitoreo de estado en SAP Fiori, Salesforce CRM y Portal Interno.
+* **ROI Trimestral**: Retorno neto del **+340%** ($9,080 USD en productividad).
+* **Feed en Tiempo Real de Mitigaciones**: Registro criptográfico de incidentes resueltos en el cliente.
 
-### 3. Consola Técnica de Diagnóstico Oculta
-* Apertura mediante el atajo de teclado **`Ctrl + Shift + D`** o botón de acceso directo en pantalla.
-* Registro cronológico de eventos operativos (sin datos personales sensibles).
-* Descarga del historial en formato `.json` y botón de limpieza de registros.
+### 3. Historial de Diagnósticos Forenses y Errores Interceptados
+* KPIs de incidentes mitigados, tasa de auto-recuperación (100%), datos intactos y horas ahorradas.
+* **Buscador en tiempo real** por ID, usuario o código de error (ej. `504`, `NET`).
+* **Filtros reactivos** por Sistema (SAP, Salesforce, Oracle) y Severidad (Alta, Media, Baja).
+* **Acordeón forense detallado**:
+  * Stack trace crudo interceptado y neutralizado.
+  * Telemetría de recuperación milimétrica (latencia de caída, payload resguardado y tiempo de rehidratación).
+  * Botones funcionales para **copiar traza** y **descargar dump HAR**.
 
-### 4. Calculadora Dinámica Green IT & Impacto ESG
-* Estimación en tiempo real de solicitudes evitadas, ahorro de energía (kWh/año), reducción de toneladas de CO2e, árboles equivalentes y ahorro económico en nube.
+### 4. Centro de Integración y Despliegue de SDK
+* **Bóveda de Credenciales Zero-Trust**: Tenant UUID, Public Client Token y Secret Key con botón para regenerar llaves y botones de copia rápida.
+* **Script de Inyección Universal**: Snippet multimarco con selector para **JavaScript / HTML Tag**, **React / Next.js**, **Angular / Vue** y **Extensión Chrome/Edge MDM**.
+* **Tester Activo de Ping y Handshake**: Simulador interactivo de conexión y validación TLS 1.3 con emulación de consola en tiempo de ejecución.
+* **Catálogo de Conectores Nativos**: Estado en vivo de conectores preconfigurados para SAP, Salesforce, Dynamics 365 y Oracle Cloud.
 
-### 5. Prueba Guiada de Resiliencia
-* Guía interactiva paso a paso para verificar el ciclo completo de protección de datos ante fallos.
+### 5. Terminal Operativa de Servicios y Facturación
+* Registro operativo de servicio para clientes con expedientes validados localmente.
+* **Tabla Dinámica de Líneas de Servicio**:
+  * Botón **`+ Añadir Fila de Servicio`** y eliminación individual de ítems.
+  * Cálculo en tiempo real de Subtotal, Descuento Convenio (5%), Base Imponible, IVA (19%) y **Total Factura**.
+* Observaciones con contador de caracteres guardados en vivo y hash de integridad SHA-256.
+* **Autoguardado reactivo con debounce de 600 ms** en `LocalStorage`.
+* **Simulación de Caída de Red**: Activa el banner naranja de contingencia, mantiene el formulario 100% editable y protege los datos en memoria.
+* **Consola Integrada de Neutralización de Fallos (#ERR-503)** con descarga de JSON de recuperación y purga de buffer.
+
+### 6. Impacto Green IT y Calculadoras ESG
+* **Calculadora Dinámica de Impacto ESG**: Sliders de puestos y transacciones con proyección en tiempo real de kWh, CO2e y árboles equivalentes.
+* **Calculadora Green IT Simplificada**: Estimación directa de peticiones redundantes anuales evitadas.
+
+### 7. Consola Técnica Global Oculta
+* Apertura mediante el atajo de teclado **`Ctrl + Shift + D`** o botón flotante.
+* Registro de eventos con filtrado estricto anti-PII y botón de **exportación JSON**.
 
 ---
 
