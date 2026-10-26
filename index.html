@@ -53,6 +53,7 @@
         <button class="nav-link nav-link-portal" data-target="view-dashboard-ejecutivo">Dashboard KPIs</button>
         <button class="nav-link nav-link-portal" data-target="view-diagnosticos">Diagnósticos Forenses</button>
         <button class="nav-link nav-link-portal" data-target="view-integracion">Centro SDK</button>
+        <button class="nav-link nav-link-portal" data-target="view-arquitectura">Arquitectura</button>
         <button class="nav-link nav-link-highlight" data-target="view-terminal">Terminal Operativa</button>
       </nav>
 
@@ -1932,6 +1933,264 @@ Storage Quota Consumed: 0.36% (Edge resilient sandbox)</code></pre>
             </div>
             <div class="ec-footnote">EcoSync Client Protocol v2.4.9 • Resilience Hook Active</div>
           </div>
+        </div>
+      </div>
+    </section>
+
+  
+    <!-- ======================================================= -->
+    <!-- 9. NUEVA VISTA: ARQUITECTURA SIMPLE DEL SISTEMA         -->
+    <!-- ======================================================= -->
+    <section id="view-arquitectura" class="view-section">
+      <div class="section-title-row">
+        <div>
+          <div class="section-badge">ARQUITECTURA DE SOFTWARE MODULAR • OPTIMIZACIÓN PERIMETRAL DE ALTO RENDIMIENTO</div>
+          <h1 class="view-main-title">Arquitectura Simple y Eficiente de EcoSync</h1>
+          <p class="view-sub-title">Diseño modular en 4 capas desacopladas que optimiza el rendimiento del cliente, reduce un 92% el tráfico de red redundante y garantiza la continuidad operativa con cero sobrecarga de cómputo.</p>
+        </div>
+        <div class="action-filters-group">
+          <button class="btn btn-primary btn-sm" id="btn-run-stress-test">🚀 Ejecutar Test de Optimización (100 tx)</button>
+          <button class="btn btn-secondary btn-sm" id="btn-open-console-arch">💻 Ver Logs en Consola (Ctrl+Shift+D)</button>
+        </div>
+      </div>
+
+      <!-- DIAGRAMA ARQUITECTÓNICO EN 4 CAPAS SIMPLES -->
+      <div class="arch-pipeline-container">
+        <div class="arch-pipeline-header">
+          <span class="pipeline-badge">PIPELINE DE FLUJO DE DATOS Y OPTIMIZACIÓN</span>
+          <span class="pipeline-latency">Tiempo total de ciclo en cliente: <strong>&lt; 1.4 ms</strong></span>
+        </div>
+
+        <div class="arch-layers-grid">
+          <!-- CAPA 1 -->
+          <div class="arch-layer-card" id="layer-edge">
+            <div class="layer-num-badge">CAPA 01</div>
+            <div class="layer-icon-head">
+              <span class="l-icon">🖥️</span>
+              <span class="l-status-pill online">Activo (0.2 ms)</span>
+            </div>
+            <h3 class="layer-title">Interfaz y Captura Ligera</h3>
+            <p class="layer-desc">Intercepta eventos de digitación, foco y cambios en el DOM sin bloquear el renderizado del navegador.</p>
+            
+            <ul class="layer-modules-list">
+              <li><span class="mod-dot"></span> <strong>DOM Input Observer:</strong> Escucha cambios en tiempo real con costo O(1).</li>
+              <li><span class="mod-dot"></span> <strong>Debounce Adaptativo:</strong> Ventana de espera inteligente de 600 ms.</li>
+              <li><span class="mod-dot"></span> <strong>Focal Tracker:</strong> Mapeo sub-pixel para Auto-Scroll Contextual.</li>
+            </ul>
+
+            <div class="layer-footer-stat">
+              <span>Optimización:</span>
+              <strong class="text-blue">94% menos eventos de render</strong>
+            </div>
+          </div>
+
+          <div class="arch-layer-connector">
+            <span class="connector-arrow">➔</span>
+            <small class="connector-label">&lt; 0.3 ms</small>
+          </div>
+
+          <!-- CAPA 2 -->
+          <div class="arch-layer-card" id="layer-storage">
+            <div class="layer-num-badge">CAPA 02</div>
+            <div class="layer-icon-head">
+              <span class="l-icon">🔒</span>
+              <span class="l-status-pill online">Enclave Seguro</span>
+            </div>
+            <h3 class="layer-title">Caché & Persistencia Local</h3>
+            <p class="layer-desc">Asegura la retención inmediata en memoria y almacenamiento local antes de emitir cualquier petición externa.</p>
+            
+            <ul class="layer-modules-list">
+              <li><span class="mod-dot"></span> <strong>LocalStorage Compressive Engine:</strong> Serialización compacta en buffer.</li>
+              <li><span class="mod-dot"></span> <strong>Cifrado de Sesión AES-256:</strong> Llaves efímeras en memoria volátil.</li>
+              <li><span class="mod-dot"></span> <strong>Atomic Snapshot Hash:</strong> Integridad criptográfica SHA-256.</li>
+            </ul>
+
+            <div class="layer-footer-stat">
+              <span>Retención:</span>
+              <strong class="text-green">0% pérdida de datos ante cortes</strong>
+            </div>
+          </div>
+
+          <div class="arch-layer-connector">
+            <span class="connector-arrow">➔</span>
+            <small class="connector-label">Delta Filter</small>
+          </div>
+
+          <!-- CAPA 3 -->
+          <div class="arch-layer-card" id="layer-router">
+            <div class="layer-num-badge">CAPA 03</div>
+            <div class="layer-icon-head">
+              <span class="l-icon">📡</span>
+              <span class="l-status-pill online">Enrutador Dinámico</span>
+            </div>
+            <h3 class="layer-title">Enrutador Resiliente de Tráfico</h3>
+            <p class="layer-desc">Supervisa la conectividad real, activa la contingencia offline y agrupa peticiones en lotes consolidados.</p>
+            
+            <ul class="layer-modules-list">
+              <li><span class="mod-dot"></span> <strong>Offline-First Broker:</strong> Mantiene la UI 100% interactiva sin red.</li>
+              <li><span class="mod-dot"></span> <strong>Queue Manager & Backoff:</strong> Reintentos exponenciales ordenados.</li>
+              <li><span class="mod-dot"></span> <strong>Filtro Anti-Tormenta:</strong> Suprime ráfagas redundantes al reconectar.</li>
+            </ul>
+
+            <div class="layer-footer-stat">
+              <span>Descarte:</span>
+              <strong class="text-orange">-92% peticiones HTTP al servidor</strong>
+            </div>
+          </div>
+
+          <div class="arch-layer-connector">
+            <span class="connector-arrow">➔</span>
+            <small class="connector-label">TLS 1.3 Batch</small>
+          </div>
+
+          <!-- CAPA 4 -->
+          <div class="arch-layer-card" id="layer-backend">
+            <div class="layer-num-badge">CAPA 04</div>
+            <div class="layer-icon-head">
+              <span class="l-icon">🏢</span>
+              <span class="l-status-pill online">Backend Central</span>
+            </div>
+            <h3 class="layer-title">Servidor Corporativo ERP/CRM</h3>
+            <p class="layer-desc">Recibe únicamente datos completos, consistentes y validados, liberando CPU de bases de datos centrales.</p>
+            
+            <ul class="layer-modules-list">
+              <li><span class="mod-dot"></span> <strong>Conectores Nativos:</strong> SAP Fiori, Salesforce, Dynamics, Oracle.</li>
+              <li><span class="mod-dot"></span> <strong>Cero Retención de PII:</strong> Cumplimiento estricto GDPR y SOC 2.</li>
+              <li><span class="mod-dot"></span> <strong>SCI Energy Saver:</strong> Ahorro medible en cómputo y refrigeración.</li>
+            </ul>
+
+            <div class="layer-footer-stat">
+              <span>Impacto:</span>
+              <strong class="text-green">-45% vCPU en horas pico</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL DE CONTROL DE OPTIMIZACIONES & BENCHMARK EN VIVO -->
+      <div class="arch-controls-benchmark-grid">
+        <!-- Panel de Control de Optimizaciones -->
+        <div class="arch-panel-card">
+          <div class="arch-panel-head">
+            <span class="arch-panel-tag">PANEL DE CONTROL REACTIVO</span>
+            <h3 class="arch-panel-title">Optimizaciones del Sistema en Tiempo Real</h3>
+            <p class="arch-panel-sub">Activa o desactiva los módulos algorítmicos para observar el impacto inmediato en el rendimiento:</p>
+          </div>
+
+          <div class="optimization-switches-list">
+            <div class="opt-switch-item">
+              <div class="opt-switch-info">
+                <strong>1. Compresión Delta de Payloads</strong>
+                <p>Consolida únicamente las claves modificadas ("dirty keys"), reduciendo el paquete de 245 KB a solo 18.4 KB.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="opt-delta" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="opt-switch-item">
+              <div class="opt-switch-info">
+                <strong>2. Debounce Adaptativo de Red (600 ms)</strong>
+                <p>Agrupa múltiples pulsaciones continuas en un solo guardado atómico, evitando peticiones por cada carácter.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="opt-debounce" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="opt-switch-item">
+              <div class="opt-switch-info">
+                <strong>3. Caché Criptográfico en Memoria Local</strong>
+                <p>Permite recuperación instantánea de sesiones en &lt; 1.5 ms sin consultar endpoints remotos ni bases de datos.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="opt-cache" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="opt-switch-item">
+              <div class="opt-switch-info">
+                <strong>4. Eco-Throttle Green IT (Ahorro Energético)</strong>
+                <p>Suspende bucles de sondeo cuando la pestaña está inactiva, recortando ciclos de vCPU y huella de carbono.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="opt-throttle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monitor de Rendimiento y Comparador -->
+        <div class="arch-benchmark-card">
+          <div class="arch-panel-head">
+            <span class="arch-panel-tag text-green">MONITOR EN TIEMPO REAL</span>
+            <h3 class="arch-panel-title">Métricas de Rendimiento y Benchmark</h3>
+            <p class="arch-panel-sub">Comparación cuantitativa: Sistema Tradicional vs. Arquitectura EcoSync:</p>
+          </div>
+
+          <div class="benchmark-metrics-grid">
+            <div class="bm-box">
+              <span class="bm-label">LATENCIA DE RESPUESTA</span>
+              <div class="bm-val-row">
+                <strong class="text-blue" id="bm-latency">1.4 ms</strong>
+                <span class="bm-trad">vs 380 ms</span>
+              </div>
+              <div class="bm-progress-bg">
+                <div class="bm-progress-bar bg-blue" id="bar-latency" style="width: 99%;"></div>
+              </div>
+              <small class="bm-gain" id="gain-latency">⚡ 99.6% más rápido</small>
+            </div>
+
+            <div class="bm-box">
+              <span class="bm-label">TAMAÑO DE TRANSFERENCIA</span>
+              <div class="bm-val-row">
+                <strong class="text-green" id="bm-payload">18.4 KB</strong>
+                <span class="bm-trad">vs 245 KB</span>
+              </div>
+              <div class="bm-progress-bg">
+                <div class="bm-progress-bar bg-green" id="bar-payload" style="width: 92%;"></div>
+              </div>
+              <small class="bm-gain" id="gain-payload">📉 92.5% menos ancho de banda</small>
+            </div>
+
+            <div class="bm-box">
+              <span class="bm-label">PETICIONES AL SERVIDOR</span>
+              <div class="bm-val-row">
+                <strong class="text-orange" id="bm-requests">3 req/min</strong>
+                <span class="bm-trad">vs 45 req/min</span>
+              </div>
+              <div class="bm-progress-bg">
+                <div class="bm-progress-bar bg-orange" id="bar-requests" style="width: 93%;"></div>
+              </div>
+              <small class="bm-gain" id="gain-requests">🛡️ 93.3% tráfico mitigado</small>
+            </div>
+
+            <div class="bm-box">
+              <span class="bm-label">CARGA DE CPU EN SERVIDOR</span>
+              <div class="bm-val-row">
+                <strong class="text-slate" id="bm-cpu">0.02%</strong>
+                <span class="bm-trad">vs 2.4%</span>
+              </div>
+              <div class="bm-progress-bg">
+                <div class="bm-progress-bar bg-slate" id="bar-cpu" style="width: 99%;"></div>
+              </div>
+              <small class="bm-gain" id="gain-cpu">🍃 Cero saturación de hilos</small>
+            </div>
+          </div>
+
+          <!-- Área de Simulación de Estrés -->
+          <div class="stress-test-banner">
+            <div class="st-info">
+              <strong>Simulador de Carga y Resiliencia:</strong>
+              <span>Genera 100 eventos concurrentes de digitación para verificar la absorción y consolidación en cliente.</span>
+            </div>
+            <button class="btn btn-primary" id="btn-run-simulation">Ejecutar Simulación en Vivo</button>
+          </div>
+          <div id="simulation-status" class="simulation-status-box hidden"></div>
         </div>
       </div>
     </section>

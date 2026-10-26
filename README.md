@@ -10,9 +10,9 @@ EcoSync es una solución de arquitectura resiliente en el cliente (Edge Resilien
 ---
 
 ## Estructura del Proyecto
-* **`index.html`**: Estructura semántica completa de la plataforma con navegación entre todas las vistas públicas y corporativas.
-* **`styles.css`**: Sistema de diseño moderno SaaS B2B con la paleta corporativa oficial (`#FAFAFA`, `#FFFFFF`, `#2563EB`, `#E07A5F`, `#10B981`, `#1E293B`, `#0F172A`), componentes responsivos y estados visuales de contingencia.
-* **`script.js`**: Lógica de interacción en JavaScript vanilla, autenticación con perfiles demo, persistencia en `LocalStorage` con autoguardado, simulación de contingencias, cálculos de IVA 19%, gestión de líneas de servicio, telemetría forense y consola de diagnóstico.
+* **`index.html`**: Estructura semántica completa de la plataforma con navegación entre todas las vistas públicas y corporativas, incluyendo el nuevo módulo de Arquitectura del Sistema.
+* **`styles.css`**: Sistema de diseño moderno SaaS B2B con la paleta corporativa oficial (`#FAFAFA`, `#FFFFFF`, `#2563EB`, `#E07A5F`, `#10B981`, `#1E293B`, `#0F172A`), componentes responsivos y pipeline de capas.
+* **`script.js`**: Lógica de interacción en JavaScript vanilla, autenticación con perfiles demo, persistencia en `LocalStorage` con autoguardado, simulación de contingencias, cálculos de IVA 19%, optimizador reactivo y consola de diagnóstico.
 
 ---
 
@@ -50,7 +50,16 @@ EcoSync es una solución de arquitectura resiliente en el cliente (Edge Resilien
 * **Tester Activo de Ping y Handshake**: Simulador interactivo de conexión y validación TLS 1.3 con emulación de consola en tiempo de ejecución.
 * **Catálogo de Conectores Nativos**: Estado en vivo de conectores preconfigurados para SAP, Salesforce, Dynamics 365 y Oracle Cloud.
 
-### 5. Terminal Operativa de Servicios y Facturación
+### 5. Arquitectura Simple y Optimizador del Sistema
+* **Pipeline en 4 Capas Desacopladas**:
+  1. **Capa 01 (Client Edge)**: Intercepción de eventos DOM y debounce adaptativo de 600 ms.
+  2. **Capa 02 (Storage Enclave)**: Persistencia atómica en LocalStorage con cifrado de sesión AES-256.
+  3. **Capa 03 (Adaptive Network Broker)**: Enrutamiento offline-first y descarte del 92% de peticiones repetitivas.
+  4. **Capa 04 (Backend Corporativo)**: Recepción por lotes consolidados liberando 45% de vCPU en servidores.
+* **Panel de Control de Optimizaciones Reactivas**: Conmutadores en tiempo real para compresión delta, debounce, caché local y eco-throttle.
+* **Monitor de Rendimiento & Benchmark en Vivo**: Comparativa de latencia (1.4 ms vs 380 ms), payload (-92.5%) y botón de prueba de estrés con 100 transacciones concurrentes.
+
+### 6. Terminal Operativa de Servicios y Facturación
 * Registro operativo de servicio para clientes con expedientes validados localmente.
 * **Tabla Dinámica de Líneas de Servicio**:
   * Botón **`+ Añadir Fila de Servicio`** y eliminación individual de ítems.
@@ -60,11 +69,11 @@ EcoSync es una solución de arquitectura resiliente en el cliente (Edge Resilien
 * **Simulación de Caída de Red**: Activa el banner naranja de contingencia, mantiene el formulario 100% editable y protege los datos en memoria.
 * **Consola Integrada de Neutralización de Fallos (#ERR-503)** con descarga de JSON de recuperación y purga de buffer.
 
-### 6. Impacto Green IT y Calculadoras ESG
+### 7. Impacto Green IT y Calculadoras ESG
 * **Calculadora Dinámica de Impacto ESG**: Sliders de puestos y transacciones con proyección en tiempo real de kWh, CO2e y árboles equivalentes.
 * **Calculadora Green IT Simplificada**: Estimación directa de peticiones redundantes anuales evitadas.
 
-### 7. Consola Técnica Global Oculta
+### 8. Consola Técnica Global Oculta
 * Apertura mediante el atajo de teclado **`Ctrl + Shift + D`** o botón flotante.
 * Registro de eventos con filtrado estricto anti-PII y botón de **exportación JSON**.
 

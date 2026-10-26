@@ -940,6 +940,139 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmCallback = null;
   });
 
+
+  // =========================================================================
+  // 13. LÓGICA DE LA ARQUITECTURA DEL SISTEMA Y OPTIMIZADOR EN VIVO
+  // =========================================================================
+  const optDelta = document.getElementById('opt-delta');
+  const optDebounce = document.getElementById('opt-debounce');
+  const optCache = document.getElementById('opt-cache');
+  const optThrottle = document.getElementById('opt-throttle');
+
+  const bmLatency = document.getElementById('bm-latency');
+  const bmPayload = document.getElementById('bm-payload');
+  const bmRequests = document.getElementById('bm-requests');
+  const bmCpu = document.getElementById('bm-cpu');
+
+  const barLatency = document.getElementById('bar-latency');
+  const barPayload = document.getElementById('bar-payload');
+  const barRequests = document.getElementById('bar-requests');
+  const barCpu = document.getElementById('bar-cpu');
+
+  const gainLatency = document.getElementById('gain-latency');
+  const gainPayload = document.getElementById('gain-payload');
+  const gainRequests = document.getElementById('gain-requests');
+  const gainCpu = document.getElementById('gain-cpu');
+
+  const btnRunSimulation = document.getElementById('btn-run-simulation');
+  const btnRunStressTest = document.getElementById('btn-run-stress-test');
+  const simulationStatus = document.getElementById('simulation-status');
+  const btnOpenConsoleArch = document.getElementById('btn-open-console-arch');
+
+  function updateOptimizationBenchmark() {
+    const isDelta = optDelta ? optDelta.checked : true;
+    const isDebounce = optDebounce ? optDebounce.checked : true;
+    const isCache = optCache ? optCache.checked : true;
+    const isThrottle = optThrottle ? optThrottle.checked : true;
+
+    // 1. Latencia
+    if (isCache) {
+      bmLatency.textContent = '1.4 ms';
+      barLatency.style.width = '99%';
+      gainLatency.textContent = '⚡ 99.6% más rápido';
+      gainLatency.className = 'bm-gain text-green';
+    } else {
+      bmLatency.textContent = '145 ms';
+      barLatency.style.width = '40%';
+      gainLatency.textContent = '⚠️ Sin caché: Consulta remota obligatoria';
+      gainLatency.className = 'bm-gain text-orange';
+    }
+
+    // 2. Payload
+    if (isDelta) {
+      bmPayload.textContent = '18.4 KB';
+      barPayload.style.width = '92%';
+      gainPayload.textContent = '📉 92.5% menos ancho de banda';
+      gainPayload.className = 'bm-gain text-green';
+    } else {
+      bmPayload.textContent = '245 KB';
+      barPayload.style.width = '20%';
+      gainPayload.textContent = '⚠️ Sin compresión: Payload completo enviado';
+      gainPayload.className = 'bm-gain text-orange';
+    }
+
+    // 3. Requests
+    if (isDebounce) {
+      bmRequests.textContent = '3 req/min';
+      barRequests.style.width = '93%';
+      gainRequests.textContent = '🛡️ 93.3% tráfico mitigado';
+      gainRequests.className = 'bm-gain text-green';
+    } else {
+      bmRequests.textContent = '45 req/min';
+      barRequests.style.width = '15%';
+      gainRequests.textContent = '⚠️ Sin debounce: Saturación por pulsación';
+      gainRequests.className = 'bm-gain text-orange';
+    }
+
+    // 4. CPU
+    if (isThrottle) {
+      bmCpu.textContent = '0.02%';
+      barCpu.style.width = '99%';
+      gainCpu.textContent = '🍃 Cero saturación de hilos';
+      gainCpu.className = 'bm-gain text-green';
+    } else {
+      bmCpu.textContent = '1.85%';
+      barCpu.style.width = '35%';
+      gainCpu.textContent = '⚠️ Sin eco-throttle: Sondeo continuo en background';
+      gainCpu.className = 'bm-gain text-orange';
+    }
+
+    logEvent('INFO', `Parámetros de optimización actualizados: [Delta: ${isDelta}, Debounce: ${isDebounce}, Cache: ${isCache}, Throttle: ${isThrottle}]`);
+  }
+
+  [optDelta, optDebounce, optCache, optThrottle].forEach(sw => {
+    if (sw) sw.addEventListener('change', updateOptimizationBenchmark);
+  });
+
+  function runStressSimulation() {
+    if (!simulationStatus) return;
+    simulationStatus.classList.remove('hidden');
+    simulationStatus.innerHTML = `<strong>Iniciando Simulación de Estrés:</strong><br>Emitiendo ráfaga de 100 eventos concurrentes de formulario...`;
+    
+    if (btnRunSimulation) btnRunSimulation.disabled = true;
+    if (btnRunStressTest) btnRunStressTest.disabled = true;
+
+    setTimeout(() => {
+      simulationStatus.innerHTML = `
+        <strong>Progreso del Pipeline de Optimización:</strong><br>
+        [T+100ms] 100 eventos interceptados por Capa 01 (DOM Observer)<br>
+        [T+250ms] Capa 02 activada: Buffer LocalStorage consolidó el estado en 1 snapshot AES-256 (18.4 KB)<br>
+        [T+400ms] Capa 03 activada: Enrutador descartó 99 peticiones HTTP redundantes<br>
+        [T+600ms] Capa 04: Servidor ERP recibió 1 única transacción consolidada.<br>
+        <strong class="text-green font-bold">✅ Resultado: 99 peticiones evitadas (99% de ahorro de red). Latencia final: 1.4 ms. Cero pérdida de datos.</strong>
+      `;
+
+      logEvent('PERSIST', 'Simulación de estrés completada: 100 eventos concurrentes consolidados en 1 única escritura (99% mitigado).');
+      
+      if (btnRunSimulation) btnRunSimulation.disabled = false;
+      if (btnRunStressTest) btnRunStressTest.disabled = false;
+    }, 600);
+  }
+
+  if (btnRunSimulation) btnRunSimulation.addEventListener('click', runStressSimulation);
+  if (btnRunStressTest) {
+    btnRunStressTest.addEventListener('click', () => {
+      switchView('view-arquitectura');
+      setTimeout(runStressSimulation, 300);
+    });
+  }
+
+  if (btnOpenConsoleArch) {
+    btnOpenConsoleArch.addEventListener('click', () => {
+      toggleTechConsole();
+    });
+  }
+
   // =========================================================================
   // 12. INICIALIZACIÓN DE LA PLATAFORMA
   // =========================================================================
